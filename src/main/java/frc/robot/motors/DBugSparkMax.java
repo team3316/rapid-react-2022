@@ -74,7 +74,7 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
                 this.set(value);
                 break;
             case Position:
-                _pidController.setReference(value,ControlType.kVelocity);
+                _pidController.setReference(value,ControlType.kPosition);
                 break;
             case Velocity:
                 _pidController.setReference(value,ControlType.kVelocity);
