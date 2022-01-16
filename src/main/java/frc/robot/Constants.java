@@ -15,9 +15,9 @@ public class Constants {
             public static final double freeSpeedMetersPerSecond = 3.6576;
             public static final double driveRatio = 1.0 / 8.14;
             public static final double steeringRatio = 1.0 / 12.8;
-            public static final double wheelRadiusMeters = 0.0508; // 2 inches (in meters)
-            public static final double wheelCircumferenceMeters = wheelRadiusMeters * 2 * Math.PI;
-            public static final double driveDPRMeters = wheelCircumferenceMeters * driveRatio;
+            public static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
+            // public static final double wheelCircumferenceMeters = wheelRadiusMeters * 2 * Math.PI;
+            // public static final double driveDPRMeters = wheelCircumferenceMeters * driveRatio;
 
             public final Translation2d position;
             public final int idDrive;
@@ -28,7 +28,7 @@ public class Constants {
             public final int canCoderId;
 
             public SwerveModuleConstants(Translation2d position, int idDrive, int idSteering, double cancoderZeroAngle,int canCoderId) {
-                this(position, idDrive, idSteering, new PIDFGains(0.0002, 0, 0.01, 1.0/6/902.0, 50, 0), new PIDFGains(0.35, 0, 0, 0, 1, 0), cancoderZeroAngle, canCoderId);
+                this(position, idDrive, idSteering, new PIDFGains(0.0002 * 60/ (driveRatio * wheelDiameterMeters * Math.PI), 0, 0.01 * 60/ (driveRatio * wheelDiameterMeters * Math.PI), 1.0/6/902.0 * 0.95 * 60 / (driveRatio * wheelDiameterMeters * Math.PI), 50, 0), new PIDFGains(0.35 / steeringRatio, 0.0, 0, 0, 1, 0), cancoderZeroAngle, canCoderId);
             }
 
             public SwerveModuleConstants(Translation2d position, int idDrive, int idSteering, PIDFGains driveGains, PIDFGains steeringGains, double cancoderZeroAngle, int canCoderId) {
@@ -53,10 +53,9 @@ public class Constants {
         public static final int pigeonTalonId = 9;
     }
     public static final class Joysticks {
-        public static final double speedScalar = 1;
+        public static final double valueScalar = 1;
         public static final double deadband = 0.1;
-        public static final int drivePort = 0;
-        public static final int steerPort = 1;
+        public static final int driverControllerPort = 0;
     }
 
     public static final class Autonomous {

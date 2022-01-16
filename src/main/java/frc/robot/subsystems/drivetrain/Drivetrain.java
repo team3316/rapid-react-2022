@@ -12,12 +12,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
  * Drivetrain
  */
-public class Drivetrain {
+public class Drivetrain extends SubsystemBase {
 
     private SwerveModule[] _modules;
 
@@ -65,6 +66,13 @@ public class Drivetrain {
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), _modules[0].getState(), _modules[1].getState(), _modules[2].getState(),
                 _modules[3].getState());
+
+                for (int i = 0; i < _modules.length; i++) {
+                    SmartDashboard.putNumber("steer " + i   , _modules[i].getSteeringSetpoint());
+                    SmartDashboard.putNumber("drive " + i, _modules[i].getDriveSetpoint());
+                    SmartDashboard.putNumber("speed " + i, _modules[i].getDriveVelocity());
+                    SmartDashboard.putNumber("angle " + i, _modules[i].getAngle());
+                }
     }
 
     public Pose2d getPose() {
@@ -75,9 +83,9 @@ public class Drivetrain {
         _odometry.resetPosition(pose, getRotation2d());
     }
 
-    public void setDriveRPM(double voltage) {
+    public void setDriveVelocity(double velocityMetersPerSecond) {
         for (SwerveModule swerveModule : _modules) {
-            swerveModule.setDriveRPM(voltage);
+            swerveModule.setDriveVelocity(velocityMetersPerSecond);
         }
     }
 
@@ -94,15 +102,5 @@ public class Drivetrain {
 
     public void resetYaw() {
         _pigeon.setFusedHeading(0);
-    }
-
-    public void printSetpoints() {
-        for (int i = 0; i < _modules.length; i++) {
-            SmartDashboard.putNumber("current " + i   , _modules[i].getDriveCurrent());
-            SmartDashboard.putNumber("drive " + i, _modules[i].getDriveSetpoint());
-            SmartDashboard.putNumber("speed " + i, _modules[i].getDriveRPM());
-            System.out.print(_modules[i].getDriveCurrent() + " \t");
-        }
-        System.out.println();
     }
 }
