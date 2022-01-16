@@ -84,11 +84,13 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
     }
     
     @Override
-    public void setupPIDF(double kP, double kI, double kD, double kF) {
-        this._pidController.setP(kP);
-        this._pidController.setI(kI);
-        this._pidController.setD(kD);
-        this._pidController.setFF(kF);
+    public void setupPIDF(PIDFGains gains) {
+        this._pidController.setP(gains.kP);
+        this._pidController.setI(gains.kI);
+        this._pidController.setD(gains.kD);
+        this._pidController.setFF(gains.kF);
+        this._pidController.setIZone(gains.iZone);
+        // TODO: find tolerance method
         this._pidController.setOutputRange(-1.0, 1.0);
     }
 

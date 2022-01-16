@@ -87,12 +87,14 @@ public class DBugTalon extends BaseTalon implements IDBugMotor {
         
     }
 
-    public void setupPIDF(double kP, double kI, double kD, double kF) {
+    public void setupPIDF(PIDFGains gains) {
         this.selectProfileSlot(0,0);
-        this.config_kP(0, kP);
-        this.config_kI(0, kI);
-        this.config_kD(0, kD);
-        this.config_kF(0, kF);
+        this.config_kP(0, gains.kP);
+        this.config_kI(0, gains.kI);
+        this.config_kD(0, gains.kD);
+        this.config_kF(0, gains.kF);
+        this.config_IntegralZone(0, gains.iZone);
+        this.configAllowableClosedloopError(0, gains.tolerance);
     }
 
     @Override

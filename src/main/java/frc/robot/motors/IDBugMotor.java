@@ -13,7 +13,7 @@ public interface IDBugMotor {
 
     void set(ControlMode mode, double value);
 
-    void setupPIDF(double kP, double kI, double kD, double kF);
+    void setupPIDF(PIDFGains gains);
 
     void setPosition(double value);
 
