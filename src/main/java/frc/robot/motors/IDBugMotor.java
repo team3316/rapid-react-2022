@@ -1,12 +1,6 @@
 package frc.robot.motors;
 
 public interface IDBugMotor {
-    void setRotationFactors(PositionUnit positionUnit, 
-                            VelocityUnit velocityUnit, 
-                            double gearRatio, 
-                            double wheelDiameterMeters, 
-                            int upr);
-
     void setInverted(boolean inverted);
 
     void follow(IDBugMotor leader);
@@ -17,7 +11,7 @@ public interface IDBugMotor {
 
     void setPosition(double value);
 
-    double getVelocity();
+    double getVelocity(VelocityUnit unit);
 
-    double getPosition();
+    double getPosition(PositionUnit unit);
 }

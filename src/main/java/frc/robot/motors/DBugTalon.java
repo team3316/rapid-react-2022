@@ -1,54 +1,29 @@
 package frc.robot.motors;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 public class DBugTalon extends BaseTalon implements IDBugMotor {
+    private final Map<ControlMode,com.ctre.phoenix.motorcontrol.ControlMode> controlModeMap = 
+    Map.of(
+        ControlMode.Current,com.ctre.phoenix.motorcontrol.ControlMode.Current,
+        ControlMode.PercentOutput,com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput,
+        ControlMode.Position,com.ctre.phoenix.motorcontrol.ControlMode.Position,
+        ControlMode.Velocity,com.ctre.phoenix.motorcontrol.ControlMode.Velocity
+    ); 
+
     private boolean _isFollower; // needed in case setInverted is called before follow
-    private double _velocityConversionFactor;
-    private double _positionConversionFactor;
+    private final UnitConversions conversions;
 
-    public DBugTalon(int deviceNumber, TalonModel model, FeedbackDevice sensor) {
-        super(deviceNumber, model.toString());
-        
+    public DBugTalon(int deviceNumber, TalonModel model, UnitConversions conversions, FeedbackDevice sensor) {
+        super(deviceNumber, model.name);
+
+        this.conversions = conversions;
         super.configSelectedFeedbackSensor(sensor);
-    }
-
-    @Override
-    public void setRotationFactors(PositionUnit positionUnit, 
-                                   VelocityUnit velocityUnit, 
-                                   double gearRatio , 
-                                   double wheelDiameterMeters, 
-                                   int upr) {
-        // Units / Units per Rotation * gearRatio = Rotations of output shaft
-        super.configSelectedFeedbackCoefficient(gearRatio / upr);
-        switch (positionUnit) {
-            case Rotations:
-                // already in rotations
-                _positionConversionFactor = 1;
-                break;
-            case Degrees:
-                // Rotations * 360 = Angle of output shaft
-                _positionConversionFactor =  360;
-                break;
-            case Meters:
-                // Rotations * circumference = Distance traveled by wheel in meters
-                _positionConversionFactor = wheelDiameterMeters * Math.PI;
-                break;
-        }
-        switch (velocityUnit) {
-            case RPM:
-                // Rotations per 100ms * 10  * 60 = Revolutions of output shaft per minute
-                _velocityConversionFactor = 10 * 60 ;
-                break;
-            case MetersPerSecond:
-                // Rotations per 100ms * 10 = RPS. RPS * gearRatio * circumference = wheel meters per second
-                _velocityConversionFactor = 10 * wheelDiameterMeters * Math.PI;
-                break;
-        
-        }
     }
 
 
@@ -69,22 +44,7 @@ public class DBugTalon extends BaseTalon implements IDBugMotor {
 
     @Override
     public void set(ControlMode mode, double value) {
-        switch (mode) {
-            case Current:
-                super.set(com.ctre.phoenix.motorcontrol.ControlMode.Current, value);
-                break;
-            case PercentOutput:
-                super.set(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, value);
-                break;
-            case Position:
-                super.set(com.ctre.phoenix.motorcontrol.ControlMode.Position, value);
-                break;
-            case Velocity:
-                super.set(com.ctre.phoenix.motorcontrol.ControlMode.Velocity, value);
-                break;
-
-        }    
-        
+        super.set(controlModeMap.get(mode),value);
     }
 
     public void setupPIDF(PIDFGains gains) {
@@ -103,13 +63,13 @@ public class DBugTalon extends BaseTalon implements IDBugMotor {
     }
 
     @Override
-    public double getVelocity() {
-        return this.getSelectedSensorVelocity() * _velocityConversionFactor;
+    public double getVelocity(VelocityUnit unit) {
+        return conversions.rpmApplyModifier(this.getSelectedSensorVelocity()/conversions.upr * 10 * 60, unit);
     }
 
     @Override
-    public double getPosition() {
-        return this.getSelectedSensorPosition() * _positionConversionFactor;
+    public double getPosition(PositionUnit unit) {
+        return conversions.rotationsApplyModifier(this.getSelectedSensorPosition()/conversions.upr, unit);
     }
 
     @Override

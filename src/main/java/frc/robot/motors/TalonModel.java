@@ -1,16 +1,12 @@
 package frc.robot.motors;
 
 public enum TalonModel {
-    TalonFX,
-    TalonSRX;
+    TalonFX("Talon FX"),
+    TalonSRX("Talon SRX");
 
-    public String toString() {
-        switch (this) {
-            case TalonFX:
-                return "Talon FX";        
-            case TalonSRX:
-                return "Talon SRX";
-        }
-        throw new IllegalArgumentException("Unknown Talon type");
+    public final String name;
+
+    private TalonModel(String name) {
+        this.name = name;
     }
 }

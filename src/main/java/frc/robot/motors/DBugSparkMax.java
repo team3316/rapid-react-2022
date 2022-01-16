@@ -1,56 +1,34 @@
 package frc.robot.motors;
 
+import java.util.Map;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
 public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
+    private static final Map<ControlMode,ControlType> controlModeMap = Map.of(
+        ControlMode.Current,ControlType.kCurrent,
+        ControlMode.Position, ControlType.kPosition,
+        ControlMode.Velocity, ControlType.kVelocity
+    );
+
+
     private CANSparkMax _leader; // needed in case setInverted is called before follow
     private SparkMaxPIDController _pidController;
     private RelativeEncoder _encoder;
+    private final UnitConversions conversions;
 
-    public DBugSparkMax(int deviceId, MotorType type) {
+    public DBugSparkMax(int deviceId, UnitConversions conversions,MotorType type) {
         super(deviceId, type);
 
+        this.conversions = conversions;
         this._encoder = this.getEncoder();
         this._pidController = this.getPIDController();
     }
 
-    public DBugSparkMax(int deviceNumber) {
-        this(deviceNumber, MotorType.kBrushless);
-    }
-
-    @Override
-    public void setRotationFactors(PositionUnit positionUnit, 
-                                   VelocityUnit velocityUnit, 
-                                   double gearRatio , 
-                                   double wheelDiameterMeters, 
-                                   int upr) {
-        switch (positionUnit) {
-            case Rotations:
-                // Rotations * gearRatio = Rotations of output shaft
-                _encoder.setPositionConversionFactor(gearRatio);
-                break;
-            case Degrees:
-                // Rotations * gearRatio * 360 = Angle of output shaft
-                _encoder.setPositionConversionFactor(gearRatio * 360);
-                break;
-            case Meters:
-                // Rotations * gearRatio * circumference = Distance traveled by wheel in meters
-                _encoder.setPositionConversionFactor(gearRatio * wheelDiameterMeters * Math.PI);
-                break;
-        }
-        switch (velocityUnit) {
-            case RPM:
-                // RPM * gearRatio = Revolutions of output shaft per minute
-                _encoder.setVelocityConversionFactor(gearRatio);
-                break;
-            case MetersPerSecond:
-                // RPM / 60 = RPS. RPS * gearRatio * circumference = wheel meters per second
-                _encoder.setVelocityConversionFactor(gearRatio * wheelDiameterMeters * Math.PI / 60);
-                break;
-        
-        }
+    public DBugSparkMax(int deviceNumber, UnitConversions conversions) {
+        this(deviceNumber, conversions, MotorType.kBrushless);
     }
 
     @Override
@@ -66,21 +44,11 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
 
     @Override
     public void set(ControlMode mode, double value) {
-        switch (mode) {
-            case Current:
-                _pidController.setReference(value,ControlType.kCurrent);
-                break;
-            case PercentOutput:
-                this.set(value);
-                break;
-            case Position:
-                _pidController.setReference(value,ControlType.kPosition);
-                break;
-            case Velocity:
-                _pidController.setReference(value,ControlType.kVelocity);
-                break;
-
-        }    
+        if(mode == ControlMode.PercentOutput) { // there is no equivalent in ControlType
+            super.set(value);
+        } else {
+            _pidController.setReference(value,controlModeMap.get(mode));
+        }
     }
     
     @Override
@@ -101,14 +69,14 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
 
 
     @Override
-    public double getVelocity() {
-        return _encoder.getVelocity();
+    public double getVelocity(VelocityUnit unit) {
+        return conversions.rpmApplyModifier(_encoder.getVelocity(), unit);
         
     }
 
     @Override
-    public double getPosition() {
-        return _encoder.getPosition();        
+    public double getPosition(PositionUnit unit) {
+        return conversions.rotationsApplyModifier(_encoder.getPosition(), unit);        
     }
 
     @Override
