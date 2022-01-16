@@ -1,18 +1,19 @@
 package frc.robot.motors;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 public class DBugTalon extends BaseTalon implements IDBugMotor {
-
     private boolean _isFollower; // needed in case setInverted is called before follow
     private double _velocityConversionFactor;
     private double _positionConversionFactor;
 
-    public DBugTalon(int deviceNumber, TalonModel model) {
+    public DBugTalon(int deviceNumber, TalonModel model, FeedbackDevice sensor) {
         super(deviceNumber, model.toString());
         
+        super.configSelectedFeedbackSensor(sensor);
     }
 
     @Override
@@ -21,28 +22,30 @@ public class DBugTalon extends BaseTalon implements IDBugMotor {
                                    double gearRatio , 
                                    double wheelDiameterMeters, 
                                    int upr) {
+        // Units / Units per Rotation * gearRatio = Rotations of output shaft
+        super.configSelectedFeedbackCoefficient(gearRatio / upr);
         switch (positionUnit) {
             case Rotations:
-                // Units / Units per Rotation * gearRatio = Rotations of output shaft
-                _positionConversionFactor = gearRatio / upr;
+                // already in rotations
+                _positionConversionFactor = 1;
                 break;
             case Degrees:
-                // Units / Units per Rotation * gearRatio * 360 = Angle of output shaft
-                _positionConversionFactor = gearRatio / upr * 360;
+                // Rotations * 360 = Angle of output shaft
+                _positionConversionFactor =  360;
                 break;
             case Meters:
-                // Units / Units per Rotation * gearRatio * circumference = Distance traveled by wheel in meters
-                _positionConversionFactor = gearRatio * wheelDiameterMeters * Math.PI / upr;
+                // Rotations * circumference = Distance traveled by wheel in meters
+                _positionConversionFactor = wheelDiameterMeters * Math.PI;
                 break;
         }
         switch (velocityUnit) {
             case RPM:
-                // Units per 100ms * 10 / upr = RPS, RPS * 60 * gearRatio = Revolutions of output shaft per minute
-                _velocityConversionFactor = 10 / upr * 60 * gearRatio;
+                // Rotations per 100ms * 10  * 60 = Revolutions of output shaft per minute
+                _velocityConversionFactor = 10 * 60 ;
                 break;
             case MetersPerSecond:
-                // Units per 100ms * 10 / upr = RPS. RPS * gearRatio * circumference = wheel meters per second
-                _velocityConversionFactor = 10 / upr * gearRatio * wheelDiameterMeters * Math.PI;
+                // Rotations per 100ms * 10 = RPS. RPS * gearRatio * circumference = wheel meters per second
+                _velocityConversionFactor = 10 * wheelDiameterMeters * Math.PI;
                 break;
         
         }
