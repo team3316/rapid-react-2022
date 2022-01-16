@@ -3,16 +3,15 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
-import frc.robot.motors.PIDFGains;
+import frc.robot.motors.ControlMode;
+import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.IDBugMotor;
+import frc.robot.motors.PositionUnit;
+import frc.robot.motors.VelocityUnit;
 
 
 /**
@@ -20,12 +19,8 @@ import frc.robot.motors.PIDFGains;
  */
 public class SwerveModule {
 
-    private CANSparkMax _driveSparkMax;
-    private SparkMaxPIDController _drivePID;
-    private RelativeEncoder _driveEncoder;
-    private CANSparkMax _steeringSparkMax;
-    private SparkMaxPIDController _steeringPID;
-    private RelativeEncoder _steeringEncoder;
+    private IDBugMotor _driveMotor;
+    private IDBugMotor _steerMotor;
 
     private CANCoder _absEncoder;
 
@@ -33,32 +28,25 @@ public class SwerveModule {
     private double _driveSetpoint;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        _driveSparkMax = configSparkMax(constants.idDrive, _drivePID, _driveEncoder, constants.driveGains);
-        _steeringSparkMax = configSparkMax(constants.idSteering, _steeringPID, _steeringEncoder, constants.steeringGains);
+        _driveMotor = new DBugSparkMax(constants.idDrive);
+        _steerMotor = new DBugSparkMax(constants.idSteering);
 
-        _drivePID = _driveSparkMax.getPIDController();
-        _driveEncoder = _driveSparkMax.getEncoder();
+        _driveMotor.setRotationFactors(PositionUnit.Meters, VelocityUnit.MetersPerSecond, SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters, 3316);
+        _steerMotor.setRotationFactors(PositionUnit.Rotations, VelocityUnit.RPM, SwerveModuleConstants.steeringRatio, 3316, 3316);
 
-        _steeringPID = _steeringSparkMax.getPIDController();
-        _steeringEncoder = _steeringSparkMax.getEncoder();
+        _driveMotor.setupPIDF(constants.driveGains);
+        _steerMotor.setupPIDF(constants.steeringGains);
 
-        setPIDGains(_drivePID, constants.driveGains);
-        setPIDGains(_steeringPID, constants.steeringGains);
+        ((CANSparkMax) _driveMotor).setSmartCurrentLimit(40);
+        ((CANSparkMax) _driveMotor).enableVoltageCompensation(12);
 
         _steerSetpoint = 0;
+        _driveSetpoint = 0;
 
         _absEncoder = configCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
         calibrateSteering();
     }
 
-    private static CANSparkMax configSparkMax(int id, SparkMaxPIDController pidController, RelativeEncoder encoder, PIDFGains gains) {
-        CANSparkMax sparkMax = new CANSparkMax(id, MotorType.kBrushless);
-        sparkMax.setInverted(false);
-        sparkMax.setSmartCurrentLimit(40);
-        sparkMax.enableVoltageCompensation(12);
-
-        return sparkMax;
-    }
     
     private static CANCoder configCANCoder(int id, double zeroAngle) {
         
@@ -72,23 +60,14 @@ public class SwerveModule {
     }
 
     public void calibrateSteering() {
-        this._steeringEncoder.setPosition(_absEncoder.getAbsolutePosition() / 360 / Constants.Drivetrain.SwerveModuleConstants.steeringRatio);
-    }
-
-    private static void setPIDGains(SparkMaxPIDController pidController, PIDFGains gains) {
-        pidController.setI(gains.kI);
-        pidController.setP(gains.kP);
-        pidController.setD(gains.kD);
-        pidController.setFF(gains.kF);
-        pidController.setIZone(gains.iZone);
-        pidController.setOutputRange(-1.0,1.0);
+        this._steerMotor.setPosition(_absEncoder.getAbsolutePosition() / 360);
     }
 
     public void setDriveSteering(double percent) {
-        this._steeringSparkMax.set(percent);
+        this._steerMotor.set(ControlMode.PercentOutput,percent);
     }
-    public void setDriveDrive(double voltage) {
-        this._driveSparkMax.setVoltage(voltage);
+    public void setDriveDrive(double percent) {
+        this._driveMotor.set(ControlMode.PercentOutput,percent);
     }
 
     public void stop() {
@@ -98,7 +77,7 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                _driveEncoder.getVelocity() / 60 * Constants.Drivetrain.SwerveModuleConstants.driveDPRMeters,
+                _driveMotor.getVelocity(),
                 new Rotation2d(getAngle()));
     }
 
@@ -106,19 +85,21 @@ public class SwerveModule {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = optimizeAngle(desiredState, Rotation2d.fromDegrees(getAngle()));
 
-        _steerSetpoint = addDeltaFromZeroToEncoder(state.angle.getDegrees());
-        _driveSetpoint = driveVelocityToRPM(state.speedMetersPerSecond);
+        _steerSetpoint = _steerMotor.getPosition() + state.angle.getDegrees() / 360;
+        System.out.println(state.angle.getDegrees() + "  " + _steerMotor.getPosition() + " " + desiredState.angle.getDegrees()
+        );
+        _driveSetpoint = state.speedMetersPerSecond;
 
         if (state.speedMetersPerSecond != 0) {
-            _steeringPID.setReference(_steerSetpoint, ControlType.kPosition);
+            _steerMotor.set(ControlMode.Position, _steerSetpoint);
         }
-        // _driveSparkMax.set(1 * Math.signum(state.speedMetersPerSecond));
         if (state.speedMetersPerSecond == 0)
-            _driveSparkMax.set(0);
+            _driveMotor.set(ControlMode.PercentOutput,0);
         else
-            _drivePID.setReference(_driveSetpoint, ControlType.kVelocity);
+            _driveMotor.set(ControlMode.Velocity,_driveSetpoint);
     }
 
+    
     public static SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d currentRadian) {
         Rotation2d angle = desiredState.angle.minus(currentRadian);
         double speed = desiredState.speedMetersPerSecond;
@@ -131,32 +112,11 @@ public class SwerveModule {
             }
         }
         return new SwerveModuleState(speed,angle);
-
-
     }
-
-    public double addDeltaFromZeroToEncoder(double angle) {
-        double pos = getAbsSteeringPos();
-        return (pos + (angle / 360)) / Constants.Drivetrain.SwerveModuleConstants.steeringRatio;
-    }
-
-    private double driveVelocityToRPM(double velocity) {
-        // divide by distance per revolution, multiply by a minute to get RPM
-        return velocity / (Constants.Drivetrain.SwerveModuleConstants.driveDPRMeters) * 60;
-    }
-
-    public double getAbsSteeringPos() {
-        return _steeringEncoder.getPosition() * Constants.Drivetrain.SwerveModuleConstants.steeringRatio;
-    }
-
     public double getAngle() {
-        double pos = getAbsSteeringPos();
+        double pos = _steerMotor.getPosition();
         pos = pos - Math.floor(pos);
         return pos * 360;
-    }
-
-    public double getDrivePercent() {
-        return _driveSparkMax.get();
     }
 
     public double getSteeringSetpoint() {
@@ -167,19 +127,19 @@ public class SwerveModule {
         return _driveSetpoint;
     }
 
-    public double getDriveRPM() {
-        return _driveEncoder.getVelocity();
+    public double getDriveVelocity() {
+        return _driveMotor.getVelocity();
     }
 
-    public void setDriveRPM(double RPM) {
-        _drivePID.setReference(RPM,ControlType.kVelocity);
+    public void setDriveVelocity(double velocityMetersPerSecond) {
+        _driveMotor.set(ControlMode.Velocity, velocityMetersPerSecond);
     }
 
     public void resetSteeringEncoder() {
-        _steeringEncoder.setPosition(0);
+        _steerMotor.setPosition(0);
     }
 
     public double getDriveCurrent() {
-        return _driveSparkMax.getOutputCurrent();
+        return ((CANSparkMax) _driveMotor).getOutputCurrent();
     }
 }

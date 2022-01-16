@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.Joysticks;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,12 +20,26 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final Drivetrain m_Drivetrain = new Drivetrain();
+
+  XboxController m_driverController = new XboxController(Joysticks.driverControllerPort);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    m_Drivetrain.setDefaultCommand(
+      new RunCommand(
+        () ->
+        m_Drivetrain.drive(
+                2,// m_driverController.getLeftX(),
+                0,// m_driverController.getLeftY(),
+                0,// m_driverController.getRightX(),
+                false),
+        m_Drivetrain));
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
