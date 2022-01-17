@@ -6,6 +6,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
+import frc.robot.motors.units.PositionUnit;
+import frc.robot.motors.units.UnitConversions;
+import frc.robot.motors.units.VelocityUnit;
+
 public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
     private static final Map<ControlMode,ControlType> controlModeMap = Map.of(
         ControlMode.Current,ControlType.kCurrent,

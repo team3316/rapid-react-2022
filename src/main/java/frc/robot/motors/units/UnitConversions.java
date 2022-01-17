@@ -1,4 +1,6 @@
-package frc.robot.motors;
+package frc.robot.motors.units;
+
+import frc.robot.motors.EncoderModel;
 
 public class UnitConversions {
     public final double gearRatio;

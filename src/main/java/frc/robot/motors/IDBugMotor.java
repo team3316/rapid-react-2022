@@ -1,5 +1,8 @@
 package frc.robot.motors;
 
+import frc.robot.motors.units.PositionUnit;
+import frc.robot.motors.units.VelocityUnit;
+
 public interface IDBugMotor {
     void setInverted(boolean inverted);
 

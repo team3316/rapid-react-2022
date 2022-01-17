@@ -1,4 +1,4 @@
-package frc.robot.motors;
+package frc.robot.motors.units;
 
 public enum VelocityUnit {
     RPM,

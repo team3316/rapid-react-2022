@@ -7,6 +7,10 @@ import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
+import frc.robot.motors.units.PositionUnit;
+import frc.robot.motors.units.UnitConversions;
+import frc.robot.motors.units.VelocityUnit;
+
 public class DBugTalon extends BaseTalon implements IDBugMotor {
     private final Map<ControlMode,com.ctre.phoenix.motorcontrol.ControlMode> controlModeMap = 
     Map.of(
