@@ -3,10 +3,10 @@ package frc.robot.motors;
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.VelocityUnit;
 
-public interface IDBugMotor {
+public interface IDBugMotorController {
     void setInverted(boolean inverted);
 
-    void follow(IDBugMotor leader);
+    void follow(IDBugMotorController leader);
 
     void set(ControlMode mode, double value);
 

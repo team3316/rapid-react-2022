@@ -10,20 +10,23 @@ import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
 
-public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
+public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
     private static final Map<ControlMode,ControlType> controlModeMap = Map.of(
         ControlMode.Current,ControlType.kCurrent,
         ControlMode.Position, ControlType.kPosition,
         ControlMode.Velocity, ControlType.kVelocity
     );
 
-
     private CANSparkMax _leader; // needed in case setInverted is called before follow
     private SparkMaxPIDController _pidController;
     private RelativeEncoder _encoder;
     private final UnitConversions conversions;
 
-    public DBugSparkMax(int deviceId, UnitConversions conversions,MotorType type) {
+    public DBugSparkMax(int deviceNumber, UnitConversions conversions) {
+        this(deviceNumber, conversions, MotorType.kBrushless);
+    }
+
+    public DBugSparkMax(int deviceId, UnitConversions conversions, MotorType type) {
         super(deviceId, type);
 
         this.conversions = conversions;
@@ -31,12 +34,8 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotor {
         this._pidController = this.getPIDController();
     }
 
-    public DBugSparkMax(int deviceNumber, UnitConversions conversions) {
-        this(deviceNumber, conversions, MotorType.kBrushless);
-    }
-
     @Override
-    public void follow(IDBugMotor leader) {
+    public void follow(IDBugMotorController leader) {
         if(leader instanceof CANSparkMax) {
             _leader = (DBugSparkMax) leader;
             this.follow(_leader, this.getInverted());

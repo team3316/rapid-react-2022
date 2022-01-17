@@ -11,7 +11,7 @@ import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
 
-public class DBugTalon extends BaseTalon implements IDBugMotor {
+public class DBugTalon extends BaseTalon implements IDBugMotorController {
     private final Map<ControlMode,com.ctre.phoenix.motorcontrol.ControlMode> controlModeMap = 
     Map.of(
         ControlMode.Current,com.ctre.phoenix.motorcontrol.ControlMode.Current,
@@ -32,7 +32,7 @@ public class DBugTalon extends BaseTalon implements IDBugMotor {
 
 
     @Override
-    public void follow(IDBugMotor leader) {
+    public void follow(IDBugMotorController leader) {
         if(leader instanceof IMotorController) {
             _isFollower = true;
             super.follow((IMotorController)leader);
