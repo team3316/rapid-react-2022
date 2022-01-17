@@ -66,7 +66,6 @@ public class Drivetrain extends SubsystemBase {
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), _modules[0].getState(), _modules[1].getState(), _modules[2].getState(),
                 _modules[3].getState());
-
                 for (int i = 0; i < _modules.length; i++) {
                     SmartDashboard.putNumber("steer " + i   , _modules[i].getSteeringSetpoint());
                     SmartDashboard.putNumber("drive " + i, _modules[i].getDriveSetpoint());
