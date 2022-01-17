@@ -19,24 +19,24 @@ public class UnitConversions {
         this.upr = upr;
     }
 
-    public double rotationsApplyModifier(double value, PositionUnit unit) {
+    public double getRotationsModifier(PositionUnit unit) {
         switch (unit) {
             case Rotations:
-                return value * gearRatio;
+                return gearRatio;
             case Degrees:
-                return value * gearRatio * 360;
+                return gearRatio * 360;
             case Meters:
-                return value * gearRatio * wheelDiameterMeters * Math.PI;
+                return gearRatio * wheelDiameterMeters * Math.PI;
         }
         throw new IllegalArgumentException("Unknown PositionUnit");
     }
 
-    public double rpmApplyModifier(double value, VelocityUnit unit) {
+    public double getRPMModifier(VelocityUnit unit) {
         switch (unit) {
             case RPM:
-                return value * gearRatio;
+                return gearRatio;
             case MetersPerSecond:
-                return value * gearRatio *  wheelDiameterMeters * Math.PI / 60;
+                return gearRatio *  wheelDiameterMeters * Math.PI / 60;
         }
         throw new IllegalArgumentException("Unknown VelocityUnit");
     }

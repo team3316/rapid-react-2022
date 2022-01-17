@@ -46,11 +46,6 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
         
     }
 
-    @Override
-    public void set(ControlMode mode, double value) {
-        super.set(controlModeMap.get(mode),value);
-    }
-
     public void setupPIDF(PIDFGains gains) {
         this.selectProfileSlot(0,0);
         this.config_kP(0, gains.kP);
@@ -68,12 +63,12 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
 
     @Override
     public double getVelocity(VelocityUnit unit) {
-        return conversions.rpmApplyModifier(this.getSelectedSensorVelocity()/conversions.upr * 10 * 60, unit);
+        return this.getSelectedSensorVelocity()/conversions.upr * 10 * 60 * conversions.getRPMModifier(unit);
     }
 
     @Override
     public double getPosition(PositionUnit unit) {
-        return conversions.rotationsApplyModifier(this.getSelectedSensorPosition()/conversions.upr, unit);
+        return this.getSelectedSensorPosition()/conversions.upr * conversions.getRotationsModifier(unit);
     }
 
     @Override
@@ -82,6 +77,23 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
             super.setInverted(inverted ? InvertType.OpposeMaster : InvertType.FollowMaster);
         else
             super.setInverted(inverted);
+    }
+
+
+    
+    public void set(ControlMode mode, double value) {
+        super.set(controlModeMap.get(mode),value);
+    }
+
+    @Override
+    public void set(ControlMode mode, double value, VelocityUnit unit) {
+        this.set(mode, value / conversions.getRPMModifier(unit));
+    }
+
+
+    @Override
+    public void set(ControlMode mode, double value, PositionUnit unit) {
+        this.set(mode, value / conversions.getRotationsModifier(unit));        
     }
    
 }

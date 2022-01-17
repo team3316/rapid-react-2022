@@ -8,6 +8,10 @@ public interface IDBugMotorController {
 
     void follow(IDBugMotorController leader);
 
+    void set(ControlMode mode, double value, VelocityUnit unit);
+
+    void set(ControlMode mode, double value, PositionUnit unit);
+
     void set(ControlMode mode, double value);
 
     void setupPIDF(PIDFGains gains);

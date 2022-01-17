@@ -73,13 +73,13 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
 
     @Override
     public double getVelocity(VelocityUnit unit) {
-        return conversions.rpmApplyModifier(_encoder.getVelocity(), unit);
+        return _encoder.getVelocity() * conversions.getRPMModifier(unit);
         
     }
 
     @Override
     public double getPosition(PositionUnit unit) {
-        return conversions.rotationsApplyModifier(_encoder.getPosition(), unit);        
+        return _encoder.getPosition() * conversions.getRotationsModifier(unit);        
     }
 
     @Override
@@ -88,5 +88,15 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
             this.follow(_leader, inverted);
         else
             super.setInverted(inverted);
+    }
+
+    @Override
+    public void set(ControlMode mode, double value, VelocityUnit unit) {
+        this.set(mode, value / conversions.getRPMModifier(unit));
+    }
+
+    @Override
+    public void set(ControlMode mode, double value, PositionUnit unit) {
+        this.set(mode, value / conversions.getRotationsModifier(unit));        
     }
 }
