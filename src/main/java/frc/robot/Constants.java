@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.motors.PIDFGains;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
@@ -78,5 +79,20 @@ public class Constants {
         public static final double valueScalar = 1;
         public static final double deadband = 0.08;
         public static final int driverControllerPort = 0;
+    }
+
+    public static final class Autonomous {
+        // TODO: Calibrate
+        public static final double kMaxSpeedMetersPerSecond = 3.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 12.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+
+        public static final double kPXController = 0.3;
+        public static final double kPYController = 0.3;
+        public static final double kPThetaController = 1;
+
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 }

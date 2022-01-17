@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -68,6 +69,14 @@ public class Drivetrain extends SubsystemBase {
         this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),
                 this._modules[2].getState(),
                 this._modules[3].getState());
+    }
+
+    public Pose2d getPose() {
+        return _odometry.getPoseMeters();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        _odometry.resetPosition(pose, getRotation2d());
     }
 
     private double getHeading() {
