@@ -2,15 +2,16 @@ package frc.robot.motors;
 
 import java.util.List;
 
-import edu.wpi.first.wpilibj.Servo;
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
 
-public class DBugServo extends Servo implements IDBugMotorController {
+public class DBugServo extends BetterServo implements IDBugMotorController {
 
     private List<DBugServo> _followers;
+    private DBugServo _leader;
     private final UnitConversions conversions;
+    private boolean _inverted;
 
     public DBugServo(int channel, UnitConversions conversions) {
         super(channel);
@@ -20,8 +21,7 @@ public class DBugServo extends Servo implements IDBugMotorController {
 
     @Override
     public void setInverted(boolean inverted) {
-        // We can't invert the servo since we don't know the max and min angles
-        throw new UnsupportedOperationException("Servo does not support this method");
+        _inverted = inverted;
     }
 
     @Override
@@ -30,7 +30,11 @@ public class DBugServo extends Servo implements IDBugMotorController {
             if (((DBugServo) leader).isFollowing(this)){
                 throw new IllegalArgumentException("Leader is already following follower");
             } else {
-                ((DBugServo) leader).addFollower(this);
+                if (_leader != null) {
+                    _leader._followers.remove(this); // Cant follow more than one device 
+                }
+                _leader = (DBugServo) leader;
+                _leader.addFollower(this);
             }
         else {
             throw new IllegalArgumentException("Leader must be a DBugServo");
@@ -42,7 +46,7 @@ public class DBugServo extends Servo implements IDBugMotorController {
         if (mode != ControlMode.Position)
             throw new IllegalArgumentException("Servo only supports Position control mode");
         
-        this.setAngle(value * 360);
+        this.setAngle(_inverted ? super.kMaxServoAngle - (value * 360) : (value * 360) );
         
         for (DBugServo servo : _followers) {
             servo.set(mode, value);
