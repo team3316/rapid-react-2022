@@ -27,7 +27,12 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
 
     @Override
     public void follow(IDBugMotorController leader) {
-        if (leader instanceof DBugServo)
+        if (leader == null) { // remove leader
+            if (this._leader != null) {
+                this._leader._followers.remove(this);
+                this._leader = null;
+            }
+        } else if (leader instanceof DBugServo) {
             if (((DBugServo) leader).isFollowing(this)){
                 throw new IllegalArgumentException("Leader is already following follower");
             } else {
@@ -37,7 +42,7 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
                 _leader = (DBugServo) leader;
                 _leader.addFollower(this);
             }
-        else {
+        } else {
             throw new IllegalArgumentException("Leader must be a DBugServo");
         }
     }
@@ -75,8 +80,8 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
     }
 
     private boolean isFollowing(DBugServo leader) {
-        for (DBugServo servo : this._followers) {
-            return servo == leader || servo.isFollowing(leader);
+        for (DBugServo servo : leader._followers) {
+            return servo == this || servo.isFollowing(leader);
         }
         return this == leader;
     }
