@@ -1,5 +1,6 @@
 package frc.robot.motors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import frc.robot.motors.units.PositionUnit;
@@ -16,7 +17,7 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
     public DBugServo(int channel, UnitConversions conversions) {
         super(channel);
         this.conversions = conversions;
-        this._followers = List.of();
+        this._followers = new ArrayList<DBugServo>();
     }
 
     @Override
