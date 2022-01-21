@@ -6,8 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.humanIO.Joysticks;
 import frc.robot.subsystems.Intake.Intake;
 
 /**
@@ -18,12 +20,12 @@ import frc.robot.subsystems.Intake.Intake;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static Intake m_intake;
+  private final Intake m_intake = new Intake();
+  private final Joysticks m_joysticks = new Joysticks();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    m_intake = new Intake();
   }
 
   /**
@@ -32,7 +34,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    m_joysticks.getButton(Button.kLeftBumper);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

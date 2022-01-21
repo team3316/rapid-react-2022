@@ -23,4 +23,7 @@ public final class Constants {
         public static final int leftSwitchId = 0;
         public static final int rightSwitchId = 1;
     }
+    public final class Joysticks{
+        public static final double deadband = 0.1;
+    }
 }
