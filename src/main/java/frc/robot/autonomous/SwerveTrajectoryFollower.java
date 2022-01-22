@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveTrajectoryFollower {
     private final Timer _timer = new Timer();
@@ -40,8 +41,19 @@ public class SwerveTrajectoryFollower {
         double curTime = _timer.get();
         var desiredState = _trajectory.sample(curTime);
         var angleRef = _trajectory.getStates().get(_trajectory.getStates().size() - 1).poseMeters.getRotation();
+        var pose = _pose.get();
 
-        var targetChassisSpeeds = _controller.calculate(_pose.get(), desiredState, angleRef);
+        var targetChassisSpeeds = _controller.calculate(pose, desiredState, angleRef);
+
+        System.out.printf("%f %f %f %f %f %f %f %f %f\n", pose.getX(), 
+                                                          desiredState.poseMeters.getX(),
+                                                          pose.getY(), 
+                                                          desiredState.poseMeters.getY(),
+                                                          pose.getRotation().getDegrees(), 
+                                                          angleRef.getDegrees(),
+                                                          Math.hypot(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond),
+                                                          desiredState.velocityMetersPerSecond);
+                                                        
         var targetModuleStates = _kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         _outputModuleStates.accept(targetModuleStates);
