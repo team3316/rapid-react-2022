@@ -83,14 +83,14 @@ public class Constants {
 
     public static final class Autonomous {
         // TODO: Calibrate
-        public static final double kMaxSpeedMetersPerSecond = 3.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 12.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = 3.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 8.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 11.5;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 20;
 
-        public static final double kPXController = 0.3;
-        public static final double kPYController = 0.3;
-        public static final double kPThetaController = 1;
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 6;
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
