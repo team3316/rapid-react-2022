@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -29,10 +28,10 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
         _modules = new SwerveModule[] {
-            new SwerveModule(Constants.Drivetrain.TRModule),
-            new SwerveModule(Constants.Drivetrain.TLModule),
-            new SwerveModule(Constants.Drivetrain.BRModule),
-            new SwerveModule(Constants.Drivetrain.BLModule)
+                new SwerveModule(Constants.Drivetrain.TRModule),
+                new SwerveModule(Constants.Drivetrain.TLModule),
+                new SwerveModule(Constants.Drivetrain.BRModule),
+                new SwerveModule(Constants.Drivetrain.BLModule)
         };
 
         _pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
@@ -44,12 +43,16 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         xSpeed = -xSpeed;
         ySpeed = -ySpeed;
-        rot *= 2;
 
-        SwerveModuleState[] moduleStates = Constants.Drivetrain.kinematics
-                .toSwerveModuleStates(fieldRelative && _pigeon.getState() == PigeonState.Ready
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
-                        : new ChassisSpeeds(xSpeed, ySpeed, rot));
+        ChassisSpeeds speeds;
+        if (fieldRelative && _pigeon.getState() == PigeonState.Ready){
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d());
+        } else {
+            speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
+        }
+        
+        var moduleStates = Constants.Drivetrain.kinematics.toSwerveModuleStates(speeds);
+
         setDesiredStates(moduleStates);
     }
 
@@ -66,12 +69,6 @@ public class Drivetrain extends SubsystemBase {
         // Update the odometry in the periodic block
         _odometry.update(getRotation2d(), _modules[0].getState(), _modules[1].getState(), _modules[2].getState(),
                 _modules[3].getState());
-                for (int i = 0; i < _modules.length; i++) {
-                    SmartDashboard.putNumber("steer " + i   , _modules[i].getSteeringSetpoint());
-                    SmartDashboard.putNumber("drive " + i, _modules[i].getDriveSetpoint());
-                    SmartDashboard.putNumber("speed " + i, _modules[i].getDriveVelocity());
-                    SmartDashboard.putNumber("angle " + i, _modules[i].getAngle());
-                }
     }
 
     public Pose2d getPose() {
@@ -91,11 +88,11 @@ public class Drivetrain extends SubsystemBase {
     private double getHeading() {
         FusionStatus status = new FusionStatus();
         _pigeon.getFusedHeading(status);
-        
-        return status.heading;
+
+        return -status.heading;
     }
 
-    private Rotation2d getRotation2d() {
+    public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
 
