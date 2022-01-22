@@ -5,11 +5,10 @@
 package frc.robot.subsystems.Intake;
 
 /** Add your docs here. */
-public class IntakeBallState {
+public class ManipulatorCargoState {
     public final boolean leftCargo;
     public final boolean rightCargo;
-    public IntakeBallState(boolean leftCargo, boolean rightCargo){
-        new Intake();
+    public ManipulatorCargoState(boolean leftCargo, boolean rightCargo){
         this.leftCargo = leftCargo;
         this.rightCargo = rightCargo;
     }

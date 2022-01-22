@@ -13,15 +13,16 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public final class Intake{
+    public final class Manipulator {
         public static final int leaderId = 10;
         public static final int followerId = 11;
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final int RPM = 0;
         public static final int leftSwitchId = 0;
         public static final int rightSwitchId = 1;
+        public static final double collectRPM = 0;
+        public static final double shootRPM = 0;
     }
     public final class Joysticks{
         public static final double deadband = 0.1;

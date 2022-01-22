@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.humanIO.Joysticks;
-import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.Manipulator;
+import frc.robot.subsystems.Intake.Manipulator.ManipulatorState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,7 +23,8 @@ import frc.robot.subsystems.Intake.Intake;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Intake m_intake = new Intake();
+  private final Manipulator m_manipulator = new Manipulator();
+
   private final Joysticks m_joysticks = new Joysticks();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -35,7 +39,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_joysticks.getButton(Button.kLeftBumper);
+    m_joysticks.getButton(Button.kLeftBumper)
+      .toggleWhenPressed(
+        new StartEndCommand(
+          () -> m_manipulator.setState(ManipulatorState.COLLECT),
+          () -> m_manipulator.setState(ManipulatorState.OFF), 
+          m_manipulator)
+        .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
+
   }
 
   /**

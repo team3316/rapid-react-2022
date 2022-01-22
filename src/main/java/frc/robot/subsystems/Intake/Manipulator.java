@@ -13,23 +13,34 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Intake extends SubsystemBase {
+public class Manipulator extends SubsystemBase {
+
+  public enum ManipulatorState{
+    SHOOT(Constants.Manipulator.shootRPM),
+    COLLECT(Constants.Manipulator.collectRPM),
+    OFF(0);
+
+    public final double rpm; 
+    private ManipulatorState(double rpm){
+      this.rpm = rpm;
+    }
+  }
   /** Creates a new Intake. */
   private TalonFX _leaderMotor;
   private TalonFX _followerMotor;
   private DigitalInput _leftSwitch;
   private DigitalInput _rightSwitch;
-  public Intake() {
-    this._leaderMotor = new TalonFX(Constants.Intake.leaderId);
-    this._followerMotor = new TalonFX(Constants.Intake.followerId);
-    this._leftSwitch = new DigitalInput(Constants.Intake.leftSwitchId);
-    this._rightSwitch = new DigitalInput(Constants.Intake.rightSwitchId);
+  public Manipulator() {
+    this._leaderMotor = new TalonFX(Constants.Manipulator.leaderId);
+    this._followerMotor = new TalonFX(Constants.Manipulator.followerId);
+    this._leftSwitch = new DigitalInput(Constants.Manipulator.leftSwitchId);
+    this._rightSwitch = new DigitalInput(Constants.Manipulator.rightSwitchId);
     this._followerMotor.follow(this._leaderMotor);
     this._followerMotor.setInverted(TalonFXInvertType.OpposeMaster);
-    _leaderMotor.config_kP(0, Constants.Intake.kP);
-    _leaderMotor.config_kI(0, Constants.Intake.kI);
-    _leaderMotor.config_kD(0, Constants.Intake.kD);
-    _leaderMotor.setNeutralMode(NeutralMode.Brake);
+    _leaderMotor.config_kP(0, Constants.Manipulator.kP);
+    _leaderMotor.config_kI(0, Constants.Manipulator.kI);
+    _leaderMotor.config_kD(0, Constants.Manipulator.kD);
+    // _leaderMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -37,8 +48,8 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void setRPM(double RPM){
-    _leaderMotor.set(ControlMode.Velocity, RPM/600*2048*(24/16));
+  public void setState(ManipulatorState state){
+    _leaderMotor.set(ControlMode.Velocity, state.rpm/600*2048*(24/16));
   }
 
   public void setZero(){
@@ -46,8 +57,8 @@ public class Intake extends SubsystemBase {
     _leaderMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public IntakeBallState getCargoState(){
-    return new IntakeBallState(_leftSwitch.get(),_rightSwitch.get());
+  public ManipulatorCargoState getCargoState(){
+    return new ManipulatorCargoState(_leftSwitch.get(),_rightSwitch.get());
   }
 
 }
