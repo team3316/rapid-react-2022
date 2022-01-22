@@ -24,7 +24,11 @@ public class Joysticks {
     }
 
     public double getSteerX() {
-        return calculateDeadband(_controller.getRightX());
+        double leftAxis = _controller.getLeftTriggerAxis();
+        double rightAxis = _controller.getRightTriggerAxis();
+
+
+        return rightAxis > leftAxis ? rightAxis : -leftAxis;
     }
 
     public double getDriveY() {

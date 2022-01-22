@@ -47,7 +47,7 @@ public class GoToYaw extends CommandBase {
     
 
     _drivetrain.setDesiredStates(
-        Constants.Drivetrain.kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, limitedOutput)));
+        Constants.Drivetrain.kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, -limitedOutput)));
   }
 
   // Called once the command ends or is interrupted.

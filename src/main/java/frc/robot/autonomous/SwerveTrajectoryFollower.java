@@ -44,7 +44,7 @@ public class SwerveTrajectoryFollower {
         var pose = _pose.get();
 
         var targetChassisSpeeds = _controller.calculate(pose, desiredState, angleRef);
-
+        targetChassisSpeeds.omegaRadiansPerSecond *= -1;
         System.out.printf("%f %f %f %f %f %f %f %f %f\n", pose.getX(), 
                                                           desiredState.poseMeters.getX(),
                                                           pose.getY(), 
@@ -55,7 +55,7 @@ public class SwerveTrajectoryFollower {
                                                           desiredState.velocityMetersPerSecond);
                                                         
         var targetModuleStates = _kinematics.toSwerveModuleStates(targetChassisSpeeds);
-
+        
         _outputModuleStates.accept(targetModuleStates);
     }
 

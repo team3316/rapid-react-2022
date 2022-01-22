@@ -54,7 +54,7 @@ public class Constants {
     }
     public static final class Joysticks {
         public static final double valueScalar = 1;
-        public static final double deadband = 0.1;
+        public static final double deadband = 0.08;
         public static final int driverControllerPort = 0;
     }
 

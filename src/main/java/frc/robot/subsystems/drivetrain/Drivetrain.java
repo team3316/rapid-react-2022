@@ -89,7 +89,7 @@ public class Drivetrain extends SubsystemBase {
         FusionStatus status = new FusionStatus();
         _pigeon.getFusedHeading(status);
 
-        return -status.heading;
+        return status.heading;
     }
 
     public Rotation2d getRotation2d() {
