@@ -9,9 +9,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.IDBugMotor;
-import frc.robot.motors.PositionUnit;
-import frc.robot.motors.VelocityUnit;
+import frc.robot.motors.IDBugMotorController;
+import frc.robot.motors.units.PositionUnit;
+import frc.robot.motors.units.VelocityUnit;
+import frc.robot.motors.units.UnitConversions;
 
 
 /**
@@ -19,8 +20,8 @@ import frc.robot.motors.VelocityUnit;
  */
 public class SwerveModule {
 
-    private IDBugMotor _driveMotor;
-    private IDBugMotor _steerMotor;
+    private IDBugMotorController _driveMotor;
+    private IDBugMotorController _steerMotor;
 
     private CANCoder _absEncoder;
 
@@ -28,11 +29,8 @@ public class SwerveModule {
     private double _driveSetpoint;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        _driveMotor = new DBugSparkMax(constants.idDrive);
-        _steerMotor = new DBugSparkMax(constants.idSteering);
-
-        _driveMotor.setRotationFactors(PositionUnit.Meters, VelocityUnit.MetersPerSecond, SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters, 3316);
-        _steerMotor.setRotationFactors(PositionUnit.Rotations, VelocityUnit.RPM, SwerveModuleConstants.steeringRatio, 3316, 3316);
+        _driveMotor = new DBugSparkMax(constants.idDrive, new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
+        _steerMotor = new DBugSparkMax(constants.idSteering, new UnitConversions(SwerveModuleConstants.driveRatio));
 
         _driveMotor.setupPIDF(constants.driveGains);
         _steerMotor.setupPIDF(constants.steeringGains);
@@ -77,17 +75,15 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                _driveMotor.getVelocity(),
-                new Rotation2d(getAngle()));
+                _driveMotor.getVelocity(VelocityUnit.MetersPerSecond),
+                Rotation2d.fromDegrees(getAngle()));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = optimizeAngle(desiredState, Rotation2d.fromDegrees(getAngle()));
 
-        _steerSetpoint = _steerMotor.getPosition() + state.angle.getDegrees() / 360;
-        System.out.println(state.angle.getDegrees() + "  " + _steerMotor.getPosition() + " " + desiredState.angle.getDegrees()
-        );
+        _steerSetpoint = _steerMotor.getPosition(PositionUnit.Rotations) + state.angle.getDegrees() / 360;
         _driveSetpoint = state.speedMetersPerSecond;
 
         if (state.speedMetersPerSecond != 0) {
@@ -114,7 +110,7 @@ public class SwerveModule {
         return new SwerveModuleState(speed,angle);
     }
     public double getAngle() {
-        double pos = _steerMotor.getPosition();
+        double pos = _steerMotor.getPosition(PositionUnit.Rotations);
         pos = pos - Math.floor(pos);
         return pos * 360;
     }
@@ -128,7 +124,7 @@ public class SwerveModule {
     }
 
     public double getDriveVelocity() {
-        return _driveMotor.getVelocity();
+        return _driveMotor.getVelocity(VelocityUnit.MetersPerSecond);
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond) {
