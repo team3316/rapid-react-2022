@@ -34,7 +34,7 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
     @Override
     public void follow(IDBugMotorController leader) {
         if(leader instanceof IMotorController) {
-            _isFollower = true;
+            this._isFollower = true;
             super.follow((IMotorController)leader);
 
             // Make sure we have proper inversion if setInverted was called
@@ -73,7 +73,7 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
 
     @Override
     public void setInverted(boolean inverted) {
-        if(_isFollower)
+        if(this._isFollower)
             super.setInverted(inverted ? InvertType.OpposeMaster : InvertType.FollowMaster);
         else
             super.setInverted(inverted);

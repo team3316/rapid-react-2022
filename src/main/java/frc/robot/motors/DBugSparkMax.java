@@ -37,7 +37,7 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
     @Override
     public void follow(IDBugMotorController leader) {
         if(leader instanceof CANSparkMax) {
-            _leader = (DBugSparkMax) leader;
+           this._leader = (DBugSparkMax) leader;
             this.follow(_leader, this.getInverted());
         } else {
             throw new IllegalArgumentException("Leader must be a SparkMax");
@@ -50,7 +50,7 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
         if(mode == ControlMode.PercentOutput) { // there is no equivalent in ControlType
             super.set(value);
         } else {
-            _pidController.setReference(value,controlModeMap.get(mode));
+           this._pidController.setReference(value,controlModeMap.get(mode));
         }
     }
     
@@ -67,19 +67,19 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
 
     @Override
     public void setPosition(double value) {
-        _encoder.setPosition(value);
+       this._encoder.setPosition(value);
     }
 
 
     @Override
     public double getVelocity(VelocityUnit unit) {
-        return _encoder.getVelocity() * conversions.getRPMModifier(unit);
+        return this._encoder.getVelocity() * conversions.getRPMModifier(unit);
         
     }
 
     @Override
     public double getPosition(PositionUnit unit) {
-        return _encoder.getPosition() * conversions.getRotationsModifier(unit);        
+        return this._encoder.getPosition() * conversions.getRotationsModifier(unit);        
     }
 
     @Override
