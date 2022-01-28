@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -60,16 +59,16 @@ public class SwerveModule {
         this._steerMotor.setPosition(_absEncoder.getAbsolutePosition() / 360);
     }
 
-    public void setDriveSteering(double percent) {
+    public void setSteeringPercent(double percent) {
         this._steerMotor.set(ControlMode.PercentOutput,percent);
     }
-    public void setDriveDrive(double percent) {
+    public void setDrivePercent(double percent) {
         this._driveMotor.set(ControlMode.PercentOutput,percent);
     }
 
     public void stop() {
-        setDriveDrive(0);
-        // setDriveSteering(0);
+        setDrivePercent(0);
+        // setSteeringPercent(0);
     }
 
     public SwerveModuleState getState() {
