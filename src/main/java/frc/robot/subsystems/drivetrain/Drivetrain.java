@@ -43,6 +43,9 @@ public class Drivetrain extends SubsystemBase {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
+        fieldRelative = fieldRelative && _pigeon.getState() == PigeonState.Ready;
+        SmartDashboard.putBoolean("Field Relative", fieldRelative);
+
         ChassisSpeeds speeds;
         if (fieldRelative) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d());
