@@ -28,24 +28,24 @@ public class Drivetrain extends SubsystemBase {
     private SwerveDriveOdometry _odometry;
 
     public Drivetrain() {
-        _modules = new SwerveModule[] {
+        this._modules = new SwerveModule[] {
                 new SwerveModule(Constants.Drivetrain.TRModule),
                 new SwerveModule(Constants.Drivetrain.TLModule),
                 new SwerveModule(Constants.Drivetrain.BRModule),
                 new SwerveModule(Constants.Drivetrain.BLModule)
         };
 
-        _pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
-        _pigeon = new PigeonIMU(_pigeonTalon);
+        this._pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
+        this._pigeon = new PigeonIMU(_pigeonTalon);
 
-        _odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
+        this._odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         xSpeed = -xSpeed;
         ySpeed = -ySpeed;
 
-        fieldRelative = fieldRelative && _pigeon.getState() == PigeonState.Ready;
+        fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
         ChassisSpeeds speeds;
@@ -64,34 +64,35 @@ public class Drivetrain extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
                 Constants.Drivetrain.SwerveModuleConstants.freeSpeedMetersPerSecond);
 
-        for (int i = 0; i < _modules.length; i++) {
-            _modules[i].setDesiredState(moduleStates[i]);
+        for (int i = 0; i < this._modules.length; i++) {
+            this._modules[i].setDesiredState(moduleStates[i]);
         }
     }
 
     public void periodic() {
         // Update the odometry in the periodic block
-        _odometry.update(getRotation2d(), _modules[0].getState(), _modules[1].getState(), _modules[2].getState(),
-                _modules[3].getState());
+        this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),
+                this._modules[2].getState(),
+                this._modules[3].getState());
     }
 
     public Pose2d getPose() {
-        return _odometry.getPoseMeters();
+        return this._odometry.getPoseMeters();
     }
 
     public void resetOdometry(Pose2d pose) {
-        _odometry.resetPosition(pose, getRotation2d());
+        this._odometry.resetPosition(pose, getRotation2d());
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond) {
-        for (SwerveModule swerveModule : _modules) {
+        for (SwerveModule swerveModule : this._modules) {
             swerveModule.setDriveVelocity(velocityMetersPerSecond);
         }
     }
 
     private double getHeading() {
         FusionStatus status = new FusionStatus();
-        _pigeon.getFusedHeading(status);
+        this._pigeon.getFusedHeading(status);
 
         return status.heading;
     }
@@ -101,6 +102,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        _pigeon.setFusedHeading(0);
+        this._pigeon.setFusedHeading(0);
     }
 }

@@ -10,7 +10,7 @@ public class Joysticks {
     private XboxController _controller;
 
     public Joysticks() {
-        _controller = new XboxController(0);
+        this._controller = new XboxController(0);
     }
 
     private static double calculateDeadband(double value) {
@@ -25,8 +25,8 @@ public class Joysticks {
     }
 
     public double getSteerX() {
-        double leftAxis = _controller.getLeftTriggerAxis();
-        double rightAxis = _controller.getRightTriggerAxis();
+        double leftAxis = this._controller.getLeftTriggerAxis();
+        double rightAxis = this._controller.getRightTriggerAxis();
 
         return rightAxis > leftAxis ? rightAxis : -leftAxis;
     }

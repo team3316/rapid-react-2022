@@ -19,44 +19,44 @@ public class GoToYaw extends CommandBase {
     private final SlewRateLimiter _limiter = new SlewRateLimiter(20);
 
     public GoToYaw(Drivetrain drivetrain, double angle) {
-        _setpoint = Math.toRadians(angle);
-        _drivetrain = drivetrain;
-        _controller.setTolerance(0.01 / 0.3);
-        // _controller.enableContinuousInput(-180, 180);
+        this._setpoint = Math.toRadians(angle);
+        this._drivetrain = drivetrain;
+        this._controller.setTolerance(0.01 / 0.3);
+        // this._controller.enableContinuousInput(-180, 180);
         addRequirements(drivetrain);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        _controller.setSetpoint(_drivetrain.getRotation2d().getRadians() + _setpoint);
+        this._controller.setSetpoint(_drivetrain.getRotation2d().getRadians() + this._setpoint);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double pos = _drivetrain.getRotation2d().getRadians();
-        double output = _controller.calculate(pos);
+        double pos = this._drivetrain.getRotation2d().getRadians();
+        double output = this._controller.calculate(pos);
         SmartDashboard.putNumber("pos", pos);
         SmartDashboard.putNumber("output", output);
-        SmartDashboard.putNumber("setpoint", _controller.getSetpoint());
+        SmartDashboard.putNumber("setpoint", this._controller.getSetpoint());
 
-        double limitedOutput = _limiter.calculate(output);
+        double limitedOutput = this._limiter.calculate(output);
         SmartDashboard.putNumber("limited", limitedOutput);
 
-        _drivetrain.setDesiredStates(
+        this._drivetrain.setDesiredStates(
                 Constants.Drivetrain.kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, -limitedOutput)));
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        _drivetrain.drive(0, 0, 0, false);
+        this._drivetrain.drive(0, 0, 0, false);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return _controller.atSetpoint();
+        return this._controller.atSetpoint();
     }
 }
