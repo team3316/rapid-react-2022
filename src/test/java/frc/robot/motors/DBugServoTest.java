@@ -2,12 +2,12 @@ package frc.robot.motors;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
-import frc.utils.Utils;
 
 public class DBugServoTest {
     static DBugServo _servo1;
@@ -16,9 +16,9 @@ public class DBugServoTest {
 
     @BeforeClass
     public static void init() {
-        _servo1 = new DBugServo(0, new UnitConversions(1,1,1));
-        _servo2 = new DBugServo(1, new UnitConversions(1,1,1));
-        _servo3 = new DBugServo(2, new UnitConversions(1,1,1));
+        _servo1 = new DBugServo(4, new UnitConversions(1,1,1));
+        _servo2 = new DBugServo(5, new UnitConversions(1,1,1));
+        _servo3 = new DBugServo(6, new UnitConversions(1,1,1));
     }
 
     @Test
