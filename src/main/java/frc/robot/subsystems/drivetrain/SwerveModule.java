@@ -29,19 +29,19 @@ public class SwerveModule {
     private double _driveSetpoint;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        _driveMotor = new DBugSparkMax(constants.idDrive, new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
-        _steerMotor = new DBugSparkMax(constants.idSteering, new UnitConversions(SwerveModuleConstants.driveRatio));
+        this._driveMotor = new DBugSparkMax(constants.idDrive, new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
+        this._steerMotor = new DBugSparkMax(constants.idSteering, new UnitConversions(SwerveModuleConstants.driveRatio));
 
-        _driveMotor.setupPIDF(constants.driveGains);
-        _steerMotor.setupPIDF(constants.steeringGains);
+        this._driveMotor.setupPIDF(constants.driveGains);
+        this._steerMotor.setupPIDF(constants.steeringGains);
 
-        ((CANSparkMax) _driveMotor).setSmartCurrentLimit(40);
-        ((CANSparkMax) _driveMotor).enableVoltageCompensation(12);
+        ((CANSparkMax) this._driveMotor).setSmartCurrentLimit(40);
+        ((CANSparkMax) this._driveMotor).enableVoltageCompensation(12);
 
-        _steerSetpoint = 0;
-        _driveSetpoint = 0;
+        this._steerSetpoint = 0;
+        this._driveSetpoint = 0;
 
-        _absEncoder = configCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
+        this._absEncoder = configCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
         calibrateSteering();
     }
 
@@ -75,7 +75,7 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                _driveMotor.getVelocity(VelocityUnit.MetersPerSecond),
+                this._driveMotor.getVelocity(VelocityUnit.MetersPerSecond),
                 Rotation2d.fromDegrees(getAngle()));
     }
 
@@ -83,16 +83,16 @@ public class SwerveModule {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = optimizeAngle(desiredState, Rotation2d.fromDegrees(getAngle()));
 
-        _steerSetpoint = _steerMotor.getPosition(PositionUnit.Rotations) + state.angle.getDegrees() / 360;
-        _driveSetpoint = state.speedMetersPerSecond;
+        this._steerSetpoint = this._steerMotor.getPosition(PositionUnit.Rotations) + state.angle.getDegrees() / 360;
+        this._driveSetpoint = state.speedMetersPerSecond;
 
         if (state.speedMetersPerSecond != 0) {
-            _steerMotor.set(ControlMode.Position, _steerSetpoint);
+            this._steerMotor.set(ControlMode.Position, this._steerSetpoint);
         }
         if (state.speedMetersPerSecond == 0)
-            _driveMotor.set(ControlMode.PercentOutput,0);
+            this._driveMotor.set(ControlMode.PercentOutput,0);
         else
-            _driveMotor.set(ControlMode.Velocity,_driveSetpoint);
+            this._driveMotor.set(ControlMode.Velocity,_driveSetpoint);
     }
 
     
@@ -110,32 +110,32 @@ public class SwerveModule {
         return new SwerveModuleState(speed,angle);
     }
     public double getAngle() {
-        double pos = _steerMotor.getPosition(PositionUnit.Rotations);
+        double pos = this._steerMotor.getPosition(PositionUnit.Rotations);
         pos = pos - Math.floor(pos);
         return pos * 360;
     }
 
     public double getSteeringSetpoint() {
-        return _steerSetpoint;
+        return this._steerSetpoint;
     }
 
     public double getDriveSetpoint() {
-        return _driveSetpoint;
+        return this._driveSetpoint;
     }
 
     public double getDriveVelocity() {
-        return _driveMotor.getVelocity(VelocityUnit.MetersPerSecond);
+        return this._driveMotor.getVelocity(VelocityUnit.MetersPerSecond);
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond) {
-        _driveMotor.set(ControlMode.Velocity, velocityMetersPerSecond);
+        this._driveMotor.set(ControlMode.Velocity, velocityMetersPerSecond);
     }
 
     public void resetSteeringEncoder() {
-        _steerMotor.setPosition(0);
+        this._steerMotor.setPosition(0);
     }
 
     public double getDriveCurrent() {
-        return ((CANSparkMax) _driveMotor).getOutputCurrent();
+        return ((CANSparkMax) this._driveMotor).getOutputCurrent();
     }
 }
