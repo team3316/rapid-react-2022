@@ -17,7 +17,6 @@ public class DBugSparkMaxTest {
         _spark1 = new DBugSparkMax(1, new UnitConversions(2, 1, 1));
         _spark2 = new DBugSparkMax(2, new UnitConversions(1, 1, 1));
     }
-  
 
     @Test
     public void set() {
@@ -29,7 +28,7 @@ public class DBugSparkMaxTest {
 
     @Test
     public void followAndInvert() {
-        //TODO: Check IRL, I suspect simulated sparkmax do not support this
+        // TODO: Check IRL, I suspect simulated sparkmax do not support this
         // _spark2.setInverted(true);
         // _spark2.follow((IDBugMotorController)_spark1);
         // _spark1.set(ControlMode.PercentOutput, 0.4);

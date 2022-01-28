@@ -11,11 +11,10 @@ import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
 
 public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
-    private static final Map<ControlMode,ControlType> controlModeMap = Map.of(
-        ControlMode.Current,ControlType.kCurrent,
-        ControlMode.Position, ControlType.kPosition,
-        ControlMode.Velocity, ControlType.kVelocity
-    );
+    private static final Map<ControlMode, ControlType> controlModeMap = Map.of(
+            ControlMode.Current, ControlType.kCurrent,
+            ControlMode.Position, ControlType.kPosition,
+            ControlMode.Velocity, ControlType.kVelocity);
 
     private CANSparkMax _leader; // needed in case setInverted is called before follow
     private SparkMaxPIDController _pidController;
@@ -36,24 +35,24 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
 
     @Override
     public void follow(IDBugMotorController leader) {
-        if(leader instanceof CANSparkMax) {
-           this._leader = (DBugSparkMax) leader;
+        if (leader instanceof CANSparkMax) {
+            this._leader = (DBugSparkMax) leader;
             this.follow(_leader, this.getInverted());
         } else {
             throw new IllegalArgumentException("Leader must be a SparkMax");
         }
-        
+
     }
 
     @Override
     public void set(ControlMode mode, double value) {
-        if(mode == ControlMode.PercentOutput) { // there is no equivalent in ControlType
+        if (mode == ControlMode.PercentOutput) { // there is no equivalent in ControlType
             super.set(value);
         } else {
-           this._pidController.setReference(value,controlModeMap.get(mode));
+            this._pidController.setReference(value, controlModeMap.get(mode));
         }
     }
-    
+
     @Override
     public void setupPIDF(PIDFGains gains) {
         this._pidController.setP(gains.kP);
@@ -61,30 +60,29 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
         this._pidController.setD(gains.kD);
         this._pidController.setFF(gains.kF);
         this._pidController.setIZone(gains.iZone);
-        // TODO: find tolerance method
+        // there is no tolerance method
         this._pidController.setOutputRange(-1.0, 1.0);
     }
 
     @Override
     public void setPosition(double value) {
-       this._encoder.setPosition(value);
+        this._encoder.setPosition(value);
     }
-
 
     @Override
     public double getVelocity(VelocityUnit unit) {
         return this._encoder.getVelocity() * conversions.getRPMModifier(unit);
-        
+
     }
 
     @Override
     public double getPosition(PositionUnit unit) {
-        return this._encoder.getPosition() * conversions.getRotationsModifier(unit);        
+        return this._encoder.getPosition() * conversions.getRotationsModifier(unit);
     }
 
     @Override
     public void setInverted(boolean inverted) {
-        if(this.isFollower())
+        if (this.isFollower())
             this.follow(_leader, inverted);
         else
             super.setInverted(inverted);
@@ -97,6 +95,6 @@ public class DBugSparkMax extends CANSparkMax implements IDBugMotorController {
 
     @Override
     public void set(ControlMode mode, double value, PositionUnit unit) {
-        this.set(mode, value / conversions.getRotationsModifier(unit));        
+        this.set(mode, value / conversions.getRotationsModifier(unit));
     }
 }
