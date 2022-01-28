@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -44,13 +45,16 @@ public class Drivetrain extends SubsystemBase {
         xSpeed = -xSpeed;
         ySpeed = -ySpeed;
 
+        fieldRelative = fieldRelative && _pigeon.getState() == PigeonState.Ready;
+        SmartDashboard.putBoolean("Field Relative", fieldRelative);
+
         ChassisSpeeds speeds;
-        if (fieldRelative && _pigeon.getState() == PigeonState.Ready){
+        if (fieldRelative) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d());
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
-        
+
         var moduleStates = Constants.Drivetrain.kinematics.toSwerveModuleStates(speeds);
 
         setDesiredStates(moduleStates);
