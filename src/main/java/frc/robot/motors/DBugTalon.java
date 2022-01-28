@@ -61,14 +61,22 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
         this.setSelectedSensorPosition(value);
     }
 
+    private double getVelocityModifier(VelocityUnit unit) {
+        return 10 * 60 * conversions.getRPMModifier(unit) / conversions.upr;
+    }
+
+    private double getPositionModifier(PositionUnit unit) {
+        return conversions.getRotationsModifier(unit) / conversions.upr;
+    }
+
     @Override
     public double getVelocity(VelocityUnit unit) {
-        return this.getSelectedSensorVelocity()/conversions.upr * 10 * 60 * conversions.getRPMModifier(unit);
+        return this.getSelectedSensorVelocity() * this.getVelocityModifier(unit);
     }
 
     @Override
     public double getPosition(PositionUnit unit) {
-        return this.getSelectedSensorPosition()/conversions.upr * conversions.getRotationsModifier(unit);
+        return this.getSelectedSensorPosition() * this.getPositionModifier(unit);
     }
 
     @Override
@@ -87,13 +95,13 @@ public class DBugTalon extends BaseTalon implements IDBugMotorController {
 
     @Override
     public void set(ControlMode mode, double value, VelocityUnit unit) {
-        this.set(mode, value / conversions.getRPMModifier(unit));
+        this.set(mode, value / this.getVelocityModifier(unit));
     }
 
 
     @Override
     public void set(ControlMode mode, double value, PositionUnit unit) {
-        this.set(mode, value / conversions.getRotationsModifier(unit));        
+        this.set(mode, value / this.getPositionModifier(unit));        
     }
    
 }
