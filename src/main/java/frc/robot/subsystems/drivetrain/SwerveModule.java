@@ -9,10 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.IDBugMotorController;
 import frc.robot.motors.units.PositionUnit;
-import frc.robot.motors.units.VelocityUnit;
 import frc.robot.motors.units.UnitConversions;
+import frc.robot.motors.units.VelocityUnit;
 
 
 /**
@@ -20,8 +19,8 @@ import frc.robot.motors.units.UnitConversions;
  */
 public class SwerveModule {
 
-    private IDBugMotorController _driveMotor;
-    private IDBugMotorController _steerMotor;
+    private DBugSparkMax _driveMotor;
+    private DBugSparkMax _steerMotor;
 
     private CANCoder _absEncoder;
 
@@ -35,18 +34,18 @@ public class SwerveModule {
         this._driveMotor.setupPIDF(constants.driveGains);
         this._steerMotor.setupPIDF(constants.steeringGains);
 
-        ((CANSparkMax) this._driveMotor).setSmartCurrentLimit(40);
-        ((CANSparkMax) this._driveMotor).enableVoltageCompensation(12);
+        this._driveMotor.setSmartCurrentLimit(40);
+        this._driveMotor.enableVoltageCompensation(12);
 
         this._steerSetpoint = 0;
         this._driveSetpoint = 0;
 
-        this._absEncoder = configCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
+        this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
         calibrateSteering();
     }
 
     
-    private static CANCoder configCANCoder(int id, double zeroAngle) {
+    private static CANCoder createCANCoder(int id, double zeroAngle) {
         
         CANCoder canCoder = new CANCoder(id);
         // Always set CANCoder relative encoder to 0 on boot
@@ -136,6 +135,6 @@ public class SwerveModule {
     }
 
     public double getDriveCurrent() {
-        return ((CANSparkMax) this._driveMotor).getOutputCurrent();
+        return this._driveMotor.getOutputCurrent();
     }
 }
