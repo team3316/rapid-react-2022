@@ -33,8 +33,9 @@ public class Drivetrain extends SubsystemBase {
                 new SwerveModule(Constants.Drivetrain.BRModule),
                 new SwerveModule(Constants.Drivetrain.BLModule)
         };
-        _pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
-        _pigeon = new PigeonIMU(_pigeonTalon); // We need the talon
+
+        this._pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
+        this._pigeon = new PigeonIMU(_pigeonTalon);
 
         this._odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
     }
@@ -43,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
-        fieldRelative = fieldRelative && _pigeon.getState() == PigeonState.Ready;
+        fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
         ChassisSpeeds speeds;
@@ -75,11 +76,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return _odometry.getPoseMeters();
+        return this._odometry.getPoseMeters();
     }
 
     public void resetOdometry(Pose2d pose) {
-        _odometry.resetPosition(pose, getRotation2d());
+        this._odometry.resetPosition(pose, getRotation2d());
     }
 
     private double getHeading() {
