@@ -47,6 +47,7 @@ public class RobotContainer {
   }
 
   public Command getSetTriggerState(Side side){
+    // TODO check if needed to end the command in another way
     return new StartEndCommand(() -> m_trigger.setState(TriggerState.OUT, side), () -> m_trigger.setState(TriggerState.IN, side), m_trigger);
   }
 }
