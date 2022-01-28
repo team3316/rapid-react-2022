@@ -15,9 +15,9 @@ public class DBugServoTest {
 
     @BeforeClass
     public static void init() {
-        _servo1 = new DBugServo(0, new UnitConversions(1,1,1));
-        _servo2 = new DBugServo(1, new UnitConversions(1,1,1));
-        _servo3 = new DBugServo(2, new UnitConversions(1,1,1));
+        _servo1 = new DBugServo(0, new UnitConversions(1, 1, 1));
+        _servo2 = new DBugServo(1, new UnitConversions(1, 1, 1));
+        _servo3 = new DBugServo(2, new UnitConversions(1, 1, 1));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class DBugServoTest {
         assertEquals(60, _servo3.getPosition(PositionUnit.Degrees), 0.0000001);
 
         _servo2.follow(_servo3);
-        
+
         _servo1.set(ControlMode.Position, 10, PositionUnit.Degrees);
         assertEquals(10, _servo1.getPosition(PositionUnit.Degrees), 0.0000001);
         assertEquals(10, _servo2.getPosition(PositionUnit.Degrees), 0.0000001);
