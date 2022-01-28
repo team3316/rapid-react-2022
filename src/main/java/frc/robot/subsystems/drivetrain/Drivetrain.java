@@ -55,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
-    private void setDesiredStates(SwerveModuleState[] moduleStates) {
+    public void setDesiredStates(SwerveModuleState[] moduleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
                 Constants.Drivetrain.SwerveModuleConstants.freeSpeedMetersPerSecond);
 
