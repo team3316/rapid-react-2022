@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -12,4 +13,15 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+    public final class Trigger{
+        public final static int CHANNEL1 = 0;
+        public final static int CHANNEL2 = 1;
+        public final static double GEAR_RATIO = 1.0;
+
+        public final class TriggerState {
+            public final static double IN_POS = 0.0;
+            public final static double OUT_POS = 200.0;
+        }
+    }
+}
