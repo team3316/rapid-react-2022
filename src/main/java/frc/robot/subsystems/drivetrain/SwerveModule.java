@@ -142,4 +142,8 @@ public class SwerveModule {
         _steerMotor.close();
         _absEncoder.DestroyObject();
     }
+
+    public double getAbsSteering() {
+        return this._absEncoder.getAbsolutePosition();
+    }
 }
