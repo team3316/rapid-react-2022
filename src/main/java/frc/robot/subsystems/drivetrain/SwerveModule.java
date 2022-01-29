@@ -12,7 +12,6 @@ import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
 
-
 /**
  * SwerveModule
  */
@@ -27,8 +26,10 @@ public class SwerveModule {
     private double _driveSetpoint;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        this._driveMotor = new DBugSparkMax(constants.idDrive, new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
-        this._steerMotor = new DBugSparkMax(constants.idSteering, new UnitConversions(SwerveModuleConstants.driveRatio));
+        this._driveMotor = new DBugSparkMax(constants.idDrive,
+                new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
+        this._steerMotor = new DBugSparkMax(constants.idSteering,
+                new UnitConversions(SwerveModuleConstants.driveRatio));
 
         this._driveMotor.setupPIDF(constants.driveGains);
         this._steerMotor.setupPIDF(constants.steeringGains);
@@ -43,9 +44,8 @@ public class SwerveModule {
         this.calibrateSteering();
     }
 
-    
     private static CANCoder createCANCoder(int id, double zeroAngle) {
-        
+
         CANCoder canCoder = new CANCoder(id);
         // Always set CANCoder relative encoder to 0 on boot
         canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
@@ -60,10 +60,11 @@ public class SwerveModule {
     }
 
     public void setSteeringPercent(double percent) {
-        this._steerMotor.set(ControlMode.PercentOutput,percent);
+        this._steerMotor.set(ControlMode.PercentOutput, percent);
     }
+
     public void setDrivePercent(double percent) {
-        this._driveMotor.set(ControlMode.PercentOutput,percent);
+        this._driveMotor.set(ControlMode.PercentOutput, percent);
     }
 
     public void stop() {
@@ -90,14 +91,13 @@ public class SwerveModule {
         if (state.speedMetersPerSecond == 0)
             this.setDrivePercent(0);
         else
-            this._driveMotor.set(ControlMode.Velocity,_driveSetpoint, VelocityUnit.MetersPerSecond);
+            this._driveMotor.set(ControlMode.Velocity, _driveSetpoint, VelocityUnit.MetersPerSecond);
     }
 
-    
     public static SwerveModuleState optimizeAngle(SwerveModuleState desiredState, Rotation2d currentRadian) {
         Rotation2d angle = desiredState.angle.minus(currentRadian);
         double speed = desiredState.speedMetersPerSecond;
-        if(Math.abs(angle.getDegrees()) > 90) {
+        if (Math.abs(angle.getDegrees()) > 90) {
             speed = -speed;
             if (angle.getRadians() > 0) {
                 angle = angle.minus(Rotation2d.fromDegrees(180));
@@ -105,8 +105,9 @@ public class SwerveModule {
                 angle = angle.plus(Rotation2d.fromDegrees(180));
             }
         }
-        return new SwerveModuleState(speed,angle);
+        return new SwerveModuleState(speed, angle);
     }
+
     public double getAngle() {
         double pos = this._steerMotor.getPosition(PositionUnit.Rotations);
         return (pos % 1) * 360;
@@ -134,5 +135,11 @@ public class SwerveModule {
 
     public double getDriveCurrent() {
         return this._driveMotor.getOutputCurrent();
+    }
+
+    public void close() {
+        _driveMotor.close();
+        _steerMotor.close();
+        _absEncoder.DestroyObject();
     }
 }

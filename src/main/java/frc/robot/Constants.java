@@ -65,20 +65,20 @@ public class Constants {
             }
         }
 
-        private static final double frontWheelDistMeters = 0.6703;
-        private static final double sideWheelDistMeters = 0.5102;
+        public static final double frontWheelDistMeters = 0.6703;
+        public static final double sideWheelDistMeters = 0.5102;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                new Translation2d(-sideWheelDistMeters / 2, frontWheelDistMeters / 2), 3, 4, 188.8, 11);
+                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4, 188.8, 11);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                new Translation2d(sideWheelDistMeters / 2, frontWheelDistMeters / 2), 1, 2, 122.3, 10);
+                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2, 122.3, 10);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 5, 6, 290.4, 12);
+                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6, 290.4, 12);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                new Translation2d(sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 7, 8, 143.0, 13);
+                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8, 143.0, 13);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                 TLModule.position, BRModule.position, BLModule.position);

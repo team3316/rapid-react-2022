@@ -2,6 +2,7 @@ package frc.robot.motors;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,12 +19,23 @@ public class DBugSparkMaxTest {
         _spark2 = new DBugSparkMax(2, new UnitConversions(1, 1, 1));
     }
 
+    @AfterClass
+    public static void close() {
+        _spark1.close();
+        _spark2.close();
+    }
+
     @Test
     public void set() {
         _spark1.set(ControlMode.Velocity, 100, VelocityUnit.RPM);
         assertEquals(100 / 2, _spark1.getEncoder().getVelocity(), 0.0000001);
         assertEquals(100.0 / 60 * Math.PI, _spark1.getVelocity(VelocityUnit.MetersPerSecond), 0.0000001);
         _spark1.set(0);
+
+        // _spark1.set(ControlMode.Position, 1, PositionUnit.Rotations);
+        // assertEquals(1.0 / 2.0, _spark1.getEncoder().getPosition(), 0.0000001);
+        // assertEquals(1, _spark1.getPosition(PositionUnit.Rotations), 0.0000001);
+        // _spark1.set(0);
     }
 
     @Test

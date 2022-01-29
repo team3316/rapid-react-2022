@@ -42,9 +42,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        xSpeed = -xSpeed;
-        ySpeed = -ySpeed;
-
         fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
         SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
@@ -103,5 +100,13 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetYaw() {
         this._pigeon.setFusedHeading(0);
+    }
+
+    public void close() {
+        for (SwerveModule swerveModule : _modules) {
+            swerveModule.close();
+        }
+        this._pigeon.DestroyObject();
+        this._pigeonTalon.DestroyObject();
     }
 }
