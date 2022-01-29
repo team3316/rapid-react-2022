@@ -38,4 +38,17 @@ public final class Constants {
     public final class Joysticks{
         public static final double deadband = 0.1;
     }
+    
+    public final class Trigger{
+        // TODO change to real value
+        public final static int CHANNEL_LEFT = 0;
+        public final static int CHANNEL_RIGHT = 1;
+        public final static double GEAR_RATIO = 1.0;
+
+        public final class TriggerState {
+            public final static double IN_ANGLE = 0.0;
+            public final static double OUT_ANGLE_LEFT = 55.0;
+            public final static double OUT_ANGLE_RIGHT = 55.0;
+        }
+    }
 }
