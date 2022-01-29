@@ -2,7 +2,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.FusionStatus;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -88,10 +87,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private double getHeading() {
-        FusionStatus status = new FusionStatus();
-        this._pigeon.getFusedHeading(status);
-
-        return status.heading;
+        return this._pigeon.getFusedHeading();
     }
 
     public Rotation2d getRotation2d() {

@@ -28,7 +28,7 @@ public class Joysticks {
         double leftAxis = this._controller.getLeftTriggerAxis();
         double rightAxis = this._controller.getRightTriggerAxis();
 
-        return rightAxis > leftAxis ? rightAxis : -leftAxis;
+        return leftAxis > rightAxis ? leftAxis : -rightAxis;
     }
 
     public double getDriveY() {
