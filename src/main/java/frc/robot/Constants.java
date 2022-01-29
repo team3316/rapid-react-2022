@@ -16,27 +16,33 @@ import frc.robot.motors.PIDFGains;
  */
 public final class Constants {
     public static final class ArmConstants {
-        //IDs
+        //Arm IDs and info
         public static final int leaderSMID = 0;
         public static final int followerSMID = 1;
+        public static final double gearRatioNeoToArm = 1/33.6; //One NEO rotation is this much arm rotations
 
         //Trapezoid Profile gains
         public static final double maxTorqueUsed = 23; //in Nm
         public static final double maxNeoTorque = 2.6;
         public static final double maxNeoRPM = 5700;
-        public static final double gearRatioNeoToArm = 32;
         public static final double velFactor = 0.9;
-        public static final double maxVelocityRadPerSec = velFactor*(2*maxNeoTorque-maxTorqueUsed/gearRatioNeoToArm)*(maxNeoRPM/maxNeoTorque); 
+        public static final double maxVelocityRadPerSec = velFactor*((maxNeoRPM/maxNeoTorque)*maxTorqueUsed*gearRatioNeoToArm-maxNeoRPM); 
         public static final double maxAccelerationRadPerSecSqrd = 2; 
 
         //Arm gains
         public static final double startingRad = 2; 
-        public static final PIDFGains armPID = new PIDFGains(1, 2, 3, 4, 5, 6);
+        public static final double kP = 1;
+        public static final double kI = 2;
+        public static final double kD = 3;
+        public static final double kF = 4;
+        public static final double kTolerance = 5;
+        public static final double kIZone = 6;
+        public static final PIDFGains armPID = new PIDFGains(kP, kI, kD, kF, kTolerance, kIZone);
         public static final double staticFF = 1/6/900;
         public static final double gravityFF = 1/6/900;
         public static final double velocityFF = 1/6/900;
         public static final double accelerationFF = 1/6/900;
-        public static final double intakeAngle = 0; //to be changed
-        public static final double shootAngle = 10; //to be changed
+        public static final double intakeAngle = 0; 
+        public static final double shootAngle = 10; 
     }
 }

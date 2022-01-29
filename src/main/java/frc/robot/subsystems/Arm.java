@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.IDBugMotor;
+import frc.robot.motors.IDBugMotorController;
+import frc.robot.motors.units.UnitConversions;
 
 public class Arm extends TrapezoidProfileSubsystem{
-    private IDBugMotor leaderSM;
-    private IDBugMotor followerSM;
+    private IDBugMotorController leaderSM;
+    private IDBugMotorController followerSM;
     private final ArmFeedforward feedforward = 
         new ArmFeedforward(ArmConstants.staticFF, 
                            ArmConstants.gravityFF, 
@@ -40,8 +41,8 @@ public class Arm extends TrapezoidProfileSubsystem{
             ArmConstants.startingRad
         );
 
-        leaderSM = new DBugSparkMax(ArmConstants.leaderSMID);
-        followerSM = new DBugSparkMax(ArmConstants.followerSMID);
+        leaderSM = new DBugSparkMax(ArmConstants.leaderSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
+        followerSM = new DBugSparkMax(ArmConstants.followerSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
         followerSM.follow(leaderSM);
         followerSM.setInverted(true);
         leaderSM.setupPIDF(ArmConstants.armPID);

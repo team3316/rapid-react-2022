@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.motors.PositionUnit;
+import frc.robot.motors.units.PositionUnit;
 import frc.robot.subsystems.Arm;
 
 public class ArmToPosition extends CommandBase {
