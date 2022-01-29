@@ -13,8 +13,8 @@ public class Trigger extends SubsystemBase {
   private BetterServo _servoLeft, _servoRight;
 
   public Trigger() {
-    this._servoLeft = new BetterServo(Constants.Trigger.CHANNEL1);
-    this._servoRight = new BetterServo(Constants.Trigger.CHANNEL2);
+    this._servoLeft = new BetterServo(Constants.Trigger.CHANNEL_LEFT);
+    this._servoRight = new BetterServo(Constants.Trigger.CHANNEL_RIGHT);
   }
 
   public enum TriggerState {

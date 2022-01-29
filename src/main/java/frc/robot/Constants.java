@@ -16,14 +16,13 @@ package frc.robot;
 public final class Constants {
     public final class Trigger{
         // TODO change to real value
-        public final static int CHANNEL1 = 0;
-        public final static int CHANNEL2 = 1;
+        public final static int CHANNEL_LEFT = 0;
+        public final static int CHANNEL_RIGHT = 1;
         public final static double GEAR_RATIO = 1.0;
 
         public final class TriggerState {
-            // TODO change to real value
             public final static double IN_POS = 0.0;
-            public final static double OUT_POS = 200.0;
+            public final static double OUT_POS = 55.0;
         }
     }
 }
