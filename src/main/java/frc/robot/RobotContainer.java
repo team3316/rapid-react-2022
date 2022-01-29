@@ -54,6 +54,9 @@ public class RobotContainer {
     m_joysticks.getButton(Button.kRightBumper)
       .whileHeld(new Shoot(m_manipulator, Constants.Manipulator.shootRPM));
 
+    m_joysticks.getButton(Button.kA).whenHeld(this.getSetTriggerState(Side.LEFT));
+    m_joysticks.getButton(Button.kB).whenHeld(this.getSetTriggerState(Side.RIGHT));
+
   }
 
   /**
@@ -69,6 +72,6 @@ public class RobotContainer {
 
   public Command getSetTriggerState(Side side){
     // TODO check if needed to end the command in another way
-    return new StartEndCommand(() -> m_trigger.setState(TriggerState.OUT, side), () -> m_trigger.setState(TriggerState.IN, side), m_trigger);
+    return new StartEndCommand(() -> m_trigger.setState(TriggerState.OUT, side), () -> m_trigger.setState(TriggerState.IN, side));
   }
 }

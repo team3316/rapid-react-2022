@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -21,11 +22,13 @@ public class Shoot extends CommandBase {
     }
 
     public void initialize() {
-        this._limiter = new SlewRateLimiter(this._rpm / Constants.Manipulator.accTime);
+        this._limiter = new SlewRateLimiter(Math.abs(this._rpm) / Constants.Manipulator.accTime);
     }
 
     public void execute() {
-        this._manipulator.set(_limiter.calculate(this._rpm));
+        double output = Math.copySign(_limiter.calculate(Math.abs(this._rpm)), this._rpm);
+        // System.out.println(output);
+        this._manipulator.set(output);
     }
 
     public void end(boolean interrupted) { 

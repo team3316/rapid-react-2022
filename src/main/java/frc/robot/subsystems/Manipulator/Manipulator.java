@@ -7,6 +7,7 @@ package frc.robot.subsystems.manipulator;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.ControlMode;
@@ -46,6 +47,7 @@ public class Manipulator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("vel", _leaderMotor.getVelocity(VelocityUnit.RPM));
     // This method will be called once per scheduler run
   }
 
@@ -61,6 +63,7 @@ public class Manipulator extends SubsystemBase {
   //   this._leaderMotor.set(ControlMode.Velocity, rpm, VelocityUnit.RPM);
   // }
   public void set(double rpm){
+    // this._leaderMotor.set(ControlMode.PercentOutput, 0.5);
     this._leaderMotor.set(ControlMode.Velocity,rpm,VelocityUnit.RPM);
   }
 
