@@ -21,8 +21,9 @@ public final class Constants {
         public final static double GEAR_RATIO = 1.0;
 
         public final class TriggerState {
-            public final static double IN_POS = 0.0;
-            public final static double OUT_POS = 55.0;
+            public final static double IN_ANGLE = 0.0;
+            public final static double OUT_ANGLE_LEFT = 55.0;
+            public final static double OUT_ANGLE_RIGHT = 55.0;
         }
     }
 }

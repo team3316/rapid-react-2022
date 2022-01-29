@@ -18,12 +18,19 @@ public class Trigger extends SubsystemBase {
   }
 
   public enum TriggerState {
-    IN(Constants.Trigger.TriggerState.IN_POS), OUT(Constants.Trigger.TriggerState.OUT_POS);
+    IN(Constants.Trigger.TriggerState.IN_ANGLE), OUT(Constants.Trigger.TriggerState.OUT_ANGLE_LEFT, Constants.Trigger.TriggerState.OUT_ANGLE_RIGHT);
 
-    public final double angle;
+    public final double leftAngle;
+    public final double rightAngle;
 
     TriggerState(double angle){
-      this.angle = angle;
+      this.leftAngle = angle;
+      this.rightAngle = angle;
+    }
+
+    TriggerState(double leftAngle, double rightAngle){
+      this.leftAngle = leftAngle;
+      this.rightAngle = rightAngle;
     }
   }
 
@@ -32,30 +39,34 @@ public class Trigger extends SubsystemBase {
   }
 
   public void setState(TriggerState state, Side side){
-    if(side == Side.LEFT){
-      this._servoLeft.setAngle(state.angle);
+    switch (side) {
+      case LEFT:
+        this._servoLeft.setAngle(state.leftAngle);
+        break;
+      case RIGHT:
+        this._servoRight.setAngle(state.rightAngle);
+        break;
+      default:
+        break;
     }
-    else{
-      this._servoRight.setAngle(state.angle);
-    }
-    
-    
   }
 
   public TriggerState getState(Side side){
 
-    if(side == Side.LEFT){
-      if(this._servoLeft.getAngle() == TriggerState.IN.angle){
+    switch (side) {
+      case LEFT:
+        if(Math.abs(this._servoLeft.getAngle() - TriggerState.OUT.leftAngle) <= 0.00001){
+          return TriggerState.OUT;
+        }
         return TriggerState.IN;
+      case RIGHT:
+        if(Math.abs(this._servoRight.getAngle() - TriggerState.OUT.rightAngle) <= 0.00001){
+          return TriggerState.OUT;
+        }
+        return TriggerState.IN;
+      default:
+        return null;
       }
-      return TriggerState.OUT;
-    }
-
-    if(this._servoRight.getAngle() == TriggerState.IN.angle){
-      return TriggerState.IN;
-    }
-    return TriggerState.OUT;
-    
   }
 
   @Override
