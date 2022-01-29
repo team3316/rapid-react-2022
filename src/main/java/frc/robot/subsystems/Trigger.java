@@ -18,15 +18,10 @@ public class Trigger extends SubsystemBase {
   }
 
   public enum TriggerState {
-    IN(Constants.Trigger.TriggerState.IN_ANGLE), OUT(Constants.Trigger.TriggerState.OUT_ANGLE_LEFT, Constants.Trigger.TriggerState.OUT_ANGLE_RIGHT);
+    IN(Constants.Trigger.TriggerState.IN_ANGLE_LEFT, Constants.Trigger.TriggerState.IN_ANGLE_RIGHT), OUT(Constants.Trigger.TriggerState.OUT_ANGLE_LEFT, Constants.Trigger.TriggerState.OUT_ANGLE_RIGHT);
 
     public final double leftAngle;
     public final double rightAngle;
-
-    TriggerState(double angle){
-      this.leftAngle = angle;
-      this.rightAngle = angle;
-    }
 
     TriggerState(double leftAngle, double rightAngle){
       this.leftAngle = leftAngle;
