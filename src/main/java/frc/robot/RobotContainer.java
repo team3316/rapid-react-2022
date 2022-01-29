@@ -11,9 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.commands.Shoot;
 import frc.robot.humanIO.Joysticks;
-import frc.robot.subsystems.Intake.Manipulator;
-import frc.robot.subsystems.Intake.Manipulator.ManipulatorState;
+import frc.robot.subsystems.manipulator.Manipulator;
+import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,6 +47,9 @@ public class RobotContainer {
           () -> m_manipulator.setState(ManipulatorState.OFF), 
           m_manipulator)
         .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
+    
+    m_joysticks.getButton(Button.kRightBumper)
+      .whileHeld(new Shoot(m_manipulator, Constants.Manipulator.shootRPM));
 
   }
 
