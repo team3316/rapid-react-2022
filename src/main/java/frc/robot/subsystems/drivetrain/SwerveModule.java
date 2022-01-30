@@ -29,7 +29,7 @@ public class SwerveModule {
         this._driveMotor = new DBugSparkMax(constants.idDrive,
                 new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
         this._steerMotor = new DBugSparkMax(constants.idSteering,
-                new UnitConversions(SwerveModuleConstants.driveRatio));
+                new UnitConversions(SwerveModuleConstants.steeringRatio));
 
         this._driveMotor.setupPIDF(constants.driveGains);
         this._steerMotor.setupPIDF(constants.steeringGains);
@@ -56,7 +56,7 @@ public class SwerveModule {
     }
 
     public void calibrateSteering() {
-        this._steerMotor.setPosition(_absEncoder.getAbsolutePosition() / 360);
+        this._steerMotor.setPosition(_absEncoder.getAbsolutePosition() / 360 / SwerveModuleConstants.steeringRatio);
     }
 
     public void setSteeringPercent(double percent) {
@@ -110,7 +110,8 @@ public class SwerveModule {
 
     public double getAngle() {
         double pos = this._steerMotor.getPosition(PositionUnit.Rotations);
-        return (pos % 1) * 360;
+        pos = pos - Math.floor(pos);
+        return pos * 360;
     }
 
     public double getSteeringSetpoint() {
