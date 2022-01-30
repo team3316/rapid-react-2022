@@ -30,7 +30,7 @@ public class Trigger extends SubsystemBase {
   }
 
   public enum Side{
-    LEFT, RIGHT, BOTH;
+    LEFT, RIGHT;
   }
 
   public void setState(TriggerState state, Side side){
@@ -41,9 +41,6 @@ public class Trigger extends SubsystemBase {
       case RIGHT:
         this._servoRight.setAngle(state.rightAngle);
         break;
-      case BOTH:
-        this._servoLeft.setAngle(state.leftAngle);
-        this._servoRight.setAngle(state.rightAngle);
       default:
         break;
     }
