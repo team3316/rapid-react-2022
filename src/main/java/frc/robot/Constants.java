@@ -20,4 +20,8 @@ public final class Constants {
         public static final double GEAR_RATIO = 1.0;
         public static final boolean INVERT = true;
     }
+
+    public final class Joysticks {
+        public static final int PORT = 0;
+    }
 }
