@@ -1,16 +1,15 @@
 package frc.robot.humanIO;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
+import frc.robot.humanIO.PS5Controller.Button;
 
 public class Joysticks {
 
-    private XboxController _controller;
+    private PS5Controller _controller;
 
     public Joysticks() {
-        this._controller = new XboxController(0);
+        this._controller = new PS5Controller(0);
     }
 
     private static double calculateDeadband(double value) {
@@ -25,8 +24,8 @@ public class Joysticks {
     }
 
     public double getSteerX() {
-        double leftAxis = this._controller.getLeftTriggerAxis();
-        double rightAxis = this._controller.getRightTriggerAxis();
+        double leftAxis = (this._controller.getL2Axis() + 1) / 2;
+        double rightAxis = (this._controller.getR2Axis() + 1) / 2;
 
         return leftAxis > rightAxis ? leftAxis : -rightAxis;
     }

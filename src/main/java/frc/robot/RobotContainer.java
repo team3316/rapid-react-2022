@@ -6,13 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.autonomous.AutoSelector;
-import frc.robot.commands.GoToYaw;
 import frc.robot.humanIO.Joysticks;
+import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
@@ -57,8 +56,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        m_Joysticks.getButton(Button.kBack).whenPressed(() -> m_Drivetrain.resetYaw());
-        m_Joysticks.getButton(Button.kA).whenPressed(new GoToYaw(m_Drivetrain, 180));
+        m_Joysticks.getButton(Button.kShare).whenPressed(() -> m_Drivetrain.resetYaw());
     }
 
     /**
