@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.ArmTest;
+import frc.robot.commands.ArmToPosition;
+import frc.robot.motors.units.PositionUnit;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.armState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,11 +22,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-
+  private Arm m_arm;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    m_arm = new Arm();
   }
 
   /**
@@ -40,5 +46,17 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return new InstantCommand();
+  }
+  public Command getArmToPostionCommand(armState state) {
+    return new ArmToPosition(m_arm, state);
+  }
+  public Command getArmToPostionCommand(double positionInDegrees) {
+    return new ArmToPosition(m_arm, positionInDegrees);
+  }
+  public Command getArmToPostionCommand(double position, PositionUnit units) {
+    return new ArmToPosition(m_arm, position,units);
+  }
+  public Command getArmTestCommand(double prcnt) {
+    return new ArmTest(m_arm, prcnt);
   }
 }

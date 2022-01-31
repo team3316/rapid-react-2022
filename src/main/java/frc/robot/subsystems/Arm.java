@@ -4,17 +4,21 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.IDBugMotorController;
+import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
+import frc.robot.motors.units.VelocityUnit;
 
 public class Arm extends TrapezoidProfileSubsystem{
-    private IDBugMotorController leaderSM;
-    private IDBugMotorController followerSM;
-    private final ArmFeedforward feedforward = 
+    private IDBugMotorController _leaderSM;
+    private IDBugMotorController _followerSM;
+    private final ArmFeedforward _feedforward = 
         new ArmFeedforward(ArmConstants.staticFF, 
                            ArmConstants.gravityFF, 
                            ArmConstants.velocityFF,
@@ -41,20 +45,23 @@ public class Arm extends TrapezoidProfileSubsystem{
             ArmConstants.startingRad
         );
 
-        leaderSM = new DBugSparkMax(ArmConstants.leaderSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
-        followerSM = new DBugSparkMax(ArmConstants.followerSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
-        followerSM.follow(leaderSM);
-        followerSM.setInverted(true);
-        leaderSM.setupPIDF(ArmConstants.armPID);
-        leaderSM.setPosition(ArmConstants.startingRad);
+        _leaderSM = new DBugSparkMax(ArmConstants.leaderSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
+        _followerSM = new DBugSparkMax(ArmConstants.followerSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
+        _followerSM.follow(_leaderSM);
+        _followerSM.setInverted(true);
+        _leaderSM.setupPIDF(ArmConstants.armPID);
+        _leaderSM.setPosition(ArmConstants.startingRad);
 }
 
     @Override
     public void useState(TrapezoidProfile.State setpoint) {
          // Calculate the feedforward from the sepoint
-        double tempFeedforward = feedforward.calculate(setpoint.position, setpoint.velocity);
+        double tempFeedforward = _feedforward.calculate(setpoint.position, setpoint.velocity);
         // Add the feedforward to the PID output to get the motor output
-        ((CANSparkMax)leaderSM).getPIDController().setReference(setpoint.position,CANSparkMax.ControlType.kPosition,0,tempFeedforward);
+        ((CANSparkMax)_leaderSM).getPIDController().setReference(setpoint.position,CANSparkMax.ControlType.kPosition,0,tempFeedforward);
     }
     
+    public void testState(double prcnt) {
+        _leaderSM.set(ControlMode.PercentOutput, prcnt);
+    }
 }

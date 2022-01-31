@@ -25,8 +25,9 @@ public final class Constants {
         public static final double maxTorqueUsed = 23; //in Nm
         public static final double maxNeoTorque = 2.6;
         public static final double maxNeoRPM = 5700;
+        public static final double RPMtoRadPsec = 1/120.0;
         public static final double velFactor = 0.9;
-        public static final double maxVelocityRadPerSec = velFactor*((maxNeoRPM/maxNeoTorque)*maxTorqueUsed*gearRatioNeoToArm-maxNeoRPM); 
+        public static final double maxVelocityRadPerSec = -velFactor*((maxNeoRPM/maxNeoTorque)*maxTorqueUsed*gearRatioNeoToArm-maxNeoRPM)*RPMtoRadPsec; 
         public static final double maxAccelerationRadPerSecSqrd = 2; 
 
         //Arm gains
