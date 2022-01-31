@@ -19,19 +19,19 @@ public class ArmToPosition extends CommandBase {
   }
 
   public ArmToPosition(Arm arm, double goalInDegOrRots, PositionUnit units) {
-    this(arm,unitsToDegrees(goalInDegOrRots,units));
+    this(arm,unitsToRotations(goalInDegOrRots,units));
   }
 
-  public ArmToPosition(Arm arm, Arm.armState goalState) {
-    this(arm, goalState.getAngle());
+  public ArmToPosition(Arm arm, Arm.ArmState goalState) {
+    this(arm, goalState.getRotations());
   }
 
-  private static double unitsToDegrees(double valueDegorRot, PositionUnit units) {
+  private static double unitsToRotations(double valueDegorRot, PositionUnit units) {
     switch (units) {
       case Rotations: 
-        return valueDegorRot*360;
-      case Degrees:
         return valueDegorRot;
+      case Degrees:
+        return valueDegorRot/360;
       default: 
       return 0;
     }
@@ -57,7 +57,6 @@ public class ArmToPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-    //what should this value be?
+    return _arm.reachedEnd(_goal);
   }
 }

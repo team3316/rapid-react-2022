@@ -12,7 +12,7 @@ import frc.robot.commands.ArmTest;
 import frc.robot.commands.ArmToPosition;
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.armState;
+import frc.robot.subsystems.Arm.ArmState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,7 +47,7 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return new InstantCommand();
   }
-  public Command getArmToPostionCommand(armState state) {
+  public Command getArmToPostionCommand(ArmState state) {
     return new ArmToPosition(m_arm, state);
   }
   public Command getArmToPostionCommand(double positionInDegrees) {
@@ -56,7 +56,7 @@ public class RobotContainer {
   public Command getArmToPostionCommand(double position, PositionUnit units) {
     return new ArmToPosition(m_arm, position,units);
   }
-  public Command getArmTestCommand(double prcnt) {
-    return new ArmTest(m_arm, prcnt);
+  public Command getArmTestCommand() {
+    return new ArmTest(m_arm, 0);
   }
 }

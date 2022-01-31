@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
@@ -24,7 +25,8 @@ public class ArmTest extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      _arm.testState(_prcnt);
+      double percent = SmartDashboard.getNumber("arm_percent", 0.0);
+      _arm.testState(percent);
   }
 
   // Called once the command ends or is interrupted.

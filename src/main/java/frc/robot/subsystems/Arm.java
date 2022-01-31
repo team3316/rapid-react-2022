@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -13,7 +13,6 @@ import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.IDBugMotorController;
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
-import frc.robot.motors.units.VelocityUnit;
 
 public class Arm extends TrapezoidProfileSubsystem{
     private IDBugMotorController _leaderSM;
@@ -24,17 +23,17 @@ public class Arm extends TrapezoidProfileSubsystem{
                            ArmConstants.velocityFF,
                            ArmConstants.accelerationFF);
 
-    public enum armState {
+    public enum ArmState {
         
         INTAKE(Constants.ArmConstants.intakeAngle),
         SHOOT(Constants.ArmConstants.shootAngle);
 
-        private double _angle;
-        private armState(double angle) {
-            _angle = angle;
+        private double _rotations;
+        private ArmState(double rotations) {
+            _rotations = rotations;
     }
-        public double getAngle() {
-            return this._angle;
+        public double getRotations() {
+            return this._rotations;
         }
     }
 /** Create a new ArmSubsystem. */
@@ -47,8 +46,9 @@ public class Arm extends TrapezoidProfileSubsystem{
 
         _leaderSM = new DBugSparkMax(ArmConstants.leaderSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
         _followerSM = new DBugSparkMax(ArmConstants.followerSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
-        _followerSM.follow(_leaderSM);
-        _followerSM.setInverted(true);
+        ((CANSparkMax)_followerSM).follow((CANSparkMax)_leaderSM,true);
+        ((CANSparkMax)_followerSM).setIdleMode(IdleMode.kBrake);
+        ((CANSparkMax)_leaderSM).setIdleMode(IdleMode.kBrake);
         _leaderSM.setupPIDF(ArmConstants.armPID);
         _leaderSM.setPosition(ArmConstants.startingRad);
 }
@@ -63,5 +63,8 @@ public class Arm extends TrapezoidProfileSubsystem{
     
     public void testState(double prcnt) {
         _leaderSM.set(ControlMode.PercentOutput, prcnt);
+    }
+    public boolean reachedEnd(double goal) {
+        return (_leaderSM.getPosition(PositionUnit.Rotations) == goal);
     }
 }
