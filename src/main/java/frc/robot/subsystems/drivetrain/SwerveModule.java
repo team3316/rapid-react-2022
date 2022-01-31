@@ -2,12 +2,14 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
@@ -22,26 +24,33 @@ public class SwerveModule {
 
     private CANCoder _absEncoder;
 
-    private double _steerSetpoint;
-    private double _driveSetpoint;
+    private double _steerSetpoint = 0;
+    private double _driveSetpoint = 0;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        this._driveMotor = new DBugSparkMax(constants.idDrive,
-                new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters));
-        this._steerMotor = new DBugSparkMax(constants.idSteering,
-                new UnitConversions(SwerveModuleConstants.steeringRatio));
+        this._driveMotor = createSparkMax(
+                constants.idDrive,
+                new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters),
+                constants.driveGains);
 
-        this._driveMotor.setupPIDF(constants.driveGains);
-        this._steerMotor.setupPIDF(constants.steeringGains);
-
-        this._driveMotor.setSmartCurrentLimit(40);
-        this._driveMotor.enableVoltageCompensation(12);
-
-        this._steerSetpoint = 0;
-        this._driveSetpoint = 0;
+        this._steerMotor = createSparkMax(
+                constants.idSteering,
+                new UnitConversions(SwerveModuleConstants.steeringRatio),
+                constants.steeringGains);
 
         this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
         this.calibrateSteering();
+    }
+
+    private static DBugSparkMax createSparkMax(int id, UnitConversions conversions, PIDFGains gains) {
+        DBugSparkMax sparkMax = new DBugSparkMax(id, conversions);
+        sparkMax.setupPIDF(gains);
+        sparkMax.setSmartCurrentLimit(40);
+        sparkMax.enableVoltageCompensation(12);
+        sparkMax.setIdleMode(IdleMode.kBrake);
+        sparkMax.setOpenLoopRampRate(0.01);
+        sparkMax.setClosedLoopRampRate(0.01);
+        return sparkMax;
     }
 
     private static CANCoder createCANCoder(int id, double zeroAngle) {
