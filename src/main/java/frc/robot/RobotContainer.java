@@ -53,7 +53,7 @@ public class RobotContainer {
         .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
     
     m_joysticks.getButton(Button.kRightBumper)
-      .whileHeld(new Shoot(m_manipulator, SmartDashboard.getNumber("wantedVel", 0)));
+      .whileHeld(new Shoot(m_manipulator, 0));
 
     m_joysticks.getButton(Button.kA).whenHeld(this.getSetTriggerState(Side.LEFT));
     m_joysticks.getButton(Button.kB).whenHeld(this.getSetTriggerState(Side.RIGHT));
