@@ -21,16 +21,8 @@ public final class Constants {
         public static final int followerSMID = 17;
         public static final double gearRatioNeoToArm = 1/33.6; //One NEO rotation is this much arm rotations
 
-        //Trapezoid Profile gains
-        // public static final double maxTorqueUsed = 23; //in Nm
-        // public static final double maxNeoTorque = 2.6;
-        // public static final double maxNeoRPM = 5700;
-        // public static final double RPMtoRadPsec = 1/120.0;
-        // public static final double velFactor = 0.9;
-        // public static final double maxVelocityRadPerSec = -velFactor*((maxNeoRPM/maxNeoTorque)*maxTorqueUsed*gearRatioNeoToArm-maxNeoRPM)*RPMtoRadPsec; 
-        public static final double maxVelocityRadPerSec = 8;
-        public static final double maxAccelerationRadPerSecSqrd = 2; 
-
+        public static final double maxVelocityRadPerSec = 0.6;
+        public static final double maxAccelerationRadPerSecSqrd = 0.6; 
         //Arm gains
         public static final double startingRad = 2; 
         public static final double kP = 0;
@@ -40,11 +32,22 @@ public final class Constants {
         public static final double kTolerance = 0;
         public static final double kIZone = 0;
         public static final PIDFGains armPID = new PIDFGains(kP, kI, kD, kF, kTolerance, kIZone);
-        public static final double staticFF = 1/6/900;
-        public static final double gravityFF = 1/6/900;
-        public static final double velocityFF = 1/6/900;
-        public static final double accelerationFF = 1/6/900;
+        public static final double staticFF = 0;
+        public static final double gravityFF = (0.45 * 5.2 * 9.8) / (2.7 * 2 * 33.6) * 12;  // (required torque at 90 deg) / (max torque at 12v) * 12 volts
+        public static final double velocityFF = 12 / (5800 * 2 * Math.PI / 60 / 33.6); // 12 volts / (max RPM * 2 pi rads / rev / 60 seconds / gear ratio)
+        public static final double accelerationFF = (0.45 * 0.45 * 5.2) / (2.7 * 2 * 33.6) * 12;
         public static final double intakeAngle = 0; 
         public static final double shootAngle = 10; 
+        //torque gains
+        public static final double centerOfMass = 0;
+        public static final double mass = 5.2;
+        //piston gains
+        public static final double armLength = 0;
+        public static final double armHeight = 0;
+        public static final double baseLength = 0;
+        public static final double baseHeight = 0;
+        public static final double forceOfPiston = 300; 
+        public static final double closedLength = 0; 
+        public static final double extendLength = 0;
     }
 }

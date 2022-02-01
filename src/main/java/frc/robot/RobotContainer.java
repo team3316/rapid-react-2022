@@ -4,15 +4,17 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.ArmTest;
-import frc.robot.commands.ArmToPosition;
+import frc.robot.Arm.commands.ArmToPosition;
 import frc.robot.motors.units.PositionUnit;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmState;
+import frc.robot.Arm.subsystems.Arm;
+import frc.robot.Arm.subsystems.Arm.ArmState;
+import frc.robot.Subsystems.Pigeon;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,11 +25,15 @@ import frc.robot.subsystems.Arm.ArmState;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private Arm m_arm;
+  private Pigeon m_pigeon;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    m_arm = new Arm();
+    m_pigeon = new Pigeon();
+    DoubleSupplier xAcc = () -> m_pigeon.getAcceleration()[0];
+    DoubleSupplier zAcc = () -> m_pigeon.getAcceleration()[2];
+    m_arm = new Arm(xAcc,zAcc);
   }
 
   /**
@@ -55,8 +61,5 @@ public class RobotContainer {
   }
   public Command getArmToPostionCommand(double position, PositionUnit units) {
     return new ArmToPosition(m_arm, position,units);
-  }
-  public Command getArmTestCommand() {
-    return new ArmTest(m_arm, 0);
   }
 }

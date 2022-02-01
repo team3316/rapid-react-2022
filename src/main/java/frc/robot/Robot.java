@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Arm.subsystems.Arm.ArmState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -60,10 +62,9 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
+  @Override 
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -83,9 +84,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    SmartDashboard.putNumber("arm_percent", 0);
-    // SmartDashboard.putBoolean("active", false);
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmTestCommand());
+    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand(ArmState.INTAKE));
+    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand(ArmState.SHOOT));
   }
 
   /** This function is called periodically during operator control. */
@@ -95,6 +95,10 @@ public class Robot extends TimedRobot {
     if(m_booleanSupplier.getAsBoolean()) {
       // m_robotContainer.getArmTestCommand(SmartDashboard.getNumber("precent", 0)).withInterrupt(m_booleanSupplier).schedule();
     }
+    SmartDashboard.putNumber("static gain", ArmConstants.staticFF);
+    SmartDashboard.putNumber("gravity gain", ArmConstants.gravityFF);
+    SmartDashboard.putNumber("speed gain", ArmConstants.velocityFF);
+    SmartDashboard.putNumber("acc gain", ArmConstants.accelerationFF);
   }
 
   @Override
