@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Arm.commands.ArmToPosition;
-import frc.robot.motors.units.PositionUnit;
+import frc.robot.Arm.commands.ArmToPositionIntake;
+import frc.robot.Arm.commands.ArmToPositionShoot;
 import frc.robot.Arm.subsystems.Arm;
 import frc.robot.Arm.subsystems.Arm.ArmState;
 import frc.robot.Subsystems.Pigeon;
@@ -59,7 +60,16 @@ public class RobotContainer {
   public Command getArmToPostionCommand(double positionInDegrees) {
     return new ArmToPosition(m_arm, positionInDegrees);
   }
-  public Command getArmToPostionCommand(double position, PositionUnit units) {
-    return new ArmToPosition(m_arm, position,units);
+  public Command updateFromSDB() {
+    return new InstantCommand(()->m_arm.updateFromSDB());
+  }
+  public Command getArmToPostionCommandIntake() {
+    return new ArmToPositionIntake(m_arm);
+  }
+  public Command getArmToPostionCommandShoot() {
+    return new ArmToPositionShoot(m_arm);
+  }
+  public Command testPos() {
+    return new InstantCommand(()->m_arm.testPos());
   }
 }

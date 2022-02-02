@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -12,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Arm.subsystems.Arm.ArmState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,7 +22,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private BooleanSupplier m_booleanSupplier;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -35,7 +32,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer(); 
-    m_booleanSupplier = () -> SmartDashboard.getBoolean("active", false);
   }
 
   /**
@@ -84,21 +80,23 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand(ArmState.INTAKE));
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand(ArmState.SHOOT));
+    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandIntake());
+    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandShoot());
+    SmartDashboard.putNumber("static gain", ArmConstants.staticFF);
+    SmartDashboard.putNumber("gravity gain", ArmConstants.gravityFF);
+    SmartDashboard.putNumber("speed gain", ArmConstants.velocityFF);
+    SmartDashboard.putNumber("acc gain", ArmConstants.accelerationFF);
+    //SmartDashboard.putData((Sendable)m_robotContainer.updateFromSDB());
+    SmartDashboard.putData((Sendable)m_robotContainer.testPos());
+    SmartDashboard.putBoolean("worki worki", false);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   
   public void teleopPeriodic() {
-    if(m_booleanSupplier.getAsBoolean()) {
-      // m_robotContainer.getArmTestCommand(SmartDashboard.getNumber("precent", 0)).withInterrupt(m_booleanSupplier).schedule();
-    }
-    SmartDashboard.putNumber("static gain", ArmConstants.staticFF);
-    SmartDashboard.putNumber("gravity gain", ArmConstants.gravityFF);
-    SmartDashboard.putNumber("speed gain", ArmConstants.velocityFF);
-    SmartDashboard.putNumber("acc gain", ArmConstants.accelerationFF);
+
+    
   }
 
   @Override

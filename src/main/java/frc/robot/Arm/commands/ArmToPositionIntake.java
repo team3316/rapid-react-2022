@@ -4,11 +4,13 @@
 
 package frc.robot.Arm.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm.subsystems.Arm;
+import frc.robot.Arm.subsystems.Arm.ArmState;
 import frc.robot.Constants.ArmConstants;
 
-public class ArmToPosition extends CommandBase {
+public class ArmToPositionIntake extends CommandBase {
   private Arm _arm;
   private double _goal;
   /** Creates a new ArmToPosition. */
@@ -16,24 +18,18 @@ public class ArmToPosition extends CommandBase {
    * @param arm the subsystem
    * @param goal in Neo Rotations
    */
-  public ArmToPosition(Arm arm, double goal) {
+  public ArmToPositionIntake(Arm arm) {
     addRequirements(arm);
     _arm = arm;
-    _goal = goal;
+    _goal = ArmState.INTAKE.getRotations();
   }
 
-  /**
-   * @param arm the subsystem
-   * @param goalState in Neo Rotations
-   */
-  public ArmToPosition(Arm arm, Arm.ArmState goalState) {
-    this(arm, goalState.getRotations());
-  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     _arm.setGoal(_goal*(2*Math.PI)*ArmConstants.gearRatioNeoToArm); //goal: neo rotations to arm rads
+    SmartDashboard.putNumber("test", _goal*(2*Math.PI)*ArmConstants.gearRatioNeoToArm);
     _arm.enable();
   }
 
