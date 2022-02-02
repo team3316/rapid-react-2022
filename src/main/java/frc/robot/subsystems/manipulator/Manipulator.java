@@ -47,13 +47,6 @@ public class Manipulator extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("realVel", _leaderMotor.getVelocity(VelocityUnit.RPM));
-    SmartDashboard.putNumber("wantedVel", SmartDashboard.getNumber("wantedVel", 0));
-    SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", 0));
-    SmartDashboard.putNumber("kI", SmartDashboard.getNumber("kI", 0));
-    SmartDashboard.putNumber("kD", SmartDashboard.getNumber("kD", 0));
-    this._leaderMotor.config_kP(0, SmartDashboard.getNumber("kP", 0));
-    this._leaderMotor.config_kI(0, SmartDashboard.getNumber("kI", 0));
-    this._leaderMotor.config_kD(0, SmartDashboard.getNumber("kD", 0));
     // This method will be called once per scheduler run
   }
 

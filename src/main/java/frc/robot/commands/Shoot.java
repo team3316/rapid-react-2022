@@ -12,17 +12,15 @@ import frc.robot.subsystems.manipulator.Manipulator;
 
 public class Shoot extends CommandBase {
     private Manipulator _manipulator;
-    private double _rpm;
+    private final double _rpm = Constants.Manipulator.shootRPM;
     private SlewRateLimiter _limiter;
 
-    public Shoot(Manipulator manipulator, double rpm) {
+    public Shoot(Manipulator manipulator) {
         this._manipulator = manipulator;
-        this._rpm = rpm;
         addRequirements(this._manipulator);
     }
 
     public void initialize() {
-        this._rpm = SmartDashboard.getNumber("wantedVel", 0);
         this._limiter = new SlewRateLimiter(Math.abs(this._rpm) / Constants.Manipulator.accTime);
     }
 
