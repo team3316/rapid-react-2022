@@ -16,24 +16,21 @@ import frc.robot.motors.PIDFGains;
  */
 public final class Constants {
     public static final class ArmConstants {
-        //Arm IDs and info
+        // Arm IDs and info
         public static final int leaderCANID = 16;
         public static final int followerCANID = 17;
 
         public static final boolean motorInverted = true;
 
         public static final double motorToArmConversionFactor = 360 / 33.6; // 360 degrees / gear reduction
-        
+
         public static final double maxVelocityDegreesPerSec = 36; // degrees / sec
         public static final double maxAccelerationRotPerSecSqrd = 36; // degrees / sec ^ 2 
-        //Arm gains 
+        
+        // Arm gains 
         public static final double kP = 5e-5;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kF = 0;
-        public static final double kTolerance = 0.000156;
-        public static final double kIZone = 0;
-        public static final PIDFGains armPID = new PIDFGains(kP, kI, kD, kF, kTolerance, kIZone);
+        public static final double kMaxOutput = 0.1;
+
         public static final double staticFF = 0;
         public static final double gravityFF = (0.45 * 5.2 * 9.8) / (2.7 * 2 * 33.6) * 12;  // (required torque at 90 deg) / (max torque at 12v) * 12 volts
         public static final double velocityFF = 12 / (5800 * 2 * Math.PI / 60 / 33.6); // 12 volts / (max RPM * 2 pi rads / rev / 60 seconds / gear ratio)
