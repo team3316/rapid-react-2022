@@ -30,6 +30,8 @@ public class Arm extends SubsystemBase {
     _reverseLimit = _leaderSM.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     _forwardLimit.enableLimitSwitch(true);
     _reverseLimit.enableLimitSwitch(true);
+    // _leaderSM.getEncoder().setPositionConversionFactor((1.0 / 33.6) * 360 * -1);
+    _leaderSM.getEncoder().setPositionConversionFactor(1.0);
   }
 
   public void setPrecent(double precent){
@@ -45,11 +47,17 @@ public class Arm extends SubsystemBase {
   }
 
   public double getAngle(){
-    return this._leaderSM.getEncoder().getPosition() / 33.6 * 360;
+    return this._leaderSM.getEncoder().getPosition();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(_forwardLimit.isPressed()){
+      this._leaderSM.setPosition(-37.0);
+    }
+    else if(_reverseLimit.isPressed()){
+      this._leaderSM.setPosition(126.0);
+    }
+    SmartDashboard.putNumber("encoder position", this._leaderSM.getEncoder().getPosition());
   }
 }
