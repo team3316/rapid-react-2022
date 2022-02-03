@@ -83,7 +83,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("precent", 0);
     SmartDashboard.putNumber("angle", 0);
     SmartDashboard.putNumber("static", 0);
-    SmartDashboard.putData((Sendable) new InstantCommand(()->m_robotContainer.getSetPrecent()));
   }
 
   /** This function is called periodically during operator control. */
@@ -95,6 +94,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("voltage", m_robotContainer.getVoltageCompensationNominalVoltage());
     SmartDashboard.putNumber("static", SmartDashboard.getNumber("static", 0));
     SmartDashboard.putNumber("real angle", m_robotContainer.getRealAngle());
+     new InstantCommand(()->m_robotContainer.getSetPrecent()).schedule();;
    }
 
   @Override

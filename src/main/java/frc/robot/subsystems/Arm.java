@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,14 +16,14 @@ import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.units.UnitConversions;
 
 public class Arm extends SubsystemBase {
-  private DBugSparkMax _leaderSM;
-    private DBugSparkMax _followerSM;
+    private CANSparkMax _leaderSM;
+    private CANSparkMax _followerSM;
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
   /** Creates a new Arm. */
   public Arm() {
-    _leaderSM = new DBugSparkMax(16, new UnitConversions(1/1/33.6));
-    _followerSM = new DBugSparkMax(17, new UnitConversions(1/1/33.6));
+    _leaderSM = new CANSparkMax(16,MotorType.kBrushless);
+    _followerSM = new CANSparkMax(17,MotorType.kBrushless);
     _followerSM.follow((CANSparkMax)_leaderSM, true);
     _followerSM.setIdleMode(IdleMode.kBrake);
     _leaderSM.setIdleMode(IdleMode.kBrake);
@@ -31,11 +32,13 @@ public class Arm extends SubsystemBase {
     _forwardLimit.enableLimitSwitch(true);
     _reverseLimit.enableLimitSwitch(true);
     // _leaderSM.getEncoder().setPositionConversionFactor((1.0 / 33.6) * 360 * -1);
-    _leaderSM.getEncoder().setPositionConversionFactor(1.0);
+    _leaderSM.getEncoder().setPositionConversionFactor(360/33.6);
+    _leaderSM.getEncoder().setVelocityConversionFactor(360/33.6);
+    this._leaderSM.setInverted(false);
   }
 
   public void setPrecent(double precent){
-    this._leaderSM.set(ControlMode.PercentOutput, Math.max(precent, -0.1));
+    this._leaderSM.set(Math.max(precent, -0.1));
   }
 
   public double getPrecent(){
@@ -43,7 +46,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getCurrentVoltage(){
-    return this._leaderSM.getVoltageCompensationNominalVoltage();
+    return this._leaderSM.getEncoder().getVelocity();
   }
 
   public double getAngle(){
@@ -53,11 +56,13 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     if(_forwardLimit.isPressed()){
-      this._leaderSM.setPosition(-37.0);
+      this._leaderSM.getEncoder().setPosition(37);
     }
     else if(_reverseLimit.isPressed()){
-      this._leaderSM.setPosition(126.0);
+      this._leaderSM.getEncoder().setPosition(-126);
     }
     SmartDashboard.putNumber("encoder position", this._leaderSM.getEncoder().getPosition());
+    SmartDashboard.putBoolean("fwrd", _forwardLimit.isPressed());
+    SmartDashboard.putBoolean("bwrd", _reverseLimit.isPressed());
   }
 }
