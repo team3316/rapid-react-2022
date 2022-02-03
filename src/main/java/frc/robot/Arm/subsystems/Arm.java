@@ -1,6 +1,5 @@
 package frc.robot.Arm.subsystems;
 
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -42,39 +41,41 @@ public class Arm extends TrapezoidProfileSubsystem{
         }
     }
 /** Create a new ArmSubsystem. */
-    public Arm(DoubleSupplier xAcc,DoubleSupplier zAcc) {
+    public Arm() {
         super(
             new TrapezoidProfile.Constraints(
                 // TODO: Add to SDB and add to same update function.
-               ArmConstants.maxVelocityRadPerSec, ArmConstants.maxAccelerationRadPerSecSqrd),
+               ArmConstants.maxVelocityDegreesPerSec, ArmConstants.maxAccelerationRotPerSecSqrd),
             // TODO: Calibrate
-            ArmConstants.startingRad
+            ArmConstants.startingAngle
         );
 
 
         _leaderSM = new DBugSparkMax(ArmConstants.leaderSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
         _followerSM = new DBugSparkMax(ArmConstants.followerSMID, new UnitConversions(1/ArmConstants.gearRatioNeoToArm));
+        _leaderSM.setInverted(false);
         _followerSM.follow((CANSparkMax)_leaderSM, true);
         _followerSM.setIdleMode(IdleMode.kBrake);
         _leaderSM.setIdleMode(IdleMode.kBrake);
         _leaderSM.setupPIDF(ArmConstants.armPID);
-        _leaderSM.setPosition(ArmConstants.startingRad);
+        _leaderSM.setPosition(0);
+        _leaderSM.getPIDController().setSmartMotionAccelStrategy(accelStrategy, slotID)
         //TODO calibrate which is forward which is reverse
-        _forwardLimit = _leaderSM.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        _reverseLimit = _leaderSM.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        _forwardLimit = _leaderSM.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        _reverseLimit = _leaderSM.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit.enableLimitSwitch(true);
-}
+}       
 
     @Override
     public void useState(TrapezoidProfile.State state) {
          // Calculate the feedforward from the sepoint
-         //TODO trapz profile is in RADS. input is in ROTS.
-        double tempFeedforward = _feedforward.calculate(neoRotsToRads(state.position), state.velocity,0);
+        double tempFeedforward = _feedforward.calculate(Math.toRadians(state.position), Math.toRadians(state.velocity), 0);
         // Add the feedforward to the PID output to get the motor output
-        SmartDashboard.putNumber("TOBE position", armRadsToNeoRots(state.position));
-        SmartDashboard.putNumber("state_position", armRadsToNeoRots(state.position));
-        _leaderSM.getPIDController().setReference(armRadsToNeoRots(state.position), CANSparkMax.ControlType.kPosition, 0,tempFeedforward);
+        SmartDashboard.putNumber("state_velocity", state.velocity);
+        SmartDashboard.putNumber("state_position", state.position);
+        SmartDashboard.putNumber("pos pos pos pos woooo",ArmAngleToNeoRotation(state.position));
+        _leaderSM.getPIDController().setReference(ArmAngleToNeoRotation(state.position), CANSparkMax.ControlType.kPosition, 0, tempFeedforward);
         SmartDashboard.putNumber("volts", _leaderSM.getOutputCurrent());
     }
 
@@ -83,16 +84,22 @@ public class Arm extends TrapezoidProfileSubsystem{
                                     SmartDashboard.getNumber("gravity gain", ArmConstants.gravityFF),
                                     SmartDashboard.getNumber("speed gain", ArmConstants.velocityFF),
                                     SmartDashboard.getNumber("acc gain", ArmConstants.accelerationFF));
+
+        _leaderSM.getPIDController().setP(SmartDashboard.getNumber("kP", ArmConstants.kP));
         
     }
-    private static double armRadsToNeoRots(double armRotations) {
-        return armRotations/ArmConstants.gearRatioNeoToArm/(2*Math.PI);
+
+    private double ArmAngleToNeoRotation(double angle) {
+        return (angle - ArmConstants.startingAngle) / 360 / ArmConstants.gearRatioNeoToArm;
     }
-    private static double neoRotsToRads(double neoRotations) {
-        return Math.toRadians((157.2/-15)*neoRotations-37.6);
-    }
+
     public void testPos() {
         _leaderSM.set(ControlMode.Position, -10);
     }
-    
+    public double getPos() {
+        return _leaderSM.getEncoder().getPosition();
+    }
+    public double getVel() {
+        return _leaderSM.getEncoder().getVelocity();
+    }
 }

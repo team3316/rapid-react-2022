@@ -6,7 +6,6 @@ package frc.robot.Arm.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Arm.subsystems.Arm;
-import frc.robot.Constants.ArmConstants;
 
 public class ArmToPosition extends CommandBase {
   private Arm _arm;
@@ -33,7 +32,7 @@ public class ArmToPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    _arm.setGoal(_goal*(2*Math.PI)*ArmConstants.gearRatioNeoToArm); //goal: neo rotations to arm rads
+    _arm.setGoal(_goal);
     _arm.enable();
   }
 

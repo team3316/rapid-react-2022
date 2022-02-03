@@ -4,19 +4,14 @@
 
 package frc.robot;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Arm.commands.ArmToPosition;
-import frc.robot.Arm.commands.ArmToPositionIntake;
-import frc.robot.Arm.commands.ArmToPositionShoot;
 import frc.robot.Arm.subsystems.Arm;
 import frc.robot.Arm.subsystems.Arm.ArmState;
-import frc.robot.Subsystems.Pigeon;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -26,15 +21,11 @@ import frc.robot.Subsystems.Pigeon;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private Arm m_arm;
-  private Pigeon m_pigeon;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    m_pigeon = new Pigeon();
-    DoubleSupplier xAcc = () -> m_pigeon.getAcceleration()[0];
-    DoubleSupplier zAcc = () -> m_pigeon.getAcceleration()[2];
-    m_arm = new Arm(xAcc,zAcc);
+    m_arm = new Arm();
   }
 
   /**
@@ -64,12 +55,25 @@ public class RobotContainer {
     return new InstantCommand(()->m_arm.updateFromSDB());
   }
   public Command getArmToPostionCommandIntake() {
-    return new ArmToPositionIntake(m_arm);
+    InstantCommand command = new InstantCommand(()->m_arm.setGoal(ArmState.INTAKE.getRotations()));
+    command.setName("Intke");
+    return command;
   }
   public Command getArmToPostionCommandShoot() {
-    return new ArmToPositionShoot(m_arm);
+    InstantCommand command = new InstantCommand(()->m_arm.setGoal(ArmState.SHOOT.getRotations()));
+    command.setName("shot");
+    return command;
+  }
+  public Command getArmToPostionCommand() {
+    InstantCommand command = new InstantCommand(()->m_arm.setGoal(SmartDashboard.getNumber("go to angle", 0)));
+    command.setName("angle");
+    return command;
   }
   public Command testPos() {
     return new InstantCommand(()->m_arm.testPos());
+  }
+  public void updateSDB() {
+    SmartDashboard.putNumber("get pos",m_arm.getPos());
+    SmartDashboard.putNumber("get vel",m_arm.getVel());
   }
 }

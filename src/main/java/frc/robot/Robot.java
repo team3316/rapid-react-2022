@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -82,21 +84,22 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandIntake());
     SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandShoot());
+    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand());
     SmartDashboard.putNumber("static gain", ArmConstants.staticFF);
     SmartDashboard.putNumber("gravity gain", ArmConstants.gravityFF);
     SmartDashboard.putNumber("speed gain", ArmConstants.velocityFF);
     SmartDashboard.putNumber("acc gain", ArmConstants.accelerationFF);
+    SmartDashboard.putNumber("go to angle",0);
+    SmartDashboard.putNumber("kP", ArmConstants.kP);
     //SmartDashboard.putData((Sendable)m_robotContainer.updateFromSDB());
     SmartDashboard.putData((Sendable)m_robotContainer.testPos());
-    SmartDashboard.putBoolean("worki worki", false);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   
   public void teleopPeriodic() {
-
-    
+    m_robotContainer.updateSDB();
   }
 
   @Override
