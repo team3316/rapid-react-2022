@@ -24,7 +24,6 @@ public class RobotContainer {
     configureButtonBindings();
 
     m_arm = new Arm();
-    m_arm.updateSDB();
   }
 
   /**

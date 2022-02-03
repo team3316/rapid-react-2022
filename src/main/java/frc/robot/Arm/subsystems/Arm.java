@@ -2,11 +2,14 @@ package frc.robot.Arm.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,11 +23,11 @@ public class Arm extends TrapezoidProfileSubsystem {
     private SparkMaxLimitSwitch _reverseLimit;
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
+    private ArmFeedforward _feedforward;
 
     public Arm() {
-        super(
-                new TrapezoidProfile.Constraints(
-                        ArmConstants.maxVelocityDegreesPerSec, ArmConstants.maxAccelerationRotPerSecSqrd),
+        super(new TrapezoidProfile.Constraints(
+                ArmConstants.maxVelocityDegreesPerSec, ArmConstants.maxAccelerationDegreesPerSecSqrd),
                 ArmConstants.startingAngle);
 
         _leader = new CANSparkMax(ArmConstants.leaderCANID, MotorType.kBrushless);
@@ -50,43 +53,62 @@ public class Arm extends TrapezoidProfileSubsystem {
         _PIDController = _leader.getPIDController();
         setPID();
 
+        setFeedForward();
+
         initSDB();
     }
 
     private void setPID() {
-        _PIDController.setP(SmartDashboard.getNumber("P Gain", ArmConstants.kP));
-        _PIDController.setI(0);
-        _PIDController.setD(0);
-        _PIDController.setIZone(0);
-        _PIDController.setFF(0);
+        _PIDController.setP(SmartDashboard.getNumber("P Gain", ArmConstants.kP), ArmConstants.kPIDSlot);
+        _PIDController.setI(0, ArmConstants.kPIDSlot);
+        _PIDController.setD(0, ArmConstants.kPIDSlot);
+        _PIDController.setIZone(0, ArmConstants.kPIDSlot);
+        _PIDController.setFF(0, ArmConstants.kPIDSlot);
 
         double kMaxOutput = SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput);
-        _PIDController.setOutputRange(-kMaxOutput, kMaxOutput);
+        _PIDController.setOutputRange(-kMaxOutput, kMaxOutput, ArmConstants.kPIDSlot);
+    }
+
+    private void setFeedForward() {
+        _feedforward = new ArmFeedforward(0,
+                SmartDashboard.getNumber("Gravity Gain", ArmConstants.gravityFF),
+                SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
+    }
+
+    private void setGoal() {
+        super.setGoal(SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
     }
 
     @Override
     public void useState(TrapezoidProfile.State state) {
+        double feedforward = _feedforward.calculate(state.position, state.velocity);
+
+        _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
+                ArbFFUnits.kPercentOut);
+
+        updateSDB(state, feedforward);
     }
 
-    @Override
-    public void periodic() {
-        super.periodic();
-
-        updateSDB();
-    }
-
-    public void initSDB() {
+    private void initSDB() {
         SmartDashboard.putNumber("P Gain", SmartDashboard.getNumber("P Gain", ArmConstants.kP));
         SmartDashboard.putNumber("Max Output", SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput));
+        SmartDashboard.putNumber("Goal", SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
 
         SmartDashboard.putData("Set PID", new InstantCommand(() -> setPID()));
+        SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> setFeedForward()));
+        SmartDashboard.putData("Set Goal", new InstantCommand(() -> setGoal()));
     }
 
-    public void updateSDB() {
+    private void updateSDB(TrapezoidProfile.State state, double feedforward) {
         SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isLimitSwitchEnabled());
         SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isLimitSwitchEnabled());
 
         SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
         SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
+
+        SmartDashboard.putNumber("Arm State Position", state.position);
+        SmartDashboard.putNumber("Arm State Velocity", state.velocity);
+
+        SmartDashboard.putNumber("Arm Feed Forward", feedforward);
     }
 }
