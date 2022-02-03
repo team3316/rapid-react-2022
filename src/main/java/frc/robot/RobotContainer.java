@@ -15,13 +15,14 @@ import frc.robot.autonomous.AutoSelector;
 import frc.robot.commands.Shoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Trigger;
 import frc.robot.subsystems.Trigger.Side;
 import frc.robot.subsystems.Trigger.TriggerState;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -78,7 +79,7 @@ public class RobotContainer {
           new StartEndCommand(
             () -> m_manipulator.setState(ManipulatorState.COLLECT),
             () -> m_manipulator.setState(ManipulatorState.OFF), 
-            m_manipulator)
+            m_manipulator).beforeStarting(() -> {m_trigger.setState(TriggerState.IN, Side.LEFT);m_trigger.setState(TriggerState.IN, Side.RIGHT);})
           .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
       
       m_Joysticks.getButton(Button.kR1)
@@ -86,6 +87,8 @@ public class RobotContainer {
   
       m_Joysticks.getButton(Button.kCross).whenHeld(this.getSetTriggerState(Side.LEFT));
       m_Joysticks.getButton(Button.kCircle).whenHeld(this.getSetTriggerState(Side.RIGHT));
+      m_Joysticks.getButton(Button.kSquare).whenHeld(new StartEndCommand(() -> m_arm.setPrecent(0.05), ()-> m_arm.setPrecent(0.0), m_arm));
+      m_Joysticks.getButton(Button.kTriangle).whenHeld(new StartEndCommand(() -> m_arm.setPrecent(-0.1), ()-> m_arm.setPrecent(0.0), m_arm));
     }
 
     /**

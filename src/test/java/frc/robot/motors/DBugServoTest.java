@@ -16,15 +16,9 @@ public class DBugServoTest {
 
     @BeforeClass
     public static void init() {
-<<<<<<< HEAD
-        _servo1 = new DBugServo(0, new UnitConversions(1, 1, 1));
-        _servo2 = new DBugServo(1, new UnitConversions(1, 1, 1));
-        _servo3 = new DBugServo(2, new UnitConversions(1, 1, 1));
-=======
         _servo1 = new DBugServo(4, new UnitConversions(1,1,1));
         _servo2 = new DBugServo(5, new UnitConversions(1,1,1));
         _servo3 = new DBugServo(6, new UnitConversions(1,1,1));
->>>>>>> intake
     }
 
     @Test

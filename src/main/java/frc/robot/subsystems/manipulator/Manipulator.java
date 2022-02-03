@@ -51,6 +51,10 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setState(ManipulatorState state){
+    if (state == ManipulatorState.OFF){
+      this.set(0);
+      return;
+    }
     this._leaderMotor.set(ControlMode.Velocity, state.rpm, VelocityUnit.RPM);
   }
 

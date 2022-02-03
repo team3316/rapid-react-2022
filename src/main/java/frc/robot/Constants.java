@@ -117,8 +117,8 @@ public class Constants {
         public static final double iZone = 0;
         public static final int leftSwitchId = 0;
         public static final int rightSwitchId = 1;
-        public static final double collectRPM = 2400;
-        public static final double shootRPM = -4250;
+        public static final double collectRPM = 2000;
+        public static final double shootRPM = -2000;
         public static final PIDFGains gains = new PIDFGains(kP, kI, kD, kF, tolerance, iZone);
         public static final int accTime = 1;
     }
@@ -131,9 +131,9 @@ public class Constants {
 
         public final class TriggerState {
             public final static double IN_ANGLE_LEFT = 0.0;
-            public final static double IN_ANGLE_RIGHT = 90.0;
-            public final static double OUT_ANGLE_LEFT = 55.0;
-            public final static double OUT_ANGLE_RIGHT = 0.0;
+            public final static double IN_ANGLE_RIGHT = 0.0;
+            public final static double OUT_ANGLE_LEFT = 100.0;
+            public final static double OUT_ANGLE_RIGHT = 120.0;
         }
     }
 }
