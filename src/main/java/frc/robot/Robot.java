@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -77,11 +80,22 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    SmartDashboard.putNumber("precent", 0);
+    SmartDashboard.putNumber("angle", 0);
+    SmartDashboard.putNumber("static", 0);
+    SmartDashboard.putData((Sendable) new InstantCommand(()->m_robotContainer.getSetPrecent()));
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SmartDashboard.putNumber("precent", SmartDashboard.getNumber("precent", 0));
+    SmartDashboard.putNumber("angle", SmartDashboard.getNumber("angle", 0));
+    SmartDashboard.putNumber("real_precent", m_robotContainer.getPrecent());
+    SmartDashboard.putNumber("voltage", m_robotContainer.getVoltageCompensationNominalVoltage());
+    SmartDashboard.putNumber("static", SmartDashboard.getNumber("static", 0));
+    SmartDashboard.putNumber("real angle", m_robotContainer.getRealAngle());
+   }
 
   @Override
   public void testInit() {
