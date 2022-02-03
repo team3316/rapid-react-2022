@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -14,6 +15,7 @@ import frc.robot.autonomous.AutoSelector;
 import frc.robot.commands.Shoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Trigger;
 import frc.robot.subsystems.Trigger.Side;
 import frc.robot.subsystems.Trigger.TriggerState;
@@ -39,6 +41,8 @@ public class RobotContainer {
     private final Joysticks m_Joysticks = new Joysticks();
 
     private final Trigger m_trigger = new Trigger();
+
+    private final Arm m_arm = new Arm();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -98,4 +102,25 @@ public class RobotContainer {
       // TODO check if needed to end the command in another way
       return new StartEndCommand(() -> m_trigger.setState(TriggerState.OUT, side), () -> m_trigger.setState(TriggerState.IN, side));
     }
+
+    public double getPrecent(){
+      return this.m_arm.getPrecent();
+    }
+  
+    public double getVoltageCompensationNominalVoltage(){
+      return this.m_arm.getCurrentVoltage();
+    }
+    
+  public void getSetPrecent(){
+    double precent = SmartDashboard.getNumber("precent", 0)
+    * Math.cos(Math.toRadians(SmartDashboard.getNumber("angle", 0)))
+    + SmartDashboard.getNumber("static", 0);
+    SmartDashboard.putNumber("input precent", precent);
+    this.m_arm.setPrecent(-precent);
+  }
+
+  public double getRealAngle(){
+    return this.m_arm.getAngle();
+  }
+  
 }
