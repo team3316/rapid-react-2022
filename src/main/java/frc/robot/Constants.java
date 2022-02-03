@@ -18,7 +18,7 @@ public final class Constants {
     public static final class ArmConstants {
         //Arm IDs and info
         public static final int leaderCANID = 16;
-        public static final int followerSMID = 17;
+        public static final int followerCANID = 17;
         public static final double gearRatioNeoToArm = 1/33.6; //One NEO rotation is this much arm rotations
 
         public static final boolean motorInverted = true;

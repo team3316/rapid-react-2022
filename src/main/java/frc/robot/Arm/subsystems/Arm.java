@@ -13,6 +13,7 @@ import frc.robot.Constants.ArmConstants;
 
 public class Arm extends TrapezoidProfileSubsystem {
     private CANSparkMax _leader;
+    private CANSparkMax _follower;
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
     
@@ -25,7 +26,11 @@ public class Arm extends TrapezoidProfileSubsystem {
         );
 
         _leader = new CANSparkMax(ArmConstants.leaderCANID, MotorType.kBrushless);
+        _follower = new CANSparkMax(ArmConstants.followerCANID, MotorType.kBrushless);
+        
         _leader.restoreFactoryDefaults();
+        _follower.restoreFactoryDefaults();
+
         _leader.setInverted(ArmConstants.motorInverted);
         _leader.setIdleMode(IdleMode.kBrake);
 
@@ -33,6 +38,8 @@ public class Arm extends TrapezoidProfileSubsystem {
         _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit.enableLimitSwitch(true);
+
+        _follower.follow(_leader, true);
 }       
 
     @Override
