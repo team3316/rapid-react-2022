@@ -5,14 +5,9 @@
 package frc.robot;
 
 
-import com.revrobotics.CANSparkMax;
-
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ArmConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,7 +28,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer(); 
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -82,24 +77,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandIntake());
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommandShoot());
-    SmartDashboard.putData((Sendable)m_robotContainer.getArmToPostionCommand());
-    SmartDashboard.putNumber("static gain", ArmConstants.staticFF);
-    SmartDashboard.putNumber("gravity gain", ArmConstants.gravityFF);
-    SmartDashboard.putNumber("speed gain", ArmConstants.velocityFF);
-    SmartDashboard.putNumber("acc gain", ArmConstants.accelerationFF);
-    SmartDashboard.putNumber("go to angle",0);
-    SmartDashboard.putNumber("kP", ArmConstants.kP);
-    //SmartDashboard.putData((Sendable)m_robotContainer.updateFromSDB());
-    SmartDashboard.putData((Sendable)m_robotContainer.testPos());
+
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  
   public void teleopPeriodic() {
-    m_robotContainer.updateSDB();
   }
 
   @Override
