@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("real angle", m_robotContainer.getRealAngle());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -83,6 +84,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("precent", 0);
     SmartDashboard.putNumber("angle", 0);
     SmartDashboard.putNumber("static", 0);
+    SmartDashboard.putData(new InstantCommand(()->m_robotContainer.setKCos()));
   }
 
   /** This function is called periodically during operator control. */
@@ -93,8 +95,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("real_precent", m_robotContainer.getPrecent());
     SmartDashboard.putNumber("voltage", m_robotContainer.getVoltageCompensationNominalVoltage());
     SmartDashboard.putNumber("static", SmartDashboard.getNumber("static", 0));
-    SmartDashboard.putNumber("real angle", m_robotContainer.getRealAngle());
-     new InstantCommand(()->m_robotContainer.getSetPrecent()).schedule();;
+    // SmartDashboard.putNumber("real angle", m_robotContainer.getRealAngle());
+     new InstantCommand(()->m_robotContainer.getSetPrecent()).schedule();
+    //  new InstantCommand(()->m_robotContainer.setFeedForward()).schedule();
    }
 
   @Override

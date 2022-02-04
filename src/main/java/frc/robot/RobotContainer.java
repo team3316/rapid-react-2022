@@ -57,7 +57,7 @@ public class RobotContainer {
 
   public void getSetPrecent(){
     double precent = SmartDashboard.getNumber("precent", 0)
-    * Math.cos(Math.toRadians(SmartDashboard.getNumber("real angle", 0)))
+    // * Math.cos(Math.toRadians(SmartDashboard.getNumber("real angle", 0)))
     + SmartDashboard.getNumber("static", 0);
     SmartDashboard.putNumber("cos", Math.cos(Math.toRadians(SmartDashboard.getNumber("real angle", 0))));
     SmartDashboard.putNumber("input precent", precent);
@@ -66,5 +66,13 @@ public class RobotContainer {
 
   public double getRealAngle(){
     return this.m_arm.getAngle();
+  }
+
+  public void setFeedForward(){
+    this.m_arm.setFFPrecent();
+  }
+
+  public void setKCos(){
+    this.m_arm.setKCos();
   }
 }
