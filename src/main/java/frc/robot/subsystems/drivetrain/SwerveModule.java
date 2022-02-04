@@ -44,6 +44,7 @@ public class SwerveModule {
 
     private static DBugSparkMax createSparkMax(int id, UnitConversions conversions, PIDFGains gains) {
         DBugSparkMax sparkMax = new DBugSparkMax(id, conversions);
+        sparkMax.restoreFactoryDefaults();
         sparkMax.setupPIDF(gains);
         sparkMax.setSmartCurrentLimit(40);
         sparkMax.enableVoltageCompensation(12);
