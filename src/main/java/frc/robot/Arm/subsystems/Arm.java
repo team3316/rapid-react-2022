@@ -38,6 +38,7 @@ public class Arm extends TrapezoidProfileSubsystem {
 
         _leader.setInverted(ArmConstants.motorInverted);
         _leader.setIdleMode(IdleMode.kBrake);
+        _follower.setIdleMode(IdleMode.kBrake);
 
         _forwardLimit = _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
@@ -75,13 +76,21 @@ public class Arm extends TrapezoidProfileSubsystem {
                 SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
     }
 
-    private void setGoal() {
+    private void setActiveGoal() {
+        this.enable();
         super.setGoal(SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
     }
-
+    
     @Override
     public void useState(TrapezoidProfile.State state) {
-        double feedforward = _feedforward.calculate(state.position, state.velocity);
+        if(_forwardLimit.isPressed()) {
+            _encoder.setPosition(ArmConstants.intakeAngle);
+        }
+        else if(_reverseLimit.isPressed()) {
+            _encoder.setPosition(ArmConstants.shootAngle);
+        }
+
+        double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
 
         _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
                 ArbFFUnits.kPercentOut);
@@ -89,22 +98,27 @@ public class Arm extends TrapezoidProfileSubsystem {
         updateSDB(state, feedforward);
     }
 
-    private void initSDB() {
+    public void initSDB() {
         SmartDashboard.putNumber("P Gain", SmartDashboard.getNumber("P Gain", ArmConstants.kP));
         SmartDashboard.putNumber("Max Output", SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput));
         SmartDashboard.putNumber("Goal", SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
+        SmartDashboard.putNumber("Gravity Gain", SmartDashboard.getNumber("Gravity Gain", ArmConstants.gravityFF));
+        SmartDashboard.putNumber("Velocity Gain", SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
+
+        SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isPressed());
+        SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isPressed());
 
         SmartDashboard.putData("Set PID", new InstantCommand(() -> setPID()));
         SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> setFeedForward()));
-        SmartDashboard.putData("Set Goal", new InstantCommand(() -> setGoal()));
+        SmartDashboard.putData("Set Goal 1", new InstantCommand(() -> this.setActiveGoal()));
     }
 
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
-        SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isLimitSwitchEnabled());
-        SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isLimitSwitchEnabled());
+        SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isPressed());
+        SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isPressed());
 
         SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
+        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity()/60*ArmConstants.motorToArmConversionFactor);
 
         SmartDashboard.putNumber("Arm State Position", state.position);
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);

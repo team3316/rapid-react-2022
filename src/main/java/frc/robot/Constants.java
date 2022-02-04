@@ -18,21 +18,21 @@ public final class Constants {
         public static final int leaderCANID = 16;
         public static final int followerCANID = 17;
 
-        public static final boolean motorInverted = true;
+        public static final boolean motorInverted = false;
 
         public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear reduction
 
         // Arm motion
         // TODO: Calibrate.
-        public static final double intakeAngle = -37; // in Degrees: measured. Theoretical was -37.6
-        public static final double shootAngle = 126; // in Degrees: measured. Theoretical was 119.6 
+        public static final double intakeAngle = 36; // in Degrees: measured. Theoretical was -37.6
+        public static final double shootAngle = -116; // in Degrees: measured. Theoretical was 119.6 
         
         // TODO: Define a legal starting angle, or create homing sequence
         public static final double startingAngle = intakeAngle;
 
         // TODO: Calibrate.
-        public static final double maxVelocityDegreesPerSec = 36; // in Degrees/s
-        public static final double maxAccelerationDegreesPerSecSqrd = 36; // in Degrees/s
+        public static final double maxVelocityDegreesPerSec = 50; // in Degrees/s
+        public static final double maxAccelerationDegreesPerSecSqrd = 46; // in Degrees/s
         
         // Arm gains 
         public static final int kPIDSlot = 0;
