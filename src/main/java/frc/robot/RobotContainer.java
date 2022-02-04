@@ -9,53 +9,67 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.Joysticks;
+import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.humanIO.Joysticks;
+import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final Drivetrain m_Drivetrain = new Drivetrain();
+    // The robot's subsystems and commands are defined here...
+    private final Drivetrain m_Drivetrain = new Drivetrain();
 
-  XboxController m_driverController = new XboxController(Joysticks.driverControllerPort);
+    private final Joysticks m_Joysticks = new Joysticks();
 
+    private boolean _fieldRelative = true;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-    m_Drivetrain.setDefaultCommand(
-      new RunCommand(
-        () ->
-        m_Drivetrain.drive(
-                2,// m_driverController.getLeftX(),
-                0,// m_driverController.getLeftY(),
-                0,// m_driverController.getRightX(),
-                false),
-        m_Drivetrain));
-  }
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        m_Drivetrain.setDefaultCommand(
+                new RunCommand(
+                        () -> m_Drivetrain.drive(
+                                m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getSteerX() * 11.5,
+                                _fieldRelative),
+                        m_Drivetrain));
+    }
 
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        m_Joysticks.getButton(Button.kShare)
+                .whenPressed(() -> m_Drivetrain.resetYaw());
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {}
+        m_Joysticks.getButton(Button.kOptions)
+                .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
+    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
-  }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // An ExampleCommand will run in autonomous
+        return new InstantCommand();
+    }
 }

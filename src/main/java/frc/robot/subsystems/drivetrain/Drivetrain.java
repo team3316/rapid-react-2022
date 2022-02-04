@@ -2,10 +2,8 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.FusionStatus;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -28,79 +26,59 @@ public class Drivetrain extends SubsystemBase {
     private SwerveDriveOdometry _odometry;
 
     public Drivetrain() {
-        _modules = new SwerveModule[] {
-            new SwerveModule(Constants.Drivetrain.TRModule),
-            new SwerveModule(Constants.Drivetrain.TLModule),
-            new SwerveModule(Constants.Drivetrain.BRModule),
-            new SwerveModule(Constants.Drivetrain.BLModule)
+        this._modules = new SwerveModule[] {
+                new SwerveModule(Constants.Drivetrain.TRModule),
+                new SwerveModule(Constants.Drivetrain.TLModule),
+                new SwerveModule(Constants.Drivetrain.BRModule),
+                new SwerveModule(Constants.Drivetrain.BLModule)
         };
-
         _pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
-        _pigeon = new PigeonIMU(_pigeonTalon);
+        _pigeon = new PigeonIMU(_pigeonTalon); // We need the talon
 
-        _odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
+        this._odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        xSpeed = -xSpeed;
-        ySpeed = -ySpeed;
-        rot *= 2;
+        fieldRelative = fieldRelative && this._pigeon.getState() == PigeonState.Ready;
+        SmartDashboard.putBoolean("Field Relative", fieldRelative);
 
-        SwerveModuleState[] moduleStates = Constants.Drivetrain.kinematics
-                .toSwerveModuleStates(fieldRelative && _pigeon.getState() == PigeonState.Ready
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
-                        : new ChassisSpeeds(xSpeed, ySpeed, rot));
+        ChassisSpeeds speeds;
+        if (fieldRelative) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d());
+        } else {
+            speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
+        }
+
+        var moduleStates = Constants.Drivetrain.kinematics.toSwerveModuleStates(speeds);
+
         setDesiredStates(moduleStates);
     }
 
-    public void setDesiredStates(SwerveModuleState[] moduleStates) {
+    private void setDesiredStates(SwerveModuleState[] moduleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
                 Constants.Drivetrain.SwerveModuleConstants.freeSpeedMetersPerSecond);
 
-        for (int i = 0; i < _modules.length; i++) {
-            _modules[i].setDesiredState(moduleStates[i]);
+        for (int i = 0; i < this._modules.length; i++) {
+            this._modules[i].setDesiredState(moduleStates[i]);
         }
     }
 
     public void periodic() {
         // Update the odometry in the periodic block
-        _odometry.update(getRotation2d(), _modules[0].getState(), _modules[1].getState(), _modules[2].getState(),
-                _modules[3].getState());
-
-                for (int i = 0; i < _modules.length; i++) {
-                    SmartDashboard.putNumber("steer " + i   , _modules[i].getSteeringSetpoint());
-                    SmartDashboard.putNumber("drive " + i, _modules[i].getDriveSetpoint());
-                    SmartDashboard.putNumber("speed " + i, _modules[i].getDriveVelocity());
-                    SmartDashboard.putNumber("angle " + i, _modules[i].getAngle());
-                }
-    }
-
-    public Pose2d getPose() {
-        return _odometry.getPoseMeters();
-    }
-
-    public void resetOdometry(Pose2d pose) {
-        _odometry.resetPosition(pose, getRotation2d());
-    }
-
-    public void setDriveVelocity(double velocityMetersPerSecond) {
-        for (SwerveModule swerveModule : _modules) {
-            swerveModule.setDriveVelocity(velocityMetersPerSecond);
-        }
+        this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),
+                this._modules[2].getState(),
+                this._modules[3].getState());
     }
 
     private double getHeading() {
-        FusionStatus status = new FusionStatus();
-        _pigeon.getFusedHeading(status);
-        
-        return status.heading;
+        return this._pigeon.getFusedHeading();
     }
 
-    private Rotation2d getRotation2d() {
+    public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
 
     public void resetYaw() {
-        _pigeon.setFusedHeading(0);
+        this._pigeon.setFusedHeading(0);
     }
 }
