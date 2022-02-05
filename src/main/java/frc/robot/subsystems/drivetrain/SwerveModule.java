@@ -24,9 +24,6 @@ public class SwerveModule {
 
     private CANCoder _absEncoder;
 
-    private double _steerSetpoint = 0;
-    private double _driveSetpoint = 0;
-
     public SwerveModule(SwerveModuleConstants constants) {
         this._driveMotor = createSparkMax(
                 constants.idDrive,
@@ -84,23 +81,20 @@ public class SwerveModule {
     public SwerveModuleState getState() {
         return new SwerveModuleState(
                 this._driveMotor.getVelocity(VelocityUnit.MetersPerSecond),
-                Rotation2d.fromDegrees(this.getAngle()));
+                new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition(PositionUnit.Degrees))));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition(PositionUnit.Degrees));
 
-        this._steerSetpoint = state.angle.getDegrees();
-        this._driveSetpoint = state.speedMetersPerSecond;
-
-        if (state.speedMetersPerSecond != 0) { // Avoid steering in place
-            this._steerMotor.set(ControlMode.Position, this._steerSetpoint, PositionUnit.Degrees);
-        }
+        if (state.speedMetersPerSecond != 0) // Avoid steering in place
+            this._steerMotor.set(ControlMode.Position, state.angle.getDegrees(), PositionUnit.Degrees);
+            
         if (state.speedMetersPerSecond == 0)
             this.stop();
         else
-            this._driveMotor.set(ControlMode.Velocity, _driveSetpoint, VelocityUnit.MetersPerSecond);
+            this._driveMotor.set(ControlMode.Velocity, state.speedMetersPerSecond, VelocityUnit.MetersPerSecond);
     }
 
     public static SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
@@ -132,27 +126,5 @@ public class SwerveModule {
         }
 
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
-    }
-
-    public double getAngle() {
-        double pos = this._steerMotor.getPosition(PositionUnit.Rotations);
-        pos = pos - Math.floor(pos);
-        return pos * 360;
-    }
-
-    public double getSteeringSetpoint() {
-        return this._steerSetpoint;
-    }
-
-    public double getDriveSetpoint() {
-        return this._driveSetpoint;
-    }
-
-    public double getDriveVelocity() {
-        return this._driveMotor.getVelocity(VelocityUnit.MetersPerSecond);
-    }
-
-    public double getAbsSteering() {
-        return this._absEncoder.getAbsolutePosition();
     }
 }
