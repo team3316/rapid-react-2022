@@ -24,21 +24,21 @@ public final class Constants {
 
         // Arm motion
         // TODO: Calibrate.
-        public static final double intakeAngle = 36; // in Degrees: measured. Theoretical was -37.6
-        public static final double shootAngle = -116; // in Degrees: measured. Theoretical was 119.6 
+        public static final double intakeAngle = 33; // in Degrees: measured. Theoretical was -37.6
+        public static final double shootAngle = -120; // in Degrees: measured. Theoretical was 119.6 
         
         // TODO: Define a legal starting angle, or create homing sequence
         public static final double startingAngle = intakeAngle;
 
         // TODO: Calibrate.
-        public static final double maxVelocityDegreesPerSec = 50; // in Degrees/s
-        public static final double maxAccelerationDegreesPerSecSqrd = 46; // in Degrees/s
+        public static final double maxVelocityDegreesPerSec = 600; // in Degrees/s
+        public static final double maxAccelerationDegreesPerSecSqrd = 600; // in Degrees/s
         
         // Arm gains 
         public static final int kPIDSlot = 0;
         // TODO: Calibrate.
-        public static final double kP = 0;
-        public static final double kMaxOutput = 0.1;
+        public static final double kP = 0.015;
+        public static final double kMaxOutput = 0.25;
 
         // Arm feedforward
         private static final double _armMaxTorque = 5.2 * 9.8 * 0.45; // in Nm: Arm mass in Kg, times gravitation, times COM distance in m.
@@ -47,7 +47,7 @@ public final class Constants {
                                                                                         //           devided by 60 seconds per minute, devided by gear ration.
 
         // TODO: Calibrate. These are theoretical values only.
-        public static final double gravityFF = _armMaxTorque / _motorMaxTorque;  // in Motor%: Required torque ratio
-        public static final double velocityFF = 1 / _motorMaxVelocity; // in Motor% s/rad: 1 / Max velocity
+        public static final double gravityFF = -0.07;  // in Motor%: Required torque ratio
+        public static final double velocityFF = 0; // in Motor% s/rad: 1 / Max velocity
     }
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+import frc.robot.Arm.LatchedBoolean;
 import frc.robot.Constants.ArmConstants;
 
 public class Arm extends TrapezoidProfileSubsystem {
@@ -21,6 +22,8 @@ public class Arm extends TrapezoidProfileSubsystem {
     private CANSparkMax _follower;
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
+    private LatchedBoolean _forwardState;
+    private LatchedBoolean _reverseState;
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
     private ArmFeedforward _feedforward;
@@ -45,11 +48,14 @@ public class Arm extends TrapezoidProfileSubsystem {
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit.enableLimitSwitch(true);
 
+        _forwardState = new LatchedBoolean();
+        _reverseState = new LatchedBoolean();
+
         _follower.follow(_leader, true);
 
         _encoder = _leader.getEncoder();
         _encoder.setPositionConversionFactor(ArmConstants.motorToArmConversionFactor);
-        _encoder.setVelocityConversionFactor(ArmConstants.motorToArmConversionFactor);
+        _encoder.setVelocityConversionFactor(ArmConstants.motorToArmConversionFactor/60);
 
         _PIDController = _leader.getPIDController();
         setPID();
@@ -83,10 +89,10 @@ public class Arm extends TrapezoidProfileSubsystem {
     
     @Override
     public void useState(TrapezoidProfile.State state) {
-        if(_forwardLimit.isPressed()) {
+        if(_forwardState.update(_forwardLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.intakeAngle);
         }
-        else if(_reverseLimit.isPressed()) {
+        else if(_reverseState.update(_reverseLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.shootAngle);
         }
 
@@ -98,27 +104,24 @@ public class Arm extends TrapezoidProfileSubsystem {
         updateSDB(state, feedforward);
     }
 
-    public void initSDB() {
-        SmartDashboard.putNumber("P Gain", SmartDashboard.getNumber("P Gain", ArmConstants.kP));
-        SmartDashboard.putNumber("Max Output", SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput));
-        SmartDashboard.putNumber("Goal", SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
-        SmartDashboard.putNumber("Gravity Gain", SmartDashboard.getNumber("Gravity Gain", ArmConstants.gravityFF));
-        SmartDashboard.putNumber("Velocity Gain", SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
-
-        SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isPressed());
-        SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isPressed());
+    private void initSDB() {
+        SmartDashboard.setDefaultNumber("P Gain",  ArmConstants.kP);
+        SmartDashboard.setDefaultNumber("Max Output",ArmConstants.kMaxOutput);
+        SmartDashboard.setDefaultNumber("Goal", ArmConstants.startingAngle);
+        SmartDashboard.setDefaultNumber("Gravity Gain", ArmConstants.gravityFF);
+        SmartDashboard.setDefaultNumber("Velocity Gain", ArmConstants.velocityFF);
 
         SmartDashboard.putData("Set PID", new InstantCommand(() -> setPID()));
         SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> setFeedForward()));
-        SmartDashboard.putData("Set Goal 1", new InstantCommand(() -> this.setActiveGoal()));
+        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> this.setActiveGoal()));
     }
 
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
-        SmartDashboard.putBoolean("Forward Limit Enabled", _forwardLimit.isPressed());
-        SmartDashboard.putBoolean("Reverse Limit Enabled", _reverseLimit.isPressed());
+        SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
+        SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
 
         SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity()/60*ArmConstants.motorToArmConversionFactor);
+        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
 
         SmartDashboard.putNumber("Arm State Position", state.position);
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);
