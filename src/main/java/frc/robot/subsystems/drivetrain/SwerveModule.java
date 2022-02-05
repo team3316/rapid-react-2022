@@ -88,10 +88,11 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
+        double totalAngle = this._steerMotor.getPosition(PositionUnit.Degrees);
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = optimizeState(desiredState, Rotation2d.fromDegrees(getAngle()));
+        SwerveModuleState state = optimize(desiredState, Rotation2d.fromDegrees(totalAngle));
 
-        this._steerSetpoint = this._steerMotor.getPosition(PositionUnit.Degrees) + state.angle.getDegrees();
+        this._steerSetpoint = state.angle.getDegrees();
         this._driveSetpoint = state.speedMetersPerSecond;
 
         if (state.speedMetersPerSecond != 0) { // Avoid steering in place
@@ -103,19 +104,40 @@ public class SwerveModule {
             this._driveMotor.set(ControlMode.Velocity, _driveSetpoint, VelocityUnit.MetersPerSecond);
     }
 
-    private static final Rotation2d kHalfRotation = Rotation2d.fromDegrees(180);
+    public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
+        double targetSpeed = desiredState.speedMetersPerSecond;
+        double delta = targetAngle - currentAngle.getDegrees();
+        if (Math.abs(delta) > 90) {
+            targetSpeed = -targetSpeed;
+            targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+        }
+        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+    }
 
-    public static SwerveModuleState optimizeState(SwerveModuleState desiredState, Rotation2d currentRotation) {
-
-        Rotation2d angleDifference = desiredState.angle.minus(currentRotation);
-        if (Math.abs(angleDifference.getDegrees()) < 90)
-            return new SwerveModuleState(desiredState.speedMetersPerSecond, angleDifference);
-
-        // invert velocity, and rotate wheel 180 degrees is better performance.
-        return new SwerveModuleState(-desiredState.speedMetersPerSecond,
-                angleDifference.getRadians() > 0
-                        ? angleDifference.minus(kHalfRotation)
-                        : angleDifference.plus(kHalfRotation));
+    private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
+        double lowerBound;
+        double upperBound;
+        double lowerOffset = scopeReference % 360;
+        if (lowerOffset >= 0) {
+            lowerBound = scopeReference - lowerOffset;
+            upperBound = lowerBound + 360;
+        } else {
+            upperBound = scopeReference - lowerOffset;
+            lowerBound = upperBound - 360;
+        }
+        while (newAngle < lowerBound) {
+            newAngle += 360;
+        }
+        while (newAngle > upperBound) {
+            newAngle -= 360;
+        }
+        if (newAngle - scopeReference > 180) {
+            newAngle -= 360;
+        } else if (newAngle - scopeReference < -180) {
+            newAngle += 360;
+        }
+        return newAngle;
     }
 
     public double getAngle() {
