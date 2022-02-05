@@ -88,9 +88,8 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        double totalAngle = this._steerMotor.getPosition(PositionUnit.Degrees);
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = optimize(desiredState, Rotation2d.fromDegrees(totalAngle));
+        SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition(PositionUnit.Degrees));
 
         this._steerSetpoint = state.angle.getDegrees();
         this._driveSetpoint = state.speedMetersPerSecond;
@@ -104,40 +103,35 @@ public class SwerveModule {
             this._driveMotor.set(ControlMode.Velocity, _driveSetpoint, VelocityUnit.MetersPerSecond);
     }
 
-    public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
-        double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
-        double targetSpeed = desiredState.speedMetersPerSecond;
-        double delta = targetAngle - currentAngle.getDegrees();
-        if (Math.abs(delta) > 90) {
-            targetSpeed = -targetSpeed;
-            targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
-        }
-        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
-    }
+    public static SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
+        double _angleDiff = desiredState.angle.getDegrees() - currentAngle; // total desired angle diff
+        double _reducedAngleDiff = _angleDiff % 360; // reduced desired angle diff in [-360, +360]
+        int _quadrateIndex = (int) (_angleDiff / 90 % 4); // index of quadrate we desire to turn to [-3, 3]
 
-    private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
-        double lowerBound;
-        double upperBound;
-        double lowerOffset = scopeReference % 360;
-        if (lowerOffset >= 0) {
-            lowerBound = scopeReference - lowerOffset;
-            upperBound = lowerBound + 360;
-        } else {
-            upperBound = scopeReference - lowerOffset;
-            lowerBound = upperBound - 360;
+        double targetAngle = currentAngle + _reducedAngleDiff;
+        double targetSpeed = desiredState.speedMetersPerSecond;
+
+        switch (_quadrateIndex) {
+            case -3: // Q1 undershot. We expect a CW turn.
+                targetAngle += 360;
+                break;
+            case -2: // Q2 undershot. We expect a CCW turn to Q4 & reverse direction.
+            case -1: // Q3. We expect a CW turn to Q1 & reverse direction.
+                targetAngle += 180;
+                targetSpeed = -targetSpeed;
+                break;
+            case 1: // Q2. We expect a CCW turn to Q4 & reverse direction.
+            case 2: // Q3 overshot. We expect a CW turn to Q1 & reverse direction.
+                targetAngle -= 180;
+                targetSpeed = -targetSpeed;
+                break;
+            case 3: // Q4 overshot. We expect a CCW turn.
+                targetAngle -= 360;
+                break;
+            default: // Q1 or Q4. We expect a CW or CCW turn.
         }
-        while (newAngle < lowerBound) {
-            newAngle += 360;
-        }
-        while (newAngle > upperBound) {
-            newAngle -= 360;
-        }
-        if (newAngle - scopeReference > 180) {
-            newAngle -= 360;
-        } else if (newAngle - scopeReference < -180) {
-            newAngle += 360;
-        }
-        return newAngle;
+
+        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 
     public double getAngle() {
