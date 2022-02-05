@@ -13,55 +13,27 @@ public class Trigger extends SubsystemBase {
   private BetterServo _servoLeft, _servoRight;
 
   public Trigger() {
-    this._servoLeft = new BetterServo(Constants.Trigger.CHANNEL_LEFT);
-    this._servoRight = new BetterServo(Constants.Trigger.CHANNEL_RIGHT);
+    this._servoLeft = new BetterServo(Constants.Trigger.channelLeft);
+    this._servoRight = new BetterServo(Constants.Trigger.channelRight);
+    
+    setLeftAngle(Constants.Trigger.inAngel);
+    setRightAngle(Constants.Trigger.inAngel);
   }
 
-  public enum TriggerState {
-    IN(Constants.Trigger.TriggerState.IN_ANGLE_LEFT, Constants.Trigger.TriggerState.IN_ANGLE_RIGHT), OUT(Constants.Trigger.TriggerState.OUT_ANGLE_LEFT, Constants.Trigger.TriggerState.OUT_ANGLE_RIGHT);
-
-    public final double leftAngle;
-    public final double rightAngle;
-
-    TriggerState(double leftAngle, double rightAngle){
-      this.leftAngle = leftAngle;
-      this.rightAngle = rightAngle;
-    }
+  public void setLeftAngle(double angle){
+    this._servoLeft.setAngle(angle);
   }
 
-  public enum Side{
-    LEFT, RIGHT;
+  public void setRightAngle(double angle){
+    this._servoRight.setAngle(angle);
   }
 
-  public void setState(TriggerState state, Side side){
-    switch (side) {
-      case LEFT:
-        this._servoLeft.setAngle(state.leftAngle);
-        break;
-      case RIGHT:
-        this._servoRight.setAngle(state.rightAngle);
-        break;
-      default:
-        break;
-    }
+  public double getLeftAngle(){
+    return this._servoLeft.getAngle();
   }
 
-  public TriggerState getState(Side side){
-
-    switch (side) {
-      case LEFT:
-        if(Math.abs(this._servoLeft.getAngle() - TriggerState.OUT.leftAngle) <= 0.00001){
-          return TriggerState.OUT;
-        }
-        return TriggerState.IN;
-      case RIGHT:
-        if(Math.abs(this._servoRight.getAngle() - TriggerState.OUT.rightAngle) <= 0.00001){
-          return TriggerState.OUT;
-        }
-        return TriggerState.IN;
-      default:
-        return null;
-      }
+  public double getRightAngle(){
+    return this._servoRight.getAngle();
   }
 
   @Override

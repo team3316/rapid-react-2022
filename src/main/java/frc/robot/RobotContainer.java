@@ -7,13 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.subsystems.Trigger;
-import frc.robot.subsystems.Trigger.Side;
-import frc.robot.subsystems.Trigger.TriggerState;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 
@@ -57,8 +56,16 @@ public class RobotContainer {
           () -> m_manipulator.setState(ManipulatorState.OFF),
           m_manipulator));
 
-    m_joysticks.getButton(Button.kA).whenHeld(this.getSetTriggerState(Side.LEFT));
-    m_joysticks.getButton(Button.kB).whenHeld(this.getSetTriggerState(Side.RIGHT));
+    m_joysticks.getButton(Button.kA)
+      .whenHeld(
+        new StartEndCommand(
+          () -> this.m_trigger.setLeftAngle(Constants.Trigger.outAngle), 
+          () -> this.m_trigger.setLeftAngle(Constants.Trigger.inAngel)));
+    m_joysticks.getButton(Button.kB)
+      .whenHeld(
+        new StartEndCommand(
+          () -> this.m_trigger.setRightAngle(Constants.Trigger.outAngle), 
+          () -> this.m_trigger.setRightAngle(Constants.Trigger.inAngel)));
 
   }
 
@@ -70,11 +77,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return new InstantCommand();
-  }
-  
-
-  public Command getSetTriggerState(Side side){
-    // TODO check if needed to end the command in another way
-    return new StartEndCommand(() -> m_trigger.setState(TriggerState.OUT, side), () -> m_trigger.setState(TriggerState.IN, side));
   }
 }
