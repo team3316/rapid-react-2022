@@ -22,6 +22,7 @@ public class Manipulator extends SubsystemBase {
 
   public enum ManipulatorState{
     COLLECT(Constants.Manipulator.collectRPM),
+    SHOOT(Constants.Manipulator.shootRPM),
     OFF(0);
 
     public final double rpm; 
@@ -37,11 +38,10 @@ public class Manipulator extends SubsystemBase {
   public Manipulator() {
     this._leaderMotor = new DBugTalon(Constants.Manipulator.leaderId, TalonModel.TalonFX, new UnitConversions(1,3*2.54/100,EncoderModel.FalconInternal), FeedbackDevice.IntegratedSensor);
     this._followerMotor = new DBugTalon(Constants.Manipulator.followerId,TalonModel.TalonFX, new UnitConversions(1,3*2.54/100,EncoderModel.FalconInternal), FeedbackDevice.IntegratedSensor);
-    this._leftSwitch = new DigitalInput(Constants.Manipulator.leftSwitchId);
-    this._rightSwitch = new DigitalInput(Constants.Manipulator.rightSwitchId);
     this._followerMotor.follow((IDBugMotorController)this._leaderMotor);
     this._followerMotor.setInverted(true);
     this._leaderMotor.setupPIDF(Constants.Manipulator.gains);
+    this._leaderMotor.configClosedloopRamp(Constants.Manipulator.accTime);
   }
 
   @Override
