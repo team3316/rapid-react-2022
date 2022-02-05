@@ -87,49 +87,17 @@ public class SwerveModule {
                 Rotation2d.fromDegrees(this.getAngle()));
     }
 
-    private void placeInAppropriate0To360Scope(SwerveModuleState desiredState, Rotation2d rotation) {
-        double lowerBound;
-        double upperBound;
-        double scopeReference = rotation.getDegrees();
-        double lowerOffset = scopeReference % 360;
-        double newAngle = desiredState.angle.getDegrees();
-
-        if (lowerOffset >= 0) {
-            lowerBound = scopeReference - lowerOffset;
-            upperBound = lowerBound + 360;
-        } else {
-            upperBound = scopeReference - lowerOffset;
-            lowerBound = upperBound - 360;
-        }
-
-        while (newAngle < lowerBound) {
-            newAngle += 360;
-        }
-        while (newAngle > upperBound) {
-            newAngle -= 360;
-        }
-
-        if (newAngle - scopeReference > 180) {
-            newAngle -= 360;
-        } else if (newAngle - scopeReference < -180) {
-            newAngle += 360;
-        }
-
-        desiredState.angle = Rotation2d.fromDegrees(newAngle);
-    }
-
     public void setDesiredState(SwerveModuleState desiredState) {
-        Rotation2d currentAngle = Rotation2d.fromDegrees(_steerMotor.getPosition(PositionUnit.Degrees));
-        placeInAppropriate0To360Scope(desiredState, currentAngle); // fix angle from -180-180 to absolute reference
-        
         // Optimize the reference state to avoid spinning further than 90 degrees
-        desiredState = SwerveModuleState.optimize(desiredState, currentAngle);
-        this._driveSetpoint = desiredState.speedMetersPerSecond;
+        SwerveModuleState state = optimizeState(desiredState, Rotation2d.fromDegrees(getAngle()));
 
-        if (desiredState.speedMetersPerSecond != 0) // Avoid steering in place
+        this._steerSetpoint = this._steerMotor.getPosition(PositionUnit.Degrees) + state.angle.getDegrees();
+        this._driveSetpoint = state.speedMetersPerSecond;
+
+        if (state.speedMetersPerSecond != 0) { // Avoid steering in place
             this._steerMotor.set(ControlMode.Position, this._steerSetpoint, PositionUnit.Degrees);
-
-        if (desiredState.speedMetersPerSecond == 0)
+        }
+        if (state.speedMetersPerSecond == 0)
             this.stop();
         else
             this._driveMotor.set(ControlMode.Velocity, _driveSetpoint, VelocityUnit.MetersPerSecond);
