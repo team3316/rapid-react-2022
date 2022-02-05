@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import frc.robot.commands.Shoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.subsystems.Trigger;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -51,7 +50,11 @@ public class RobotContainer {
         .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
     
     m_joysticks.getButton(Button.kRightBumper)
-      .whileHeld(new Shoot(m_manipulator));
+      .toggleWhenPressed(
+        new StartEndCommand(
+          () -> m_manipulator.setState(ManipulatorState.SHOOT),
+          () -> m_manipulator.setState(ManipulatorState.OFF),
+          m_manipulator));
 
     m_joysticks.getButton(Button.kA)
       .whenHeld(

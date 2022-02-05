@@ -23,16 +23,10 @@ public final class Constants {
         public static final int leaderId = 14;
         public static final int followerId = 15;
         public static final double kP = 0.1;
-        public static final double kI = 0;
-        public static final double kD = 0;
         public static final double kF = 0.75 * 1023 / 14750;
-        public static final double tolerance = 0;
-        public static final double iZone = 0;
-        public static final int leftSwitchId = 0;
-        public static final int rightSwitchId = 1;
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
-        public static final PIDFGains gains = new PIDFGains(kP, kI, kD, kF, tolerance, iZone);
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
         public static final int accTime = 1;
     }
     public final class Joysticks{
