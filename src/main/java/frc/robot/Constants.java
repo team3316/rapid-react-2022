@@ -27,7 +27,10 @@ public final class Constants {
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
-        public static final int accTime = 1;
+        public static final int maxAccelerationSeconds = 1;
+        public static final float kVelocityConversionFactor = 600 / 2048;
+        public static final double kPeakOutput = 1;
+        public static final int kUnitsPerRevolution = 2048;
     }
     public final class Joysticks{
         public static final double deadband = 0.1;
