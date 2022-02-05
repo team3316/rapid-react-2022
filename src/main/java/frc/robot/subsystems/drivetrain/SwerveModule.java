@@ -89,9 +89,9 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = optimizeState(desiredState, Rotation2d.fromDegrees(getAngle()));
+        SwerveModuleState state = optimizeState(desiredState, this._steerMotor.getPosition(PositionUnit.Degrees));
 
-        this._steerSetpoint = this._steerMotor.getPosition(PositionUnit.Degrees) + state.angle.getDegrees();
+        this._steerSetpoint = state.angle.getDegrees();
         this._driveSetpoint = state.speedMetersPerSecond;
 
         if (state.speedMetersPerSecond != 0) { // Avoid steering in place
@@ -105,17 +105,19 @@ public class SwerveModule {
 
     private static final Rotation2d kHalfRotation = Rotation2d.fromDegrees(180);
 
-    public static SwerveModuleState optimizeState(SwerveModuleState desiredState, Rotation2d currentRotation) {
-
-        Rotation2d angleDifference = desiredState.angle.minus(currentRotation);
-        if (Math.abs(angleDifference.getDegrees()) < 90)
-            return new SwerveModuleState(desiredState.speedMetersPerSecond, angleDifference);
-
-        // invert velocity, and rotate wheel 180 degrees is better performance.
-        return new SwerveModuleState(-desiredState.speedMetersPerSecond,
-                angleDifference.getRadians() > 0
-                        ? angleDifference.minus(kHalfRotation)
-                        : angleDifference.plus(kHalfRotation));
+    public static SwerveModuleState optimizeState(SwerveModuleState desiredState, double currentTotalAngle) {
+        Rotation2d currentRadian = Rotation2d.fromDegrees(((currentTotalAngle / 360) % 1) * 360);
+        Rotation2d angle = desiredState.angle.minus(currentRadian);
+        double speed = desiredState.speedMetersPerSecond;
+        if (Math.abs(angle.getDegrees()) > 90) {
+            speed = -speed;
+            if (angle.getRadians() > 0) {
+                angle = angle.minus(kHalfRotation);
+            } else {
+                angle = angle.plus(kHalfRotation);
+            }
+        }
+        return new SwerveModuleState(speed, angle.plus(Rotation2d.fromDegrees(currentTotalAngle)));
     }
 
     public double getAngle() {
