@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.ArmConstants.Drivetrain.SwerveModuleConstants;
+import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.Arm.subsystems.Arm;
 import frc.robot.Subsystems.drivetrain.Drivetrain;
 import frc.robot.humanIO.Joysticks;
