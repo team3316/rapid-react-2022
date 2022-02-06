@@ -109,7 +109,7 @@ public class SwerveModule {
             
         // Q2 undershot. We expect a CCW turn to Q4 & reverse direction.
         // Q3. We expect a CW turn to Q1 & reverse direction.
-        else if (-90 < _angleDiff && _angleDiff < -270) {
+        else if (-90 > _angleDiff && _angleDiff > -270) {
             targetAngle += 180;
             targetSpeed = -targetSpeed;
         }
