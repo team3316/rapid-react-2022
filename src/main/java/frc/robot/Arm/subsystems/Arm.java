@@ -61,30 +61,29 @@ public class Arm extends TrapezoidProfileSubsystem {
         setPID();
 
         setFeedForward();
-
-        initSDB();
     }
 
     private void setPID() {
-        _PIDController.setP(SmartDashboard.getNumber("P Gain", ArmConstants.kP), ArmConstants.kPIDSlot);
+        _PIDController.setP(ArmConstants.kP, ArmConstants.kPIDSlot);
         _PIDController.setI(0, ArmConstants.kPIDSlot);
         _PIDController.setD(0, ArmConstants.kPIDSlot);
         _PIDController.setIZone(0, ArmConstants.kPIDSlot);
         _PIDController.setFF(0, ArmConstants.kPIDSlot);
 
-        double kMaxOutput = SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput);
+        double kMaxOutput = ArmConstants.kMaxOutput;
         _PIDController.setOutputRange(-kMaxOutput, kMaxOutput, ArmConstants.kPIDSlot);
     }
 
     private void setFeedForward() {
         _feedforward = new ArmFeedforward(0,
-                SmartDashboard.getNumber("Gravity Gain", ArmConstants.gravityFF),
-                SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
+                ArmConstants.gravityFF,
+                ArmConstants.velocityFF);
     }
 
-    private void setActiveGoal() {
+    public void setActiveGoal(double angle) {
+        System.out.println(angle);
         this.enable();
-        super.setGoal(SmartDashboard.getNumber("Goal", ArmConstants.startingAngle));
+        super.setGoal(angle);
     }
     
     @Override
@@ -95,37 +94,15 @@ public class Arm extends TrapezoidProfileSubsystem {
          else if(_reverseState.update(_reverseLimit.isPressed())) {
              _encoder.setPosition(ArmConstants.shootAngle);
         }
+        SmartDashboard.putBoolean("down", _forwardLimit.isPressed());
+        SmartDashboard.putBoolean("up", _reverseLimit.isPressed());
+        SmartDashboard.putNumber("statepositiontobe", state.position);
+        SmartDashboard.putNumber("position i think i am", _encoder.getPosition());
 
         double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
 
         _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
                 ArbFFUnits.kPercentOut);
 
-        updateSDB(state, feedforward);
-    }
-
-    private void initSDB() {
-        SmartDashboard.setDefaultNumber("P Gain",  ArmConstants.kP);
-        SmartDashboard.setDefaultNumber("Max Output",ArmConstants.kMaxOutput);
-        SmartDashboard.setDefaultNumber("Goal", ArmConstants.startingAngle);
-        SmartDashboard.setDefaultNumber("Gravity Gain", ArmConstants.gravityFF);
-        SmartDashboard.setDefaultNumber("Velocity Gain", ArmConstants.velocityFF);
-
-        SmartDashboard.putData("Set PID", new InstantCommand(() -> setPID()));
-        SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> setFeedForward()));
-        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> this.setActiveGoal()));
-    }
-
-    private void updateSDB(TrapezoidProfile.State state, double feedforward) {
-        SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
-        SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
-
-        SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
-
-        SmartDashboard.putNumber("Arm State Position", state.position);
-        SmartDashboard.putNumber("Arm State Velocity", state.velocity);
-
-        SmartDashboard.putNumber("Arm Feed Forward", feedforward);
     }
 }

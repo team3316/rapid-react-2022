@@ -45,7 +45,7 @@ public final class Constants {
 
         // TODO: Calibrate. These are theoretical values only.
         public static final double gravityFF = -0.07;  // in Motor%: Required torque ratio
-        public static final double velocityFF = 1/_motorMaxVelocity; // in Motor% s/degs: 1 / Max velocity
+        public static final double velocityFF = 0; //1/_motorMaxVelocity; // in Motor% s/degs: 1 / Max velocity
     }
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
