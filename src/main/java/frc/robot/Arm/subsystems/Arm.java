@@ -92,8 +92,8 @@ public class Arm extends TrapezoidProfileSubsystem {
         if(_forwardState.update(_forwardLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.intakeAngle);
         }
-        else if(_reverseState.update(_reverseLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.shootAngle);
+         else if(_reverseState.update(_reverseLimit.isPressed())) {
+             _encoder.setPosition(ArmConstants.shootAngle);
         }
 
         double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
