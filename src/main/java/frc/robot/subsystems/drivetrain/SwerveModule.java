@@ -98,33 +98,32 @@ public class SwerveModule {
     }
 
     public static SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
-        double _angleDiff = desiredState.angle.getDegrees() - currentAngle; // total desired angle diff
-        double _reducedAngleDiff = _angleDiff % 360; // reduced desired angle diff in [-360, +360]
-        int _quadrateIndex = (int) (_angleDiff / 90 % 4); // index of quadrate we desire to turn to [-3, 3]
+        // desired angle diff in [-360, +360]
+        double _angleDiff = (desiredState.angle.getDegrees() - currentAngle) % 360;
 
-        double targetAngle = currentAngle + _reducedAngleDiff;
+        double targetAngle = currentAngle + _angleDiff;
         double targetSpeed = desiredState.speedMetersPerSecond;
 
-        switch (_quadrateIndex) {
-            case -3: // Q1 undershot. We expect a CW turn.
-                targetAngle += 360;
-                break;
-            case -2: // Q2 undershot. We expect a CCW turn to Q4 & reverse direction.
-            case -1: // Q3. We expect a CW turn to Q1 & reverse direction.
-                targetAngle += 180;
-                targetSpeed = -targetSpeed;
-                break;
-            case 1: // Q2. We expect a CCW turn to Q4 & reverse direction.
-            case 2: // Q3 overshot. We expect a CW turn to Q1 & reverse direction.
-                targetAngle -= 180;
-                targetSpeed = -targetSpeed;
-                break;
-            case 3: // Q4 overshot. We expect a CCW turn.
-                targetAngle -= 360;
-                break;
-            default: // Q1 or Q4. We expect a CW or CCW turn.
+        // Q1 undershot. We expect a CW turn.
+        if (_angleDiff <= -270) targetAngle += 360;
+            
+        // Q2 undershot. We expect a CCW turn to Q4 & reverse direction.
+        // Q3. We expect a CW turn to Q1 & reverse direction.
+        else if (-90 < _angleDiff && _angleDiff < -270) {
+            targetAngle += 180;
+            targetSpeed = -targetSpeed;
         }
 
+        // Q2. We expect a CCW turn to Q4 & reverse direction.
+        // Q3 overshot. We expect a CW turn to Q1 & reverse direction.
+        else if (90 < _angleDiff && _angleDiff < 270) {
+            targetAngle -= 180;
+            targetSpeed = -targetSpeed;
+        }
+        
+        // Q4 overshot. We expect a CCW turn.
+        else if (_angleDiff >= 270) targetAngle -= 360;
+            
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 }
