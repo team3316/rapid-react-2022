@@ -44,7 +44,7 @@ public class Arm extends TrapezoidProfileSubsystem {
         _follower.setIdleMode(IdleMode.kBrake);
 
         _forwardLimit = _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit.enableLimitSwitch(true);
 
