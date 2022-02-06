@@ -31,8 +31,8 @@ public final class Constants {
         public static final double startingAngle = intakeAngle;
 
         // TODO: Calibrate.
-        public static final double maxVelocityDegreesPerSec = 600; // in Degrees/s
-        public static final double maxAccelerationDegreesPerSecSqrd = 600; // in Degrees/s
+        public static final double maxVelocityDegreesPerSec = 36; // in Degrees/s
+        public static final double maxAccelerationDegreesPerSecSqrd = 36; // in Degrees/s
         
         // Arm gains 
         public static final int kPIDSlot = 0;
@@ -43,11 +43,11 @@ public final class Constants {
         // Arm feedforward
         private static final double _armMaxTorque = 5.2 * 9.8 * 0.45; // in Nm: Arm mass in Kg, times gravitation, times COM distance in m.
         private static final double _motorMaxTorque = 2.7 * 2 * 33.6; // in Nm: Max measured Neo Torque in Nm, times two motors, times gear ratio.
-        private static final double _motorMaxVelocity = 5800 * 2 * Math.PI / 60 / 33.6; // in rad/s: Max Neo Velocity in RPM, times 2 pi radians,
+        private static final double _motorMaxVelocity = 5800 * 360 / 60 / 33.6; // in Degs/s: Max Neo Velocity in RPM, times 360 degrees,
                                                                                         //           devided by 60 seconds per minute, devided by gear ration.
 
         // TODO: Calibrate. These are theoretical values only.
         public static final double gravityFF = -0.07;  // in Motor%: Required torque ratio
-        public static final double velocityFF = 0; // in Motor% s/rad: 1 / Max velocity
+        public static final double velocityFF = 1/_motorMaxVelocity; // in Motor% s/degs: 1 / Max velocity
     }
 }
