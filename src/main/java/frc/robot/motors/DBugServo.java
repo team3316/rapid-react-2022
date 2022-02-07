@@ -33,11 +33,11 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
                 this._leader = null;
             }
         } else if (leader instanceof DBugServo) {
-            if (((DBugServo) leader).isFollowing(this)){
+            if (((DBugServo) leader).isFollowing(this)) {
                 throw new IllegalArgumentException("Leader is already following follower");
             } else {
                 if (_leader != null) {
-                    _leader._followers.remove(this); // Cant follow more than one device 
+                    _leader._followers.remove(this); // Cant follow more than one device
                 }
                 _leader = (DBugServo) leader;
                 _leader.addFollower(this);
@@ -51,9 +51,9 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
     public void set(ControlMode mode, double value) {
         if (mode != ControlMode.Position)
             throw new IllegalArgumentException("Servo only supports Position control mode");
-        
-        this.setAngle(_inverted ? super.kMaxServoAngle - (value * 360) : (value * 360) );
-        
+
+        this.setAngle(_inverted ? super.kMaxServoAngle - (value * 360) : (value * 360));
+
         for (DBugServo servo : _followers) {
             servo.set(mode, value);
         }
@@ -73,8 +73,7 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
     public double getPosition(PositionUnit unit) {
         return this.getAngle() / 360 * conversions.getRotationsModifier(unit);
     }
-    
-    
+
     private void addFollower(DBugServo follower) {
         this._followers.add(follower);
     }
@@ -88,11 +87,11 @@ public class DBugServo extends BetterServo implements IDBugMotorController {
 
     @Override
     public void set(ControlMode mode, double value, VelocityUnit unit) {
-        throw new IllegalArgumentException("Servo only supports Position control mode");  
+        throw new IllegalArgumentException("Servo only supports Position control mode");
     }
 
     @Override
     public void set(ControlMode mode, double value, PositionUnit unit) {
-        this.set(mode, value / conversions.getRotationsModifier(unit));        
+        this.set(mode, value / conversions.getRotationsModifier(unit));
     }
 }

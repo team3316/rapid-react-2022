@@ -90,7 +90,7 @@ public class SwerveModule {
 
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
             this._steerMotor.set(ControlMode.Position, state.angle.getDegrees(), PositionUnit.Degrees);
-            
+
         if (state.speedMetersPerSecond == 0)
             this.stop();
         else
@@ -105,8 +105,9 @@ public class SwerveModule {
         double targetSpeed = desiredState.speedMetersPerSecond;
 
         // Q1 undershot. We expect a CW turn.
-        if (_angleDiff <= -270) targetAngle += 360;
-            
+        if (_angleDiff <= -270)
+            targetAngle += 360;
+
         // Q2 undershot. We expect a CCW turn to Q4 & reverse direction.
         // Q3. We expect a CW turn to Q1 & reverse direction.
         else if (-90 > _angleDiff && _angleDiff > -270) {
@@ -120,10 +121,11 @@ public class SwerveModule {
             targetAngle -= 180;
             targetSpeed = -targetSpeed;
         }
-        
+
         // Q4 overshot. We expect a CCW turn.
-        else if (_angleDiff >= 270) targetAngle -= 360;
-            
+        else if (_angleDiff >= 270)
+            targetAngle -= 360;
+
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
 }

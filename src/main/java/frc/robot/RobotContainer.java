@@ -9,9 +9,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
@@ -26,6 +29,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Drivetrain m_Drivetrain = new Drivetrain();
+    private final Arm m_arm = new Arm();
 
     private final Joysticks m_Joysticks = new Joysticks();
 
@@ -61,6 +65,11 @@ public class RobotContainer {
 
         m_Joysticks.getButton(Button.kOptions)
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
+
+        m_Joysticks.getButton(Button.kTriangle).toggleWhenPressed(new StartEndCommand(
+                () -> m_arm.setActiveGoal(ArmConstants.shootAngle),
+                () -> m_arm.setActiveGoal(ArmConstants.intakeAngle),
+                m_arm));
     }
 
     /**

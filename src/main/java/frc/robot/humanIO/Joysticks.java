@@ -12,10 +12,6 @@ public class Joysticks {
         this._controller = new PS5Controller(0);
     }
 
-    private static double calculateDeadband(double value) {
-        return Math.abs(value) > Constants.Joysticks.deadband ? Math.copySign(value * value, value) : 0;
-    }
-
     private static double calculateDeadband(double value, double other) {
         return Math.abs(value) > Constants.Joysticks.deadband
                 || Math.abs(other) > Constants.Joysticks.deadband

@@ -9,12 +9,46 @@ import frc.robot.motors.units.VelocityUnit;
 /**
  * Constants
  */
-public class Constants {
+public final class Constants {
+    public static final class ArmConstants {
+        // Arm motors
+        public static final int leaderCANID = 16;
+        public static final int followerCANID = 17;
+
+        public static final boolean motorInverted = false;
+
+        public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear
+                                                                            // reduction
+
+        // Arm motion
+        public static final double intakeAngle = 36; // in Degrees: measured. Theoretical was -37.6
+        public static final double shootAngle = -123; // in Degrees: measured. Theoretical was 119.6
+
+        // TODO: Define a legal starting angle, or create homing sequence
+        public static final double startingAngle = intakeAngle;
+
+        // motion profile.
+        public static final double movementTime = 1.5; // in secs.
+        public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
+        public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec / (movementTime / 2); // in
+                                                                                                                     // Degrees/s^2
+
+        // Arm gains
+        public static final int kPIDSlot = 0;
+        public static final double kP = 0.03;
+        public static final double kMaxOutput = 0.4;
+
+        // Arm feedforward
+        public static final double gravityFF = -0.07; // in Motor%
+        public static final double velocityFF = 0.000965; // in Motor% s/degs
+    }
+
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
             public static final double driveKp = 0.0002; // in minutes per motor rotation
             public static final double driveKd = 0.01; // in minutes per motor rotation
-            public static final double driveKf = 0.167 / 902.0; // percent to motor / RPM of motor at that percent
+            public static final double driveKf = 0.167 / 902.0; // percent to motor / RPM of motor at that
+                                                                // percent
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
             private static final double neoMaxSpeed = 5600;
@@ -57,16 +91,20 @@ public class Constants {
         public final static double cancoderBROffset = 190.1;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4, cancoderTLOffset, 11);
+                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4,
+                cancoderTLOffset, 11);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2, cancoderTROffset, 10);
+                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2,
+                cancoderTROffset, 10);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6, cancoderBLOffset, 12);
+                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6,
+                cancoderBLOffset, 12);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8, cancoderBROffset, 13);
+                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8,
+                cancoderBROffset, 13);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                 TLModule.position, BRModule.position, BLModule.position);
