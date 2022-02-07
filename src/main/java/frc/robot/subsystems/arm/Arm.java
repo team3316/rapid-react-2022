@@ -67,7 +67,7 @@ public class Arm extends TrapezoidProfileSubsystem {
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
-        initSDB();
+        // initSDB();
     }
 
     private void updatePIDFromSDB() {
@@ -106,9 +106,10 @@ public class Arm extends TrapezoidProfileSubsystem {
         _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
                 ArbFFUnits.kPercentOut);
 
-        updateSDB(state, feedforward);
+        // updateSDB(state, feedforward);
     }
 
+    @SuppressWarnings("unused")
     private void initSDB() {
         SmartDashboard.setDefaultNumber("P Gain", ArmConstants.kP);
         SmartDashboard.setDefaultNumber("Max Output", ArmConstants.kMaxOutput);
@@ -121,6 +122,7 @@ public class Arm extends TrapezoidProfileSubsystem {
         SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> setActiveGoalFromSDB()));
     }
 
+    @SuppressWarnings("unused")
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
         SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
