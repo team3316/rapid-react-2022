@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,14 +41,14 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings
         configureButtonBindings();
-        // m_Drivetrain.setDefaultCommand(
-        //         new RunCommand(
-        //                 () -> m_Drivetrain.drive(
-        //                         m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond,
-        //                         m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond,
-        //                         m_Joysticks.getSteerX() * 11.5,
-        //                         _fieldRelative),
-        //                 m_Drivetrain));
+        m_Drivetrain.setDefaultCommand(
+                new RunCommand(
+                        () -> m_Drivetrain.drive(
+                                m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getSteerX() * 11.5,
+                                _fieldRelative),
+                        m_Drivetrain));
     }
 
     /**
