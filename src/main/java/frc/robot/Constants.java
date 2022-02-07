@@ -22,21 +22,22 @@ public final class Constants {
     public static final class Manipulator {
         public static final int leaderId = 14;
         public static final int followerId = 15;
-        public static final double kP = 0.1;
-        public static final double kF = 0.75 * 1023 / 14750;
+        public static final double kP = 0.1; //
+        public static final double kF = 0.75 * 1023 / 14750; // units at 75% / native velocity at 75%
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
         public static final int maxAccelerationSeconds = 1;
-        public static final float kVelocityConversionFactor = 600 / 2048;
+        public static final float kVelocityConversionFactor = 600 / 2048; // 100ms per minute / upr
+                                                                          // (native velocity to RPM)
         public static final double kPeakOutput = 1;
-        public static final int kUnitsPerRevolution = 2048;
     }
-    public final class Joysticks{
+
+    public final class Joysticks {
         public static final double deadband = 0.1;
     }
-    
-    public final class Trigger{
+
+    public final class Trigger {
         public final static int channelLeft = 8;
         public final static int channelRight = 9;
         // TODO check values (the triggers are in wrong place)
