@@ -14,11 +14,11 @@ public class Trigger extends SubsystemBase {
     private BetterServo _servoLeft, _servoRight;
 
     public Trigger() {
-        this._servoLeft = new BetterServo(Constants.Trigger.channelLeft);
-        this._servoRight = new BetterServo(Constants.Trigger.channelRight);
+        this._servoLeft = new BetterServo(Constants.Trigger.Left.channel);
+        this._servoRight = new BetterServo(Constants.Trigger.Right.channel);
 
-        setLeftAngle(Constants.Trigger.inAngel);
-        setRightAngle(Constants.Trigger.inAngel);
+        setLeftAngle(Constants.Trigger.Left.inAngle);
+        setRightAngle(Constants.Trigger.Right.inAngle);
     }
 
     public void setLeftAngle(double angle) {
@@ -41,10 +41,10 @@ public class Trigger extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putBoolean(
                 "Left Trigger Out",
-                Math.abs(getLeftAngle() - Constants.Trigger.outAngle) <= 0.01);
+                Math.abs(getLeftAngle() - Constants.Trigger.Left.outAngle) <= 0.01);
 
         SmartDashboard.putBoolean(
                 "Right Trigger Out",
-                Math.abs(getRightAngle() - Constants.Trigger.outAngle) <= 0.01);
+                Math.abs(getRightAngle() - Constants.Trigger.Right.outAngle) <= 0.01);
     }
 }

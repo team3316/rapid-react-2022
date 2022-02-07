@@ -132,12 +132,18 @@ public final class Constants {
         public static final double kPeakOutput = 1;
     }
 
-    public final class Trigger {
-        public final static int channelLeft = 8;
-        public final static int channelRight = 9;
-        // TODO check values (the triggers are in wrong place)
-        public final static double inAngel = 0.0;
-        public final static double outAngle = 85.0;
+    public final static class Trigger {
+        public final static class Left {
+            public final static int channel = 8;
+            public final static double inAngle = 20.0;
+            public final static double outAngle = 85.0;
+        }
+
+        public final static class Right {
+            public final static int channel = 9;
+            public final static double inAngle = 180.0;
+            public final static double outAngle = 95.0;
+        }
     }
 
     public static final class Joysticks {

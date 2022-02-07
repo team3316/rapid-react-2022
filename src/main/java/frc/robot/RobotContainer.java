@@ -86,13 +86,13 @@ public class RobotContainer {
         m_Joysticks.getButton(Button.kCross)
                 .whenHeld(
                         new StartEndCommand(
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.outAngle),
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.inAngel)));
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
         m_Joysticks.getButton(Button.kCircle)
                 .whenHeld(
                         new StartEndCommand(
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.outAngle),
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.inAngel)));
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
 
         m_Joysticks.getButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
