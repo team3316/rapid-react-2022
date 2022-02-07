@@ -29,8 +29,9 @@ public final class Constants {
 
         // TODO: Calibrate for 1s motion. Reduce this to a single number for triangle
         // motion profile.
-        public static final double maxVelocityDegreesPerSec = 36; // in Degrees/s
-        public static final double maxAccelerationDegreesPerSecSqrd = 36; // in Degrees/s
+        public static final double movementTime = 4; //in secs.
+        public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
+        public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec/ ( movementTime / 2); // in Degrees/s
 
         // Arm gains
         public static final int kPIDSlot = 0;
