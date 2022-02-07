@@ -115,14 +115,17 @@ public final class Constants {
     public static final class Manipulator {
         public static final int leaderId = 14;
         public static final int followerId = 15;
-        // TODO check the real channel
+
         public static final int leftChannel = 8;
         public static final int rightChannel = 9;
+
         public static final double kP = 0.1; //
-        public static final double kF = 0.75 * 1023 / 14750; // units at 75% / native velocity at 75%
+        public static final double kF = 0.75 * 1023 / 14750; // units at 75% / measured native velocity at 75%
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
+
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
-        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
+
         public static final int maxAccelerationSeconds = 1;
         public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
                                                                              // (native velocity to RPM)
