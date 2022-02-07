@@ -29,19 +29,20 @@ public final class Constants {
 
         // TODO: Calibrate for 1s motion. Reduce this to a single number for triangle
         // motion profile.
-        public static final double movementTime = 4; //in secs.
+        public static final double movementTime = 5; //in secs.
         public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec/ ( movementTime / 2); // in Degrees/s
 
         // Arm gains
         public static final int kPIDSlot = 0;
-        public static final double kP = 0.015;
-        public static final double kMaxOutput = 0.25;
+        public static final double kP = 0.03;
+        public static final double kMaxOutput = 0.4;
 
         // Arm feedforward
+
         public static final double gravityFF = -0.07; // in Motor%
         // TODO: Calibrate. Theoretical: 1 / Max Velocity which is 1036 deg/s
-        public static final double velocityFF = 0; // in Motor% s/degs
+        public static final double velocityFF = 0.000965; // in Motor% s/degs
     }
 
     public static final class Drivetrain {
