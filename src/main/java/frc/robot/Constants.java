@@ -17,41 +17,38 @@ public final class Constants {
 
         public static final boolean motorInverted = false;
 
-        public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear reduction
+        public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear
+                                                                            // reduction
 
         // Arm motion
-        // TODO: Calibrate.
         public static final double intakeAngle = 36; // in Degrees: measured. Theoretical was -37.6
-        public static final double shootAngle = -123; // in Degrees: measured. Theoretical was 119.6 
-        
+        public static final double shootAngle = -123; // in Degrees: measured. Theoretical was 119.6
+
         // TODO: Define a legal starting angle, or create homing sequence
         public static final double startingAngle = intakeAngle;
 
-        // TODO: Calibrate.
+        // TODO: Calibrate for 1s motion. Reduce this to a single number for triangle
+        // motion profile.
         public static final double maxVelocityDegreesPerSec = 36; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = 36; // in Degrees/s
-        
-        // Arm gains 
+
+        // Arm gains
         public static final int kPIDSlot = 0;
-        // TODO: Calibrate.
         public static final double kP = 0.015;
         public static final double kMaxOutput = 0.25;
 
         // Arm feedforward
-        private static final double _armMaxTorque = 5.2 * 9.8 * 0.45; // in Nm: Arm mass in Kg, times gravitation, times COM distance in m.
-        private static final double _motorMaxTorque = 2.7 * 2 * 33.6; // in Nm: Max measured Neo Torque in Nm, times two motors, times gear ratio.
-        private static final double _motorMaxVelocity = 5800 * 360 / 60 / 33.6; // in Degs/s: Max Neo Velocity in RPM, times 360 degrees,
-                                                                                        //           devided by 60 seconds per minute, devided by gear ration.
-
-        // TODO: Calibrate. These are theoretical values only.
-        public static final double gravityFF = -0.07;  // in Motor%: Required torque ratio
-        public static final double velocityFF = 0; //1/_motorMaxVelocity; // in Motor% s/degs: 1 / Max velocity
+        public static final double gravityFF = -0.07; // in Motor%
+        // TODO: Calibrate. Theoretical: 1 / Max Velocity which is 1036 deg/s
+        public static final double velocityFF = 0; // in Motor% s/degs
     }
+
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
             public static final double driveKp = 0.0002; // in minutes per motor rotation
             public static final double driveKd = 0.01; // in minutes per motor rotation
-            public static final double driveKf = 0.167 / 902.0; // percent to motor / RPM of motor at that percent
+            public static final double driveKf = 0.167 / 902.0; // percent to motor / RPM of motor at that
+                                                                // percent
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
             private static final double neoMaxSpeed = 5600;
@@ -94,16 +91,20 @@ public final class Constants {
         public final static double cancoderBROffset = 190.1;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4, cancoderTLOffset, 11);
+                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4,
+                cancoderTLOffset, 11);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2, cancoderTROffset, 10);
+                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2,
+                cancoderTROffset, 10);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6, cancoderBLOffset, 12);
+                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6,
+                cancoderBLOffset, 12);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8, cancoderBROffset, 13);
+                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8,
+                cancoderBROffset, 13);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                 TLModule.position, BRModule.position, BLModule.position);
@@ -117,4 +118,3 @@ public final class Constants {
         public static final int driverControllerPort = 0;
     }
 }
-

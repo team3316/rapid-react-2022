@@ -8,7 +8,7 @@ public class UnitConversions {
     public final double upr;
 
     public UnitConversions(double gearRatio, double wheelDiameterMeters, EncoderModel model) {
-        this(gearRatio, wheelDiameterMeters,model.upr);
+        this(gearRatio, wheelDiameterMeters, model.upr);
     }
 
     public UnitConversions(double gearRatio, double wheelDiameterMeters, double upr) {
@@ -32,7 +32,7 @@ public class UnitConversions {
             case Degrees:
                 return gearRatio * 360;
             case Meters:
-                if(wheelDiameterMeters == Integer.MAX_VALUE)
+                if (wheelDiameterMeters == Integer.MAX_VALUE)
                     throw new UnsupportedOperationException("Cannot get distance without wheel diameter");
                 return gearRatio * wheelDiameterMeters * Math.PI;
         }
@@ -44,9 +44,9 @@ public class UnitConversions {
             case RPM:
                 return gearRatio;
             case MetersPerSecond:
-                if(wheelDiameterMeters == Integer.MAX_VALUE)
+                if (wheelDiameterMeters == Integer.MAX_VALUE)
                     throw new UnsupportedOperationException("Cannot get distance without wheel diameter");
-                return gearRatio *  wheelDiameterMeters * Math.PI / 60;
+                return gearRatio * wheelDiameterMeters * Math.PI / 60;
         }
         throw new IllegalArgumentException("Unknown VelocityUnit");
     }

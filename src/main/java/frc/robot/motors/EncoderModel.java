@@ -13,6 +13,4 @@ public enum EncoderModel {
         this.upr = upr;
     }
 
-
-    
 }

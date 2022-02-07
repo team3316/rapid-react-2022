@@ -12,7 +12,6 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Arm.LatchedBoolean;
 import frc.robot.Constants.ArmConstants;
@@ -55,7 +54,7 @@ public class Arm extends TrapezoidProfileSubsystem {
 
         _encoder = _leader.getEncoder();
         _encoder.setPositionConversionFactor(ArmConstants.motorToArmConversionFactor);
-        _encoder.setVelocityConversionFactor(ArmConstants.motorToArmConversionFactor/60);
+        _encoder.setVelocityConversionFactor(ArmConstants.motorToArmConversionFactor / 60);
 
         _PIDController = _leader.getPIDController();
         setPID();
@@ -85,14 +84,13 @@ public class Arm extends TrapezoidProfileSubsystem {
         this.enable();
         super.setGoal(angle);
     }
-    
+
     @Override
     public void useState(TrapezoidProfile.State state) {
-        if(_forwardState.update(_forwardLimit.isPressed())) {
+        if (_forwardState.update(_forwardLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.intakeAngle);
-        }
-         else if(_reverseState.update(_reverseLimit.isPressed())) {
-             _encoder.setPosition(ArmConstants.shootAngle);
+        } else if (_reverseState.update(_reverseLimit.isPressed())) {
+            _encoder.setPosition(ArmConstants.shootAngle);
         }
         SmartDashboard.putBoolean("down", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("up", _reverseLimit.isPressed());
