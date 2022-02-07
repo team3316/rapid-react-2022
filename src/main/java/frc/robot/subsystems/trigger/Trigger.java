@@ -42,13 +42,14 @@ public class Trigger extends SubsystemBase {
         // updateSDB();
     }
 
-    // private void updateSDB() {
-    // SmartDashboard.putBoolean(
-    // "Left Trigger Out",
-    // Math.abs(getLeftAngle() - Constants.Trigger.Left.outAngle) <= 0.01);
+    @SuppressWarnings({ "unused" })
+    private void updateSDB() {
+        SmartDashboard.putBoolean(
+                "Left Trigger Out",
+                Math.abs(getLeftAngle() - Constants.Trigger.Left.outAngle) <= 0.01);
 
-    // SmartDashboard.putBoolean(
-    // "Right Trigger Out",
-    // Math.abs(getRightAngle() - Constants.Trigger.Right.outAngle) <= 0.01);
-    // }
+        SmartDashboard.putBoolean(
+                "Right Trigger Out",
+                Math.abs(getRightAngle() - Constants.Trigger.Right.outAngle) <= 0.01);
+    }
 }
