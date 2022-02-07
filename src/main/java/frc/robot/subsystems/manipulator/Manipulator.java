@@ -40,6 +40,9 @@ public class Manipulator extends SubsystemBase {
         this._leaderMotor = new TalonFX(Constants.Manipulator.leaderId);
         this._followerMotor = new TalonFX(Constants.Manipulator.followerId);
 
+        this._leftSwitch = new DigitalInput(Constants.Manipulator.leftChannel);
+        this._rightSwitch = new DigitalInput(Constants.Manipulator.rightChannel);
+
         _leaderConfig = new TalonFXConfiguration();
 
         this._followerMotor.follow(this._leaderMotor);
@@ -68,7 +71,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public ManipulatorCargoState getCargoState() {
-        return new ManipulatorCargoState(this._leftSwitch.get(), this._rightSwitch.get());
+        return new ManipulatorCargoState(!this._leftSwitch.get(), !this._rightSwitch.get());
     }
 
     private void setTargetRPM(double rpm) {
@@ -110,6 +113,10 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
         SmartDashboard.putNumber("Manipulator Target", getTargetRPM());
+
+        SmartDashboard.putBoolean("left switch", !this._leftSwitch.get());
+        SmartDashboard.putBoolean("right switch", !this._rightSwitch.get());
+        SmartDashboard.putBoolean("both switches", getCargoState().hasBoth());
     }
 
     private void initSDB() {
