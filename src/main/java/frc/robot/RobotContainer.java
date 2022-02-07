@@ -6,12 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.humanIO.Joysticks;
+import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.Trigger;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 
@@ -28,8 +33,15 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Manipulator m_manipulator = new Manipulator();
 
-    private final Joysticks m_joysticks = new Joysticks();
     private final Trigger m_trigger = new Trigger();
+
+    private final Drivetrain m_Drivetrain = new Drivetrain();
+
+    private final Arm m_arm = new Arm();
+
+    private final Joysticks m_Joysticks = new Joysticks();
+
+    private boolean _fieldRelative = true;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -37,6 +49,14 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings
         configureButtonBindings();
+        m_Drivetrain.setDefaultCommand(
+                new RunCommand(
+                        () -> m_Drivetrain.drive(
+                                m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond,
+                                m_Joysticks.getSteerX() * 11.5,
+                                _fieldRelative),
+                        m_Drivetrain));
     }
 
     /**
@@ -48,7 +68,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        m_joysticks.getButton(Button.kLeftBumper)
+        m_Joysticks.getButton(Button.kL1)
                 .toggleWhenPressed(
                         new StartEndCommand(
                                 () -> m_manipulator.setState(ManipulatorState.COLLECT),
@@ -56,24 +76,34 @@ public class RobotContainer {
                                 m_manipulator)
                                         .withInterrupt(() -> m_manipulator.getCargoState().hasBoth()));
 
-        m_joysticks.getButton(Button.kRightBumper)
+        m_Joysticks.getButton(Button.kR1)
                 .toggleWhenPressed(
                         new StartEndCommand(
                                 () -> m_manipulator.setState(ManipulatorState.SHOOT),
                                 () -> m_manipulator.setState(ManipulatorState.OFF),
                                 m_manipulator));
 
-        m_joysticks.getButton(Button.kA)
+        m_Joysticks.getButton(Button.kCross)
                 .whenHeld(
                         new StartEndCommand(
                                 () -> this.m_trigger.setLeftAngle(Constants.Trigger.outAngle),
                                 () -> this.m_trigger.setLeftAngle(Constants.Trigger.inAngel)));
-        m_joysticks.getButton(Button.kB)
+        m_Joysticks.getButton(Button.kCircle)
                 .whenHeld(
                         new StartEndCommand(
                                 () -> this.m_trigger.setRightAngle(Constants.Trigger.outAngle),
                                 () -> this.m_trigger.setRightAngle(Constants.Trigger.inAngel)));
 
+        m_Joysticks.getButton(Button.kShare)
+                .whenPressed(() -> m_Drivetrain.resetYaw());
+
+        m_Joysticks.getButton(Button.kOptions)
+                .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
+
+        m_Joysticks.getButton(Button.kTriangle).toggleWhenPressed(new StartEndCommand(
+                () -> m_arm.setActiveGoal(ArmConstants.shootAngle),
+                () -> m_arm.setActiveGoal(ArmConstants.intakeAngle),
+                m_arm));
     }
 
     /**
