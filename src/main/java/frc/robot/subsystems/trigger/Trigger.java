@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.trigger;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.BetterServo;
@@ -38,6 +39,12 @@ public class Trigger extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        SmartDashboard.putBoolean(
+                "Left Trigger Out",
+                Math.abs(getLeftAngle() - Constants.Trigger.outAngle) <= 0.01);
+
+        SmartDashboard.putBoolean(
+                "Right Trigger Out",
+                Math.abs(getRightAngle() - Constants.Trigger.outAngle) <= 0.01);
     }
 }
