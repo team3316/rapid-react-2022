@@ -45,6 +45,8 @@ public class Manipulator extends SubsystemBase {
 
         _leaderConfig = new TalonFXConfiguration();
 
+        _followerMotor.configAllSettings(new TalonFXConfiguration());
+
         this._followerMotor.follow(this._leaderMotor);
         this._followerMotor.setInverted(InvertType.OpposeMaster);
 
