@@ -11,8 +11,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -59,13 +57,13 @@ public class Manipulator extends SubsystemBase {
 
         _leaderMotor.configAllSettings(_leaderConfig);
 
-        initSDB();
+        // initSDB();
 
     }
 
     @Override
     public void periodic() {
-        updateSDB();
+        // updateSDB();
     }
 
     public void setState(ManipulatorState state) {
@@ -77,76 +75,79 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void setTargetRPM(double rpm) {
-        _leaderMotor.set(TalonFXControlMode.Velocity, (rpm / Constants.Manipulator.kVelocityConversionFactor));
+        _leaderMotor.set(TalonFXControlMode.Velocity, (rpm /
+                Constants.Manipulator.kVelocityConversionFactor));
     }
 
-    private double getTargetRPM() {
-        return _leaderMotor.getClosedLoopTarget() * Constants.Manipulator.kVelocityConversionFactor;
-    }
+    // private double getTargetRPM() {
+    // return _leaderMotor.getClosedLoopTarget() *
+    // Constants.Manipulator.kVelocityConversionFactor;
+    // }
 
-    private double getRPM() {
-        return _leaderMotor.getSelectedSensorVelocity() * Constants.Manipulator.kVelocityConversionFactor;
-    }
+    // private double getRPM() {
+    // return _leaderMotor.getSelectedSensorVelocity() *
+    // Constants.Manipulator.kVelocityConversionFactor;
+    // }
 
-    private void updateConfig() {
-        _leaderConfig.slot0.kF = SmartDashboard.getNumber(
-                "Manipulator kF",
-                Constants.Manipulator.kF);
-        _leaderConfig.slot0.kP = SmartDashboard.getNumber(
-                "Manipulator kP",
-                Constants.Manipulator.kP);
+    // private void updateConfig() {
+    // _leaderConfig.slot0.kF = SmartDashboard.getNumber(
+    // "Manipulator kF",
+    // Constants.Manipulator.kF);
+    // _leaderConfig.slot0.kP = SmartDashboard.getNumber(
+    // "Manipulator kP",
+    // Constants.Manipulator.kP);
 
-        _leaderConfig.slot0.closedLoopPeakOutput = SmartDashboard.getNumber(
-                "Manipulator Peak Output",
-                Constants.Manipulator.kPeakOutput);
+    // _leaderConfig.slot0.closedLoopPeakOutput = SmartDashboard.getNumber(
+    // "Manipulator Peak Output",
+    // Constants.Manipulator.kPeakOutput);
 
-        _leaderConfig.closedloopRamp = SmartDashboard.getNumber(
-                "Manipulator Max Acceleration Seconds",
-                Constants.Manipulator.maxAccelerationSeconds);
+    // _leaderConfig.closedloopRamp = SmartDashboard.getNumber(
+    // "Manipulator Max Acceleration Seconds",
+    // Constants.Manipulator.maxAccelerationSeconds);
 
-        _leaderMotor.configAllSettings(_leaderConfig);
-    }
+    // _leaderMotor.configAllSettings(_leaderConfig);
+    // }
 
-    private void setTarget() {
-        setTargetRPM(SmartDashboard.getNumber("Manipulator Target", getTargetRPM()));
-    }
+    // private void setTarget() {
+    // setTargetRPM(SmartDashboard.getNumber("Manipulator Target", getTargetRPM()));
+    // }
 
-    private void updateSDB() {
-        SmartDashboard.putNumber("Manipulator Velocity", getRPM());
+    // private void updateSDB() {
+    // SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
-        SmartDashboard.putNumber("Manipulator Target", getTargetRPM());
+    // SmartDashboard.putNumber("Manipulator Target", getTargetRPM());
 
-        SmartDashboard.putBoolean("left switch", !this._leftSwitch.get());
-        SmartDashboard.putBoolean("right switch", !this._rightSwitch.get());
-        SmartDashboard.putBoolean("both switches", getCargoState().hasBoth());
-    }
+    // SmartDashboard.putBoolean("left switch", !this._leftSwitch.get());
+    // SmartDashboard.putBoolean("right switch", !this._rightSwitch.get());
+    // SmartDashboard.putBoolean("both switches", getCargoState().hasBoth());
+    // }
 
-    private void initSDB() {
-        SmartDashboard.setDefaultNumber(
-                "Manipulator Peak Output",
-                Constants.Manipulator.kPeakOutput);
+    // private void initSDB() {
+    // SmartDashboard.setDefaultNumber(
+    // "Manipulator Peak Output",
+    // Constants.Manipulator.kPeakOutput);
 
-        SmartDashboard.setDefaultNumber(
-                "Manipulator Max Acceleration Seconds",
-                Constants.Manipulator.maxAccelerationSeconds);
+    // SmartDashboard.setDefaultNumber(
+    // "Manipulator Max Acceleration Seconds",
+    // Constants.Manipulator.maxAccelerationSeconds);
 
-        SmartDashboard.setDefaultNumber(
-                "Manipulator kF",
-                Constants.Manipulator.kF);
+    // SmartDashboard.setDefaultNumber(
+    // "Manipulator kF",
+    // Constants.Manipulator.kF);
 
-        SmartDashboard.setDefaultNumber(
-                "Manipulator kP",
-                Constants.Manipulator.kP);
+    // SmartDashboard.setDefaultNumber(
+    // "Manipulator kP",
+    // Constants.Manipulator.kP);
 
-        SmartDashboard.putData(
-                "Set target",
-                new InstantCommand(() -> setTarget()));
+    // SmartDashboard.putData(
+    // "Set target",
+    // new InstantCommand(() -> setTarget()));
 
-        SmartDashboard.putData(
-                "Update Manipulator from SDB",
-                new InstantCommand(() -> updateConfig()));
+    // SmartDashboard.putData(
+    // "Update Manipulator from SDB",
+    // new InstantCommand(() -> updateConfig()));
 
-        updateSDB();
+    // updateSDB();
 
-    }
+    // }
 }
