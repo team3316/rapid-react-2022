@@ -1,4 +1,4 @@
-package frc.robot.Arm;
+package frc.robot.utils;
 
 public class LatchedBoolean {
     private boolean mLast = false;

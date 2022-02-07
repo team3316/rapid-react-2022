@@ -13,8 +13,8 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
-import frc.robot.Arm.LatchedBoolean;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends TrapezoidProfileSubsystem {
     private CANSparkMax _leader;
