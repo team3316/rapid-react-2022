@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.drivetrain;
+package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
