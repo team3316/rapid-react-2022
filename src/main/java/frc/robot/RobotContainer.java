@@ -16,6 +16,9 @@ import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.manipulator.Manipulator;
+import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
+import frc.robot.subsystems.trigger.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,7 +31,12 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    private final Manipulator m_Manipulator = new Manipulator();
+
+    private final Trigger m_Trigger = new Trigger();
+
     private final Drivetrain m_Drivetrain = new Drivetrain();
+
     private final Arm m_arm = new Arm();
 
     private final Joysticks m_Joysticks = new Joysticks();
@@ -60,6 +68,32 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        m_Joysticks.getButton(Button.kL1)
+                .toggleWhenPressed(
+                        new StartEndCommand(
+                                () -> m_Manipulator.setState(ManipulatorState.COLLECT),
+                                () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                m_Manipulator)
+                                        .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
+
+        m_Joysticks.getButton(Button.kR1)
+                .toggleWhenPressed(
+                        new StartEndCommand(
+                                () -> m_Manipulator.setState(ManipulatorState.SHOOT),
+                                () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                m_Manipulator));
+
+        m_Joysticks.getButton(Button.kCross)
+                .whenHeld(
+                        new StartEndCommand(
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+        m_Joysticks.getButton(Button.kCircle)
+                .whenHeld(
+                        new StartEndCommand(
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+
         m_Joysticks.getButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
 

@@ -112,6 +112,40 @@ public final class Constants {
         public static final int pigeonTalonId = 9;
     }
 
+    public static final class Manipulator {
+        public static final int leaderId = 14;
+        public static final int followerId = 15;
+
+        public static final int leftChannel = 8;
+        public static final int rightChannel = 9;
+
+        public static final double kP = 0.1; //
+        public static final double kF = 0.75 * 1023 / 14750; // units at 75% / measured native velocity at 75%
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
+
+        public static final double collectRPM = 2400;
+        public static final double shootRPM = -4250;
+
+        public static final int maxAccelerationSeconds = 1;
+        public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
+                                                                             // (native velocity to RPM)
+        public static final double kPeakOutput = 1;
+    }
+
+    public final static class Trigger {
+        public final static class Left {
+            public final static int channel = 8;
+            public final static double inAngle = 20.0;
+            public final static double outAngle = 85.0;
+        }
+
+        public final static class Right {
+            public final static int channel = 9;
+            public final static double inAngle = 180.0;
+            public final static double outAngle = 95.0;
+        }
+    }
+
     public static final class Joysticks {
         public static final double valueScalar = 1;
         public static final double deadband = 0.08;
