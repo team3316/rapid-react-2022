@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.robot.motors.PIDFGains;
 import frc.robot.motors.units.UnitConversions;
 import frc.robot.motors.units.VelocityUnit;
@@ -32,6 +33,7 @@ public final class Constants {
         public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec / (movementTime / 2); // in
                                                                                                                      // Degrees/s^2
+        public static final Constraints trapezoidConstraints = new Constraints(maxVelocityDegreesPerSec, maxAccelerationDegreesPerSecSqrd);
 
         // Arm gains
         public static final int kPIDSlot = 0;
