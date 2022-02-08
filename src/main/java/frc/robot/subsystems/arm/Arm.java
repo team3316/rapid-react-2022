@@ -92,7 +92,7 @@ public class Arm extends SubsystemBase {
     }
 
     private void setActiveGoalFromSDB() {
-        setActiveGoal(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
+        getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle)).schedule();;
     }
 
     public void useState(TrapezoidProfile.State state) {
