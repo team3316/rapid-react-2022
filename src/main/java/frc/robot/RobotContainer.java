@@ -101,8 +101,8 @@ public class RobotContainer {
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
         m_Joysticks.getButton(Button.kTriangle).toggleWhenPressed(new StartEndCommand(
-                () -> m_arm.setActiveGoal(ArmConstants.shootAngle),
-                () -> m_arm.setActiveGoal(ArmConstants.intakeAngle),
+                () -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule(),
+                () -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule(),
                 m_arm));
     }
 
