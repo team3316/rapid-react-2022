@@ -35,6 +35,7 @@ public class Manipulator extends SubsystemBase {
     private DigitalInput _leftSwitch;
     private DigitalInput _rightSwitch;
     private TalonFXConfiguration _leaderConfig;
+    private ManipulatorState _state = ManipulatorState.OFF;
 
     public Manipulator() {
         this._leaderMotor = new TalonFX(Constants.Manipulator.leaderId);
@@ -69,7 +70,12 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void setState(ManipulatorState state) {
-        setTargetRPM(state.rpm);
+        _state = state;
+        setTargetRPM(_state.rpm);
+    }
+
+    public ManipulatorState getState() {
+        return _state;
     }
 
     public ManipulatorCargoState getCargoState() {

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -71,12 +72,18 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         m_Joysticks.getButton(Button.kL1)
-                .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> m_Manipulator.setState(ManipulatorState.COLLECT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator)
-                                        .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
+                .whenPressed(new ConditionalCommand(
+                        new InstantCommand(() -> m_Manipulator.setState(
+                                m_arm.getGoal() == ArmConstants.intakeAngle
+                                        ? ManipulatorState.COLLECT
+                                        : ManipulatorState.SHOOT)),
+                        new InstantCommand(() -> m_Manipulator.setState(ManipulatorState.OFF)),
+                        new BooleanSupplier() {
+                            @Override
+                            public boolean getAsBoolean() {
+                                return m_Manipulator.getState() == ManipulatorState.OFF;
+                            }
+                        }));
 
         m_Joysticks.getButton(Button.kR1)
                 .toggleWhenPressed(
@@ -103,10 +110,10 @@ public class RobotContainer {
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
         m_Joysticks.getButton(Button.kTriangle).whenPressed(
-            new ConditionalCommand(
-                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
-                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
-                m_arm::isLastGoalIntake));
+                new ConditionalCommand(
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
+                        m_arm::isLastGoalIntake));
     }
 
     /**
