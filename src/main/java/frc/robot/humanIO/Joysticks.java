@@ -20,8 +20,8 @@ public class Joysticks {
     }
 
     public double getSteerX() {
-        double leftAxis = (this._controller.getL2Axis() + 1) / 2;
-        double rightAxis = (this._controller.getR2Axis() + 1) / 2;
+        double leftAxis = this._controller.getL2Axis();
+        double rightAxis = this._controller.getR2Axis();
 
         return leftAxis > rightAxis ? squareInputs(leftAxis) : squareInputs(-rightAxis);
     }

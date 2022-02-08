@@ -131,7 +131,7 @@ public class PS5Controller extends GenericHID {
      * @return the axis value.
      */
     public double getL2Axis() {
-        return getRawAxis(Axis.kL2.value);
+        return isConnected() ? (getRawAxis(Axis.kL2.value) + 1) / 2 : 0;
     }
 
     /**
@@ -142,7 +142,7 @@ public class PS5Controller extends GenericHID {
      * @return the axis value.
      */
     public double getR2Axis() {
-        return getRawAxis(Axis.kR2.value);
+        return isConnected() ? (getRawAxis(Axis.kR2.value) + 1) / 2 : 0;
     }
 
     /**
