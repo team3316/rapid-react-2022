@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import java.util.concurrent.locks.Condition;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -100,10 +103,11 @@ public class RobotContainer {
         m_Joysticks.getButton(Button.kOptions)
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
-        m_Joysticks.getButton(Button.kTriangle).toggleWhenPressed(new StartEndCommand(
-                () -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule(),
-                () -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule(),
-                m_arm));
+        m_Joysticks.getButton(Button.kTriangle).whenPressed(
+            new ConditionalCommand(
+                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
+                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
+                m_arm::isLastGoalIntake));
     }
 
     /**
