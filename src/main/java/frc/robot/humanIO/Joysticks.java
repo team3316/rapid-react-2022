@@ -23,15 +23,19 @@ public class Joysticks {
         double leftAxis = (this._controller.getL2Axis() + 1) / 2;
         double rightAxis = (this._controller.getR2Axis() + 1) / 2;
 
-        return leftAxis > rightAxis ? leftAxis : -rightAxis;
+        return leftAxis > rightAxis ? squareInputs(leftAxis) : squareInputs(-rightAxis);
+    }
+
+    private double squareInputs(double input) {
+        return Math.copySign(input * input, input);
     }
 
     public double getDriveY() {
-        return calculateDeadband(-_controller.getLeftY(), -_controller.getLeftX());
+        return squareInputs(calculateDeadband(-_controller.getLeftY(), -_controller.getLeftX()));
     }
 
     public double getDriveX() {
-        return calculateDeadband(_controller.getLeftX(), -_controller.getLeftY());
+        return squareInputs(calculateDeadband(_controller.getLeftX(), -_controller.getLeftY()));
     }
 
     public JoystickButton getButton(Button button) {
