@@ -29,6 +29,9 @@ public class Arm extends SubsystemBase {
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
     private ArmFeedforward _feedforward;
+    
+    private double _lastGoal;
+    
 
     public Arm() {
         _leader = new CANSparkMax(ArmConstants.leaderCANID, MotorType.kBrushless);
@@ -65,6 +68,9 @@ public class Arm extends SubsystemBase {
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
+        _encoder.setPosition(ArmConstants.startingAngle);
+        _lastGoal = ArmConstants.startingAngle;
+
         // initSDB();
     }
 
@@ -81,7 +87,13 @@ public class Arm extends SubsystemBase {
                 SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
     }
 
+    public double getLastGoal() {
+        return _lastGoal;
+    }
+
     public Command getActiveGoalCommand(double angle) {
+        _lastGoal = angle;
+
         TrapezoidProfile _profile = new TrapezoidProfile(
                 ArmConstants.trapezoidConstraints,
                 new TrapezoidProfile.State(angle, 0),
@@ -96,12 +108,6 @@ public class Arm extends SubsystemBase {
     }
 
     public void useState(TrapezoidProfile.State state) {
-        if (_forwardState.update(_forwardLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.intakeAngle);
-
-        } else if (_reverseState.update(_reverseLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.shootAngle);
-        }
 
         double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
 
@@ -111,6 +117,9 @@ public class Arm extends SubsystemBase {
         // updateSDB(state, feedforward);
     }
 
+    public void disabledInit() {
+        _leader.set(0);
+    }
 
     @SuppressWarnings("unused")
     private void initSDB() {
@@ -137,5 +146,15 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);
 
         SmartDashboard.putNumber("Arm Feed Forward", feedforward);
+    }
+
+    @Override
+    public void periodic() {
+        if (_forwardState.update(_forwardLimit.isPressed())) {
+            _encoder.setPosition(ArmConstants.intakeAngle);
+
+        } else if (_reverseState.update(_reverseLimit.isPressed())) {
+            _encoder.setPosition(ArmConstants.shootAngle);
+        }
     }
 }
