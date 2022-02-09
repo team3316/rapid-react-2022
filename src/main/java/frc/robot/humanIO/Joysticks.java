@@ -15,7 +15,7 @@ public class Joysticks {
     private XboxController _Controller;
 
     public Joysticks(){
-        this._Controller = new XboxController(Constants.Joysticks.PORT);
+        this._Controller = new XboxController(Constants.Joysticks.port);
     }
 
     public double getRightY() {

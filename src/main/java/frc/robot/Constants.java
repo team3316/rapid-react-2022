@@ -15,13 +15,13 @@ package frc.robot;
 public final class Constants {
     public final class Climber {
         //TODO change to real values
-        public static final int DEVICE_NUMBER_LEFT = 0;
-        public static final int DEVICE_NUMBER_RIGHT = 1;
-        public static final double GEAR_RATIO = 1.0;
-        public static final boolean INVERT = true;
+        public static final int deviceNumberLeft = 0; 
+        public static final int deviceNumberRight = 1;
+        public static final double gearRatio = 1.0;
+        public static final boolean invert = true;
     }
 
     public final class Joysticks {
-        public static final int PORT = 0;
+        public static final int port = 0;
     }
 }

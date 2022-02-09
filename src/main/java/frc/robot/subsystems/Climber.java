@@ -15,9 +15,9 @@ public class Climber extends SubsystemBase {
   private DBugSparkMax _leftSparkMax, _rightSparkMax;
 
   public Climber() {
-    this._leftSparkMax = new DBugSparkMax(Constants.Climber.DEVICE_NUMBER_LEFT, new UnitConversions(Constants.Climber.GEAR_RATIO));
-    this._rightSparkMax = new DBugSparkMax(Constants.Climber.DEVICE_NUMBER_RIGHT, new UnitConversions(Constants.Climber.GEAR_RATIO));
-    this._rightSparkMax.follow(this._leftSparkMax, Constants.Climber.INVERT);
+    this._leftSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberLeft, new UnitConversions(Constants.Climber.gearRatio));
+    this._rightSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberRight, new UnitConversions(Constants.Climber.gearRatio));
+    this._rightSparkMax.follow(this._leftSparkMax, Constants.Climber.invert);
   }
 
   public void setPrecent(double precent) {
