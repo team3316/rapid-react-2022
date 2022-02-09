@@ -81,4 +81,7 @@ public class RobotContainer {
         // An ExampleCommand will run in autonomous
         return new InstantCommand();
     }
+    public void runArmInit() {
+        m_arm.getarmInitCommand().schedule();
+    }
 }

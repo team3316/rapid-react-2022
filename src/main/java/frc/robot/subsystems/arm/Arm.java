@@ -111,6 +111,9 @@ public class Arm extends SubsystemBase {
 
         updateSDB(state, feedforward);
     }
+    public Command getarmInitCommand() {
+        return getActiveGoalCommand(_encoder.getPosition());
+    }
 
     private void initSDB() {
         SmartDashboard.setDefaultNumber("P Gain", ArmConstants.kP);
