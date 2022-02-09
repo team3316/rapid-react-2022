@@ -111,6 +111,9 @@ public class Arm extends SubsystemBase {
         // updateSDB(state, feedforward);
     }
 
+    public void disabledInit() {
+        _leader.set(0);
+    }
 
     @SuppressWarnings("unused")
     private void initSDB() {
