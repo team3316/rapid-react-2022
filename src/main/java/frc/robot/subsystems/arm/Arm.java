@@ -87,8 +87,8 @@ public class Arm extends SubsystemBase {
                 SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
     }
 
-    public double getLastGoal() {
-        return _lastGoal;
+    public boolean isLastGoalIntake() {
+        return (_lastGoal == ArmConstants.intakeAngle);
     }
 
     public Command getActiveGoalCommand(double angle) {
