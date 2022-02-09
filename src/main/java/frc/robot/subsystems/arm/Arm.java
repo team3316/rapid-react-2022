@@ -28,7 +28,6 @@ public class Arm extends SubsystemBase {
     private LatchedBoolean _reverseState;
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
-    private TrapezoidProfile _profile;
     private ArmFeedforward _feedforward;
 
     public Arm() {
@@ -83,7 +82,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Command getActiveGoalCommand(double angle) {
-        _profile = new TrapezoidProfile(
+        TrapezoidProfile _profile = new TrapezoidProfile(
                 ArmConstants.trapezoidConstraints,
                 new TrapezoidProfile.State(angle, 0),
                 new TrapezoidProfile.State(_encoder.getPosition(), _encoder.getVelocity()));
