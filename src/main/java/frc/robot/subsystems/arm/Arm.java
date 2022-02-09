@@ -84,15 +84,16 @@ public class Arm extends SubsystemBase {
 
     public Command getActiveGoalCommand(double angle) {
         _profile = new TrapezoidProfile(
-            ArmConstants.trapezoidConstraints,
-            new TrapezoidProfile.State(angle, 0),
-            new TrapezoidProfile.State(_encoder.getPosition(), _encoder.getVelocity()));
+                ArmConstants.trapezoidConstraints,
+                new TrapezoidProfile.State(angle, 0),
+                new TrapezoidProfile.State(_encoder.getPosition(), _encoder.getVelocity()));
 
-        return new TrapezoidProfileCommand(_profile,this::useState,this);
+        return new TrapezoidProfileCommand(_profile, this::useState, this);
     }
 
     private void setActiveGoalFromSDB() {
-        getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle)).schedule();;
+        getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle)).schedule();
+        ;
     }
 
     public void useState(TrapezoidProfile.State state) {
