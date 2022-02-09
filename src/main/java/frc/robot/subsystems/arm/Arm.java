@@ -66,7 +66,7 @@ public class Arm extends SubsystemBase {
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
-        initSDB();
+        // initSDB();
     }
 
     private void updatePIDFromSDB() {
@@ -109,12 +109,13 @@ public class Arm extends SubsystemBase {
         _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
                 ArbFFUnits.kPercentOut);
 
-        updateSDB(state, feedforward);
+        // updateSDB(state, feedforward);
     }
     public Command getarmInitCommand() {
         return getActiveGoalCommand(_encoder.getPosition());
     }
 
+    @SuppressWarnings("unused")
     private void initSDB() {
         SmartDashboard.setDefaultNumber("P Gain", ArmConstants.kP);
         SmartDashboard.setDefaultNumber("Max Output", ArmConstants.kMaxOutput);
@@ -127,6 +128,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> setActiveGoalFromSDB().schedule()));
     }
 
+    @SuppressWarnings("unused")
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
         SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
