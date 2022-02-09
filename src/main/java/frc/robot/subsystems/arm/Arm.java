@@ -91,9 +91,9 @@ public class Arm extends SubsystemBase {
         return new TrapezoidProfileCommand(_profile, this::useState, this);
     }
 
-    private void setActiveGoalFromSDB() {
-        getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle)).schedule();
-        ;
+    private Command setActiveGoalFromSDB() {
+        return getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
+        
     }
 
     public void useState(TrapezoidProfile.State state) {
@@ -121,7 +121,7 @@ public class Arm extends SubsystemBase {
 
         SmartDashboard.putData("Update PID", new InstantCommand(() -> updatePIDFromSDB()));
         SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> updateFeedForwardFromSDB()));
-        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> setActiveGoalFromSDB()));
+        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> setActiveGoalFromSDB().schedule()));
     }
 
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
