@@ -76,7 +76,8 @@ public class RobotContainer {
                         () -> m_Manipulator.setState(ManipulatorState.COLLECT),
                         () -> m_Manipulator.setState(ManipulatorState.OFF),
                         m_Manipulator)
-                                .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
+                                .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth())
+                                .beforeStarting(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()));
 
         m_Joysticks.getButton(Button.kR1)
                 .toggleWhenPressed(new StartEndCommand(

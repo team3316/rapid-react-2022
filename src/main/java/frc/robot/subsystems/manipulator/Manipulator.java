@@ -165,4 +165,8 @@ public class Manipulator extends SubsystemBase {
         this._leaderMotor.set(ControlMode.PercentOutput, 0);
         _state = ManipulatorState.OFF;
     }
+
+    public boolean atSetpoint() {
+        return _leaderMotor.getClosedLoopError() * Constants.Manipulator.kVelocityConversionFactor < 50;
+    }
 }
