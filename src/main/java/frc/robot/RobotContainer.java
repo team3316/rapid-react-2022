@@ -75,7 +75,7 @@ public class RobotContainer {
                 .toggleWhenPressed(new StartEndCommand(
                         () -> m_Manipulator.setState(ManipulatorState.COLLECT),
                         () -> m_Manipulator.setState(ManipulatorState.OFF),
-                        m_arm));
+                        m_Manipulator));
 
         m_Joysticks.getButton(Button.kR1)
                 .toggleWhenPressed(new StartEndCommand(
@@ -87,6 +87,7 @@ public class RobotContainer {
                 .whenHeld(new StartEndCommand(
                         () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
                         () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+
         m_Joysticks.getButton(Button.kCircle)
                 .whenHeld(new StartEndCommand(
                         () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
