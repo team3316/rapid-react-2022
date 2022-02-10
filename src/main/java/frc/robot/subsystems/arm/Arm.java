@@ -166,5 +166,6 @@ public class Arm extends SubsystemBase {
         } else if (_reverseState.update(_reverseLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.shootAngle);
         }
+        //updateSDB();
     }
 }
