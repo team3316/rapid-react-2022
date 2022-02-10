@@ -72,18 +72,16 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         m_Joysticks.getButton(Button.kL1)
-                .whenPressed(new ConditionalCommand(
-                        new InstantCommand(() -> m_Manipulator.setState(
-                                m_arm.getGoal() == ArmConstants.intakeAngle
-                                        ? ManipulatorState.COLLECT
-                                        : ManipulatorState.SHOOT)),
-                        new InstantCommand(() -> m_Manipulator.setState(ManipulatorState.OFF)),
-                        new BooleanSupplier() {
-                            @Override
-                            public boolean getAsBoolean() {
-                                return m_Manipulator.getState() == ManipulatorState.OFF;
-                            }
-                        }));
+                .toggleWhenPressed(new StartEndCommand(
+                        () -> m_Manipulator.setState(ManipulatorState.COLLECT),
+                        () -> m_Manipulator.setState(ManipulatorState.OFF),
+                        m_arm));
+
+        m_Joysticks.getButton(Button.kR1)
+                .toggleWhenPressed(new StartEndCommand(
+                        () -> m_Manipulator.setState(ManipulatorState.SHOOT),
+                        () -> m_Manipulator.setState(ManipulatorState.OFF),
+                        m_arm));
 
         m_Joysticks.getButton(Button.kR1)
                 .toggleWhenPressed(
