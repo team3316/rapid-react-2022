@@ -78,22 +78,19 @@ public class RobotContainer {
                         m_arm));
 
         m_Joysticks.getButton(Button.kR1)
-                .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator));
+                .toggleWhenPressed(new StartEndCommand(
+                        () -> m_Manipulator.setState(ManipulatorState.SHOOT),
+                        () -> m_Manipulator.setState(ManipulatorState.OFF),
+                        m_Manipulator));
 
         m_Joysticks.getButton(Button.kCross)
-                .whenHeld(
-                        new StartEndCommand(
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+                .whenHeld(new StartEndCommand(
+                        () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
+                        () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
         m_Joysticks.getButton(Button.kCircle)
-                .whenHeld(
-                        new StartEndCommand(
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+                .whenHeld(new StartEndCommand(
+                        () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
+                        () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
 
         m_Joysticks.getButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
@@ -105,7 +102,10 @@ public class RobotContainer {
                 new ConditionalCommand(
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
-                        m_arm::isLastGoalIntake));
+                        m_arm::isLastGoalIntake)
+                                .beforeStarting(new InstantCommand(
+                                        () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                        m_Manipulator)));
     }
 
     /**
