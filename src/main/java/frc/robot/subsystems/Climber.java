@@ -17,6 +17,10 @@ public class Climber extends SubsystemBase {
   public Climber() {
     this._leftSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberLeft, new UnitConversions(Constants.Climber.gearRatio));
     this._rightSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberRight, new UnitConversions(Constants.Climber.gearRatio));
+
+    this._leftSparkMax.restoreFactoryDefaults();
+    this._rightSparkMax.restoreFactoryDefaults();
+
     this._rightSparkMax.follow(this._leftSparkMax, Constants.Climber.invert);
   }
 
