@@ -1,23 +1,25 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.utils.LatchedBoolean;
 
-public class Arm extends TrapezoidProfileSubsystem {
+public class Arm extends SubsystemBase {
     private CANSparkMax _leader;
     private CANSparkMax _follower;
     private SparkMaxLimitSwitch _forwardLimit;
@@ -27,12 +29,11 @@ public class Arm extends TrapezoidProfileSubsystem {
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
     private ArmFeedforward _feedforward;
+    
+    private double _lastGoal;
+    
 
     public Arm() {
-        super(new TrapezoidProfile.Constraints(
-                ArmConstants.maxVelocityDegreesPerSec, ArmConstants.maxAccelerationDegreesPerSecSqrd),
-                ArmConstants.startingAngle);
-
         _leader = new CANSparkMax(ArmConstants.leaderCANID, MotorType.kBrushless);
         _follower = new CANSparkMax(ArmConstants.followerCANID, MotorType.kBrushless);
 
@@ -67,6 +68,9 @@ public class Arm extends TrapezoidProfileSubsystem {
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
+        _encoder.setPosition(ArmConstants.startingAngle);
+        _lastGoal = ArmConstants.startingAngle;
+
         // initSDB();
     }
 
@@ -83,23 +87,27 @@ public class Arm extends TrapezoidProfileSubsystem {
                 SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
     }
 
-    public void setActiveGoal(double angle) {
-        this.enable();
-        super.setGoal(angle);
+    public boolean isLastGoalIntake() {
+        return (_lastGoal == ArmConstants.intakeAngle);
     }
 
-    private void setActiveGoalFromSDB() {
-        setActiveGoal(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
+    public Command getActiveGoalCommand(double angle) {
+        _lastGoal = angle;
+
+        TrapezoidProfile _profile = new TrapezoidProfile(
+                ArmConstants.trapezoidConstraints,
+                new TrapezoidProfile.State(angle, 0),
+                new TrapezoidProfile.State(_encoder.getPosition(), _encoder.getVelocity()));
+
+        return new TrapezoidProfileCommand(_profile, this::useState, this);
     }
 
-    @Override
+    private Command getActiveGoalFromSDB() {
+        return getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
+        
+    }
+
     public void useState(TrapezoidProfile.State state) {
-        if (_forwardState.update(_forwardLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.intakeAngle);
-
-        } else if (_reverseState.update(_reverseLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.shootAngle);
-        }
 
         double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
 
@@ -107,6 +115,10 @@ public class Arm extends TrapezoidProfileSubsystem {
                 ArbFFUnits.kPercentOut);
 
         // updateSDB(state, feedforward);
+    }
+
+    public void disabledInit() {
+        _leader.set(0);
     }
 
     @SuppressWarnings("unused")
@@ -119,7 +131,7 @@ public class Arm extends TrapezoidProfileSubsystem {
 
         SmartDashboard.putData("Update PID", new InstantCommand(() -> updatePIDFromSDB()));
         SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> updateFeedForwardFromSDB()));
-        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> setActiveGoalFromSDB()));
+        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> getActiveGoalFromSDB().schedule()));
     }
 
     @SuppressWarnings("unused")
@@ -134,5 +146,26 @@ public class Arm extends TrapezoidProfileSubsystem {
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);
 
         SmartDashboard.putNumber("Arm Feed Forward", feedforward);
+    }
+
+    @SuppressWarnings("unused")
+    private void updateSDB() {
+        SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
+        SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
+
+        SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
+        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
+    }
+    
+
+    @Override
+    public void periodic() {
+        if (_forwardState.update(_forwardLimit.isPressed())) {
+            _encoder.setPosition(ArmConstants.intakeAngle);
+
+        } else if (_reverseState.update(_reverseLimit.isPressed())) {
+            _encoder.setPosition(ArmConstants.shootAngle);
+        }
+        //updateSDB();
     }
 }
