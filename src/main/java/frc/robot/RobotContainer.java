@@ -128,5 +128,7 @@ public class RobotContainer {
 
     public void disableInit() {
         m_arm.disabledInit();
+        m_Drivetrain.stop();
+        m_Manipulator.stop();
     }
 }
