@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
         _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
                 ArbFFUnits.kPercentOut);
 
-        // updateSDB(state, feedforward);
+        
     }
 
     public void disabledInit() {
@@ -156,5 +156,6 @@ public class Arm extends SubsystemBase {
         } else if (_reverseState.update(_reverseLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.shootAngle);
         }
+        // updateSDB(state, feedforward);
     }
 }
