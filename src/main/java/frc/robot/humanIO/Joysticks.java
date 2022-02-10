@@ -6,10 +6,12 @@ import frc.robot.humanIO.PS5Controller.Button;
 
 public class Joysticks {
 
-    private PS5Controller _controller;
+    private PS5Controller _driveController;
+    private PS5Controller _operatorController;
 
     public Joysticks() {
-        this._controller = new PS5Controller(0);
+        this._driveController = new PS5Controller(0);
+        this._driveController = new PS5Controller(1);
     }
 
     private static double calculateDeadband(double value, double other) {
@@ -20,8 +22,8 @@ public class Joysticks {
     }
 
     public double getSteerX() {
-        double leftAxis = (this._controller.getL2Axis() + 1) / 2;
-        double rightAxis = (this._controller.getR2Axis() + 1) / 2;
+        double leftAxis = (this._driveController.getL2Axis() + 1) / 2;
+        double rightAxis = (this._driveController.getR2Axis() + 1) / 2;
 
         return leftAxis > rightAxis ? squareInputs(leftAxis) : squareInputs(-rightAxis);
     }
@@ -31,15 +33,19 @@ public class Joysticks {
     }
 
     public double getDriveY() {
-        return squareInputs(calculateDeadband(-_controller.getLeftY(), -_controller.getLeftX()));
+        return squareInputs(calculateDeadband(-this._driveController.getLeftY(), -this._driveController.getLeftX()));
     }
 
     public double getDriveX() {
-        return squareInputs(calculateDeadband(_controller.getLeftX(), -_controller.getLeftY()));
+        return squareInputs(calculateDeadband(this._driveController.getLeftX(), -this._driveController.getLeftY()));
     }
 
-    public JoystickButton getButton(Button button) {
-        return new JoystickButton(_controller, button.value);
+    public JoystickButton getOperatorButton(Button button) {
+        return new JoystickButton(this._operatorController, button.value);
+    }
+
+    public JoystickButton getDriveButton(Button button) {
+        return new JoystickButton(this._driveController, button.value);
     }
 
 }
