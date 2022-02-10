@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.humanIO.Joysticks;
+import frc.robot.humanIO.PS5Controller.Button;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final Climber m_Climber = new Climber();
+  private final Joysticks m_Joysticks = new Joysticks();
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -29,7 +36,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    this.m_Joysticks.getButton(Button.kSquare).toggleWhenPressed(new StartEndCommand(
+      () -> this.m_Climber.setPosition(ClimberState.UP), 
+      () -> this.m_Climber.setPosition(ClimberState.DOWN), 
+      m_Climber));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
