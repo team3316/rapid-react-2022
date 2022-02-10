@@ -63,6 +63,12 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
+    public void stop() {
+        for (int i = 0; i < this._modules.length; i++) {
+            this._modules[i].stop();
+        }
+    }
+
     public void periodic() {
         // Update the odometry in the periodic block
         this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),

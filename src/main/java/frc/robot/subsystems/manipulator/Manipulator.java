@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.manipulator;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -158,5 +159,9 @@ public class Manipulator extends SubsystemBase {
 
         updateSDB();
 
+    }
+
+    public void stop() {
+        this._leaderMotor.set(ControlMode.PercentOutput, 0);
     }
 }
