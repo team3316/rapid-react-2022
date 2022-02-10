@@ -163,5 +163,6 @@ public class Manipulator extends SubsystemBase {
 
     public void stop() {
         this._leaderMotor.set(ControlMode.PercentOutput, 0);
+        _state = ManipulatorState.OFF;
     }
 }
