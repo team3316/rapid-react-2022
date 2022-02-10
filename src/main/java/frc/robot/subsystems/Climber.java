@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 import frc.robot.motors.units.UnitConversions;
 
 public class Climber extends SubsystemBase {
@@ -22,6 +23,8 @@ public class Climber extends SubsystemBase {
     this._rightSparkMax.restoreFactoryDefaults();
 
     this._rightSparkMax.follow(this._leftSparkMax, Constants.Climber.invert);
+
+    this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.kP, 0, 0, Constants.Climber.kF, 0, 0));
   }
 
   public void setPrecent(double precent) {
