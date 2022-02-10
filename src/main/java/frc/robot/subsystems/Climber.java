@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
+import frc.robot.motors.units.PositionUnit;
 import frc.robot.motors.units.UnitConversions;
 
 public class Climber extends SubsystemBase {
@@ -25,14 +28,48 @@ public class Climber extends SubsystemBase {
     this._rightSparkMax.follow(this._leftSparkMax, Constants.Climber.invert);
 
     this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.kP, 0, 0, Constants.Climber.kF, 0, 0));
+
+    initSDB();
   }
 
-  public void setPrecent(double precent) {
-    this._leftSparkMax.set(ControlMode.PercentOutput, precent);
+  public enum ClimberState{
+    // TODO: add real values
+    UP(0.0), DOWN(0.0);
+
+    public final double position;
+
+    ClimberState(double position){
+      this.position = position;
+    }
+  }
+
+  public void setPosition(ClimberState state) {
+    this._leftSparkMax.set(ControlMode.Position, state.position);
+  }
+
+  public double getPosition(){
+    return this._leftSparkMax.getPosition(PositionUnit.Rotations);
+  }
+
+  private void initSDB(){
+    SmartDashboard.putNumber("kP", Constants.Climber.kP);
+    SmartDashboard.putNumber("kF", Constants.Climber.kF);
+
+    SmartDashboard.putData("update pidf", new InstantCommand(() -> updatePIDF()));
+  }
+
+  public void updateSDB(){
+    SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", Constants.Climber.kP));
+    SmartDashboard.putNumber("kF", SmartDashboard.getNumber("kF", Constants.Climber.kF));
+  }
+
+  public void updatePIDF(){
+    this._leftSparkMax.setupPIDF(new PIDFGains(SmartDashboard.getNumber("kP", Constants.Climber.kP), 0, 0, SmartDashboard.getNumber("kF", Constants.Climber.kF), 0, 0));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateSDB();
   }
 }
