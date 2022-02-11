@@ -29,6 +29,8 @@ public class Climber extends SubsystemBase {
 
     this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.kP, 0, 0, Constants.Climber.kF, 0, 0));
 
+    this._leftSparkMax.getEncoder().setPositionConversionFactor(Constants.Climber.conversionFactor);
+
     initSDB();
   }
 

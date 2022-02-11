@@ -159,9 +159,11 @@ public final class Constants {
         public static final int deviceNumberLeft = 0; 
         public static final int deviceNumberRight = 1;
         public static final double gearRatio = 1.0;
+
         public static final boolean invert = true;
 
         public static final double kP = 0.0;
         public static final double kF = 0.0;
+        public static final double conversionFactor = 0;
     }
 }
