@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.commands.AutoShoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.arm.Arm;
@@ -79,11 +79,7 @@ public class RobotContainer {
                                         .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
 
         m_Joysticks.getOperatorButton(Button.kR1)
-                .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator));
+                .whenPressed(new AutoShoot(m_Manipulator, m_Trigger));
 
         m_Joysticks.getOperatorButton(Button.kCross)
                 .whenHeld(
@@ -103,10 +99,13 @@ public class RobotContainer {
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
         m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
-            new ConditionalCommand(
-                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
-                new InstantCommand(()-> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
-                m_arm::isLastGoalIntake));
+                new ConditionalCommand(
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
+                        m_arm::isLastGoalIntake)
+                                .beforeStarting(new InstantCommand(
+                                        () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                        m_Manipulator)));
     }
 
     /**
