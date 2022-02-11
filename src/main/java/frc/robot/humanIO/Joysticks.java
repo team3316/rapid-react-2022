@@ -1,19 +1,11 @@
 package frc.robot.humanIO;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import edu.wpi.first.wpilibj.XboxController.Button;
->>>>>>> e8d6be1 (changed to PS5 controller)
-=======
->>>>>>> 0d31a10 (added joysticks control)
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.humanIO.PS5Controller.Button;
 
 public class Joysticks {
 
-<<<<<<< HEAD
     private PS5Controller _controller;
 
     public Joysticks() {
@@ -36,12 +28,6 @@ public class Joysticks {
 
     private double squareInputs(double input) {
         return Math.copySign(input * input, input);
-=======
-    private PS5Controller _Controller;
-
-    public Joysticks(){
-        this._Controller = new PS5Controller(Constants.Joysticks.port);
->>>>>>> e8d6be1 (changed to PS5 controller)
     }
 
     public double getDriveY() {
