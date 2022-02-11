@@ -128,4 +128,8 @@ public class SwerveModule {
 
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
     }
+
+    public double getAbsAngle() {
+        return _absEncoder.getAbsolutePosition();
+    }
 }

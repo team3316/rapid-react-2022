@@ -33,7 +33,8 @@ public final class Constants {
         public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec / (movementTime / 2); // in
                                                                                                                      // Degrees/s^2
-        public static final Constraints trapezoidConstraints = new Constraints(maxVelocityDegreesPerSec, maxAccelerationDegreesPerSecSqrd);
+        public static final Constraints trapezoidConstraints = new Constraints(maxVelocityDegreesPerSec,
+                maxAccelerationDegreesPerSecSqrd);
 
         // Arm gains
         public static final int kPIDSlot = 0;
@@ -87,7 +88,7 @@ public final class Constants {
         public static final double frontWheelDistMeters = 0.6703;
         public static final double sideWheelDistMeters = 0.5102;
 
-        public final static double cancoderTLOffset = 275.8;
+        public final static double cancoderTLOffset = 240.3;
         public final static double cancoderTROffset = 289.6;
         public final static double cancoderBLOffset = 54.3;
         public final static double cancoderBROffset = 190.1;
