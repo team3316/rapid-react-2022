@@ -23,7 +23,7 @@ public final class Constants {
 
         // Arm motion
         public static final double intakeAngle = 36; // in Degrees: measured. Theoretical was -37.6
-        public static final double shootAngle = -123; // in Degrees: measured. Theoretical was 119.6
+        public static final double shootAngle = -121; // in Degrees: measured. Theoretical was 119.6
 
         // TODO: Define a legal starting angle, or create homing sequence
         public static final double startingAngle = intakeAngle;
