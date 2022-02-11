@@ -11,7 +11,7 @@ public class Joysticks {
 
     public Joysticks() {
         this._driveController = new PS5Controller(0);
-        this._driveController = new PS5Controller(1);
+        this._operatorController = new PS5Controller(1);
     }
 
     private static double calculateDeadband(double value, double other) {
