@@ -19,6 +19,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 import frc.robot.subsystems.trigger.Trigger;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Climber.ClimberState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -38,6 +40,8 @@ public class RobotContainer {
     private final Drivetrain m_Drivetrain = new Drivetrain();
 
     private final Arm m_arm = new Arm();
+
+    private final Climber m_Climber = new Climber();
 
     private final Joysticks m_Joysticks = new Joysticks();
 
@@ -93,6 +97,13 @@ public class RobotContainer {
                         new StartEndCommand(
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+        
+        this.m_Joysticks.getButton(Button.kSquare).
+                toggleWhenPressed(
+                        new StartEndCommand(
+                                () -> this.m_Climber.setPosition(ClimberState.UP), 
+                                () -> this.m_Climber.setPosition(ClimberState.DOWN), 
+                                m_Climber));
 
         m_Joysticks.getButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
