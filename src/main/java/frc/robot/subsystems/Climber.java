@@ -18,6 +18,8 @@ public class Climber extends SubsystemBase {
   
   private DBugSparkMax _leftSparkMax, _rightSparkMax;
 
+  private double _lastPosition;
+
   public Climber() {
     this._leftSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberLeft, new UnitConversions(Constants.Climber.gearRatio));
     this._rightSparkMax = new DBugSparkMax(Constants.Climber.deviceNumberRight, new UnitConversions(Constants.Climber.gearRatio));
@@ -46,7 +48,12 @@ public class Climber extends SubsystemBase {
   }
 
   public void setPosition(ClimberState state) {
+    this._lastPosition = state.position;
     this._leftSparkMax.set(ControlMode.Position, state.position);
+  }
+
+  public boolean isLastPositionDown(){
+      return (this._lastPosition == ClimberState.DOWN.position);
   }
 
   private double getPosition(){

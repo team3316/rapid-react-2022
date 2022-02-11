@@ -100,10 +100,10 @@ public class RobotContainer {
         
         this.m_Joysticks.getButton(Button.kSquare).
                 toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> this.m_Climber.setPosition(ClimberState.UP), 
-                                () -> this.m_Climber.setPosition(ClimberState.DOWN), 
-                                m_Climber));
+                        new ConditionalCommand(
+                                new InstantCommand(() -> this.m_Climber.setPosition(ClimberState.UP)), 
+                                new InstantCommand(() -> this.m_Climber.setPosition(ClimberState.DOWN)), 
+                                m_Climber::isLastPositionDown));
 
         m_Joysticks.getButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
