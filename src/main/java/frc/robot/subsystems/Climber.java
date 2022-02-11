@@ -47,7 +47,7 @@ public class Climber extends SubsystemBase {
     this._leftSparkMax.set(ControlMode.Position, state.position);
   }
 
-  public double getPosition(){
+  private double getPosition(){
     return this._leftSparkMax.getPosition(PositionUnit.Rotations);
   }
 
@@ -58,12 +58,12 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putData("update pidf", new InstantCommand(() -> updatePIDF()));
   }
 
-  public void updateSDB(){
+  private void updateSDB(){
     SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", Constants.Climber.kP));
     SmartDashboard.putNumber("kF", SmartDashboard.getNumber("kF", Constants.Climber.kF));
   }
 
-  public void updatePIDF(){
+  private void updatePIDF(){
     this._leftSparkMax.setupPIDF(new PIDFGains(SmartDashboard.getNumber("kP", Constants.Climber.kP), 0, 0, SmartDashboard.getNumber("kF", Constants.Climber.kF), 0, 0));
   }
 
