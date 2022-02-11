@@ -144,7 +144,7 @@ public final class Constants {
 
         public final static class Right {
             public final static int channel = 9;
-            public final static double inAngle = 120.0;
+            public final static double inAngle = 180.0;
             public final static double outAngle = 85.0;
         }
     }
