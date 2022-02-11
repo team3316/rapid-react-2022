@@ -61,6 +61,8 @@ public class Climber extends SubsystemBase {
   private void updateSDB(){
     SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", Constants.Climber.kP));
     SmartDashboard.putNumber("kF", SmartDashboard.getNumber("kF", Constants.Climber.kF));
+
+    SmartDashboard.putNumber("Climber Position", getPosition());
   }
 
   private void updatePIDF(){
