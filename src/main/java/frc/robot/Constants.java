@@ -154,4 +154,12 @@ public final class Constants {
         public static final double deadband = 0.08;
         public static final int driverControllerPort = 0;
     }
+    
+    public final class Climber {
+        //TODO change to real values
+        public static final int DEVICE_NUMBER_LEFT = 0;
+        public static final int DEVICE_NUMBER_RIGHT = 1;
+        public static final double GEAR_RATIO = 1.0;
+        public static final boolean INVERT = true;
+    }
 }
