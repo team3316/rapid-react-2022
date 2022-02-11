@@ -1,9 +1,12 @@
 package frc.robot.humanIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import edu.wpi.first.wpilibj.XboxController.Button;
 >>>>>>> e8d6be1 (changed to PS5 controller)
+=======
+>>>>>>> 0d31a10 (added joysticks control)
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.humanIO.PS5Controller.Button;
