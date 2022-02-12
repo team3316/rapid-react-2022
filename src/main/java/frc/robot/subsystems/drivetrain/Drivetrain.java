@@ -71,6 +71,12 @@ public class Drivetrain extends SubsystemBase {
         // updateSDB();
     }
 
+    public void stop() {
+        for (int i = 0; i < this._modules.length; i++) {
+            this._modules[i].stop();
+        }
+    }
+
     @SuppressWarnings({ "unused" })
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
