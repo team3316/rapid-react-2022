@@ -25,6 +25,9 @@ public class Joysticks {
         double leftAxis = (this._driveController.getL2Axis() + 1) / 2;
         double rightAxis = (this._driveController.getR2Axis() + 1) / 2;
 
+        if (leftAxis == 0.5 && rightAxis == 0.5)
+            return 0; // joystick disconnected
+
         return leftAxis > rightAxis ? squareInputs(leftAxis) : squareInputs(-rightAxis);
     }
 
