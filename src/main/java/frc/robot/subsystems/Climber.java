@@ -4,13 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.motors.units.PositionUnit;
@@ -19,6 +21,8 @@ import frc.robot.motors.units.UnitConversions;
 public class Climber extends SubsystemBase {
 
     private DBugSparkMax _leftSparkMax, _rightSparkMax;
+
+    private SparkMaxPIDController _PidController;
 
     private double _lastPosition;
 
@@ -36,12 +40,25 @@ public class Climber extends SubsystemBase {
 
         this._rightSparkMax.follow(this._leftSparkMax, true);
 
-        this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.kP_slot0, 0, 0, Constants.Climber.kF_slot0, 0, 0));
-        this._leftSparkMax.getPIDController().setP(Constants.Climber.kP_slot1, Constants.Climber.PIDslot);
-        this._leftSparkMax.getPIDController().setI(0, Constants.Climber.PIDslot);
-        this._leftSparkMax.getPIDController().setD(0, Constants.Climber.PIDslot);
-        this._leftSparkMax.getPIDController().setFF(Constants.Climber.kF_slot1, Constants.Climber.PIDslot);
-        this._leftSparkMax.getPIDController().setOutputRange(-1.0, 1.0, Constants.Climber.PIDslot);
+        this._PidController = _leftSparkMax.getPIDController();
+        this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.Down.kP, 0, 0, Constants.Climber.Down.kF, 0, 0));
+        this._PidController.setP(Constants.Climber.Up.kP, Constants.Climber.Up.PIDslot);
+        this._PidController.setI(0, Constants.Climber.Up.PIDslot);
+        this._PidController.setD(0, Constants.Climber.Up.PIDslot);
+        this._PidController.setFF(Constants.Climber.Up.kF, Constants.Climber.Up.PIDslot);
+        this._PidController.setOutputRange(-1.0, 1.0, Constants.Climber.Up.PIDslot);
+
+        this._PidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionAllowedClosedLoopError(Constants.Climber.Up.allowedError, Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMaxAccel(Constants.Climber.Up.maxAccMetersPerSecondSqrd, Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMaxVelocity(Constants.Climber.Up.maxVelMetersPerSecond, Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMinOutputVelocity(Constants.Climber.Up.minVelMetersPerSecond, Constants.Climber.Up.PIDslot);
+
+        this._PidController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionAllowedClosedLoopError(Constants.Climber.Down.allowedError, Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMaxAccel(Constants.Climber.Down.maxAccMetersPerSecondSqrd, Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMaxVelocity(Constants.Climber.Down.maxVelMetersPerSecond, Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMinOutputVelocity(Constants.Climber.Down.minVelMetersPerSecond, Constants.Climber.Down.PIDslot);
 
         this._leftSparkMax.getEncoder().setPositionConversionFactor(Constants.Climber.conversionFactor);
 
@@ -50,18 +67,20 @@ public class Climber extends SubsystemBase {
 
     public enum ClimberState {
         // TODO: add real values
-        UP(0.0), DOWN(0.0);
+        UP(0.0, Constants.Climber.Up.PIDslot), DOWN(0.0, Constants.Climber.Down.PIDslot);
 
         public final double position;
+        public final int slot;
 
-        ClimberState(double position) {
+        ClimberState(double position, int slot) {
             this.position = position;
+            this.slot = slot;
         }
     }
 
     public void setPosition(ClimberState state) {
         this._lastPosition = state.position;
-        this._leftSparkMax.set(ControlMode.Position, state.position);
+        this._PidController.setReference(state.position, ControlType.kSmartMotion, state.slot);
     }
 
     public boolean isLastPositionDown() {
@@ -73,8 +92,7 @@ public class Climber extends SubsystemBase {
     }
 
     private void initSDB() {
-        SmartDashboard.setDefaultNumber("kP loaded behavior", Constants.Climber.kP_slot0);
-        SmartDashboard.setDefaultNumber("kF loaded behavior", Constants.Climber.kF_slot0);
+        SmartDashboard.setDefaultNumber("kP loaded behavior", Constants.Climber.Down.kP);
 
         SmartDashboard.putData("update pidf", new InstantCommand(() -> updatePIDF()));
     }
@@ -84,8 +102,8 @@ public class Climber extends SubsystemBase {
     }
 
     private void updatePIDF() {
-        this._leftSparkMax.setupPIDF(new PIDFGains(SmartDashboard.getNumber("kP", Constants.Climber.kP_slot0), 0, 0,
-                SmartDashboard.getNumber("kF", Constants.Climber.kF_slot0), 0, 0));
+        this._leftSparkMax.setupPIDF(new PIDFGains(SmartDashboard.getNumber("kP", Constants.Climber.Down.kP), 0, 0,
+                SmartDashboard.getNumber("kF", Constants.Climber.Down.kF), 0, 0));
     }
 
     public void disableInit(){

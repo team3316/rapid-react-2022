@@ -161,11 +161,30 @@ public final class Constants {
         public static final int rightID = 1;
         public static final double gearRatio = 12.0;
 
-        public static final int PIDslot = 1;
-        public static final double kP_slot0 = 0.0;
-        public static final double kF_slot0 = 0.125;
-        public static final double kP_slot1 = 0.0;
-        public static final double kF_slot1 = 0.0;
+        public final class Down {
+            public static final int PIDslot = 0;
+
+            public static final double kP = 0.0;
+            public static final double kF = 0.125;
+
+            public static final double maxAccMetersPerSecondSqrd = 0.0;
+            public static final double maxVelMetersPerSecond = 0.0;
+            public static final double minVelMetersPerSecond = 0.0;
+            public static final double allowedError = 0.0;
+        }
+
+        public final class Up {
+            public static final int PIDslot = 1;
+
+            public static final double kP = 0.0;
+            public static final double kF = 0.0;
+
+            public static final double maxAccMetersPerSecondSqrd = 0.0;
+            public static final double maxVelMetersPerSecond = 0.0;
+            public static final double minVelMetersPerSecond = 0.0;
+            public static final double allowedError = 0.0;
+        }
+        
         public static final double conversionFactor = 30e-3 * Math.PI / gearRatio;  // in m: Winch diameter is 30mm
     }
 }
