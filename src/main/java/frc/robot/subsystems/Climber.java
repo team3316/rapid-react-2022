@@ -88,6 +88,10 @@ public class Climber extends SubsystemBase {
                 SmartDashboard.getNumber("kF", Constants.Climber.kF_slot0), 0, 0));
     }
 
+    public void disableInit(){
+        this._leftSparkMax.set(0);
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

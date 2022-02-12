@@ -129,5 +129,6 @@ public class RobotContainer {
 
     public void disableInit() {
         m_arm.disabledInit();
+        m_Climber.disableInit();
     }
 }
