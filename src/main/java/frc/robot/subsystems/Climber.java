@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,17 +22,15 @@ import frc.robot.motors.units.UnitConversions;
 
 public class Climber extends SubsystemBase {
 
-    private DBugSparkMax _leftSparkMax, _rightSparkMax;
+    private CANSparkMax _leftSparkMax, _rightSparkMax;
 
     private SparkMaxPIDController _PidController;
 
     private double _lastPosition;
 
     public Climber() {
-        this._leftSparkMax = new DBugSparkMax(Constants.Climber.leftID,
-                new UnitConversions(Constants.Climber.gearRatio));
-        this._rightSparkMax = new DBugSparkMax(Constants.Climber.rightID,
-                new UnitConversions(Constants.Climber.gearRatio));
+        this._leftSparkMax = new CANSparkMax(Constants.Climber.leftID, MotorType.kBrushless);
+        this._rightSparkMax = new CANSparkMax(Constants.Climber.rightID, MotorType.kBrushless);
 
         this._leftSparkMax.restoreFactoryDefaults();
         this._rightSparkMax.restoreFactoryDefaults();
@@ -41,7 +41,13 @@ public class Climber extends SubsystemBase {
         this._rightSparkMax.follow(this._leftSparkMax, true);
 
         this._PidController = _leftSparkMax.getPIDController();
-        this._leftSparkMax.setupPIDF(new PIDFGains(Constants.Climber.Down.kP, 0, 0, Constants.Climber.Down.kF, 0, 0));
+
+        this._PidController.setP(Constants.Climber.Down.kP, Constants.Climber.Down.PIDslot);
+        this._PidController.setI(0, Constants.Climber.Down.PIDslot);
+        this._PidController.setD(0, Constants.Climber.Down.PIDslot);
+        this._PidController.setFF(Constants.Climber.Down.kF, Constants.Climber.Down.PIDslot);
+        this._PidController.setOutputRange(-1.0, 1.0, Constants.Climber.Down.PIDslot);
+        
         this._PidController.setP(Constants.Climber.Up.kP, Constants.Climber.Up.PIDslot);
         this._PidController.setI(0, Constants.Climber.Up.PIDslot);
         this._PidController.setD(0, Constants.Climber.Up.PIDslot);
@@ -88,7 +94,7 @@ public class Climber extends SubsystemBase {
     }
 
     private double getPosition() {
-        return this._leftSparkMax.getPosition(PositionUnit.Rotations);
+        return this._leftSparkMax.getEncoder().getPosition();
     }
 
     private void initSDB() {
