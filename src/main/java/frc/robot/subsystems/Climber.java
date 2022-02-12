@@ -15,10 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.PIDFGains;
-import frc.robot.motors.units.PositionUnit;
-import frc.robot.motors.units.UnitConversions;
 
 public class Climber extends SubsystemBase {
 
@@ -98,18 +94,37 @@ public class Climber extends SubsystemBase {
     }
 
     private void initSDB() {
-        SmartDashboard.setDefaultNumber("kP loaded behavior", Constants.Climber.Down.kP);
+        SmartDashboard.setDefaultNumber("kP down position", Constants.Climber.Down.kP);
+        SmartDashboard.setDefaultNumber("kF down position", Constants.Climber.Down.kF);
+        SmartDashboard.setDefaultNumber("kP up position", Constants.Climber.Up.kP);
 
-        SmartDashboard.putData("update pidf", new InstantCommand(() -> updatePIDF()));
+        SmartDashboard.setDefaultNumber("max velocity down", Constants.Climber.Down.maxVelMetersPerSecond);
+        SmartDashboard.setDefaultNumber("max velocity up", Constants.Climber.Up.maxVelMetersPerSecond);
+        SmartDashboard.setDefaultNumber("min velocity down", Constants.Climber.Down.minVelMetersPerSecond);
+        SmartDashboard.setDefaultNumber("min velocity up", Constants.Climber.Up.minVelMetersPerSecond);
+
+        SmartDashboard.setDefaultNumber("max acc down", Constants.Climber.Down.maxAccMetersPerSecondSqrd);
+        SmartDashboard.setDefaultNumber("max acc up", Constants.Climber.Up.maxAccMetersPerSecondSqrd);
+
+        SmartDashboard.putData("update from SDB", new InstantCommand(() -> updateFromSDB()));
     }
 
     private void updateSDB() {
         SmartDashboard.putNumber("Climber Position", getPosition());
     }
 
-    private void updatePIDF() {
-        this._leftSparkMax.setupPIDF(new PIDFGains(SmartDashboard.getNumber("kP", Constants.Climber.Down.kP), 0, 0,
-                SmartDashboard.getNumber("kF", Constants.Climber.Down.kF), 0, 0));
+    private void updateFromSDB() {
+        this._PidController.setP(SmartDashboard.getNumber("kP down position", Constants.Climber.Down.kP), Constants.Climber.Down.PIDslot);
+        this._PidController.setFF(SmartDashboard.getNumber("kF down position", Constants.Climber.Down.kF), Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMaxVelocity(SmartDashboard.getNumber("max velocity down", Constants.Climber.Down.maxVelMetersPerSecond), Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMinOutputVelocity(SmartDashboard.getNumber("min velocity down", Constants.Climber.Down.minVelMetersPerSecond), Constants.Climber.Down.PIDslot);
+        this._PidController.setSmartMotionMaxAccel(SmartDashboard.getNumber("max acc down", Constants.Climber.Down.maxAccMetersPerSecondSqrd), Constants.Climber.Down.PIDslot);
+
+        this._PidController.setP(SmartDashboard.getNumber("kP up position", Constants.Climber.Up.kP), Constants.Climber.Up.PIDslot);
+        this._PidController.setFF(SmartDashboard.getNumber("kF up position", Constants.Climber.Up.kF), Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMaxVelocity(SmartDashboard.getNumber("max velocity up", Constants.Climber.Up.maxVelMetersPerSecond), Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMinOutputVelocity(SmartDashboard.getNumber("min velocity up", Constants.Climber.Up.minVelMetersPerSecond), Constants.Climber.Up.PIDslot);
+        this._PidController.setSmartMotionMaxAccel(SmartDashboard.getNumber("max acc up", Constants.Climber.Up.maxAccMetersPerSecondSqrd), Constants.Climber.Up.PIDslot);
     }
 
     public void disableInit(){
