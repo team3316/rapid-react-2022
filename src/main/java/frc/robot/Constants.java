@@ -88,7 +88,7 @@ public final class Constants {
         public static final double frontWheelDistMeters = 0.6703;
         public static final double sideWheelDistMeters = 0.5102;
 
-        public final static double cancoderTLOffset = 240.3;
+        public final static double cancoderTLOffset = 229.8;
         public final static double cancoderTROffset = 289.6;
         public final static double cancoderBLOffset = 54.3;
         public final static double cancoderBROffset = 190.1;
@@ -138,14 +138,14 @@ public final class Constants {
     public final static class Trigger {
         public final static class Left {
             public final static int channel = 8;
-            public final static double inAngle = 20.0;
-            public final static double outAngle = 85.0;
+            public final static double inAngle = 0.0;
+            public final static double outAngle = 90.0;
         }
 
         public final static class Right {
             public final static int channel = 9;
-            public final static double inAngle = 180.0;
-            public final static double outAngle = 95.0;
+            public final static double inAngle = 200.0;
+            public final static double outAngle = 110;
         }
     }
 
