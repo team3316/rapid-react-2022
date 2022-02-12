@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.commands.AutoShoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.arm.Arm;
@@ -71,37 +70,35 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        m_Joysticks.getButton(Button.kL1)
-                .toggleWhenPressed(new StartEndCommand(
-                        () -> m_Manipulator.setState(ManipulatorState.COLLECT),
-                        () -> m_Manipulator.setState(ManipulatorState.OFF),
-                        m_Manipulator)
-                                .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth())
-                                .beforeStarting(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()));
+        m_Joysticks.getOperatorButton(Button.kL1)
+                .toggleWhenPressed(
+                        new StartEndCommand(
+                                () -> m_Manipulator.setState(ManipulatorState.COLLECT),
+                                () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                m_Manipulator)
+                                        .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
 
-        m_Joysticks.getButton(Button.kR1)
-                .toggleWhenPressed(new StartEndCommand(
-                        () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                        () -> m_Manipulator.setState(ManipulatorState.OFF),
-                        m_Manipulator));
+        m_Joysticks.getOperatorButton(Button.kR1)
+                .whenPressed(new AutoShoot(m_Manipulator, m_Trigger));
 
-        m_Joysticks.getButton(Button.kCross)
-                .whenHeld(new StartEndCommand(
-                        () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
-                        () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+        m_Joysticks.getOperatorButton(Button.kCross)
+                .whenHeld(
+                        new StartEndCommand(
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
+                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+        m_Joysticks.getOperatorButton(Button.kCircle)
+                .whenHeld(
+                        new StartEndCommand(
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
+                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
 
-        m_Joysticks.getButton(Button.kCircle)
-                .whenHeld(new StartEndCommand(
-                        () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
-                        () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
-
-        m_Joysticks.getButton(Button.kShare)
+        m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
 
-        m_Joysticks.getButton(Button.kOptions)
+        m_Joysticks.getDriveButton(Button.kOptions)
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
-        m_Joysticks.getButton(Button.kTriangle).whenPressed(
+        m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
                 new ConditionalCommand(
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
