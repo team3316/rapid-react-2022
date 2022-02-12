@@ -41,6 +41,8 @@ public class RobotContainer {
 
     private final Arm m_arm = new Arm();
 
+    private final Climber m_Climber = new Climber();
+
     private final Joysticks m_Joysticks = new Joysticks();
 
     private boolean _fieldRelative = true;
@@ -91,6 +93,13 @@ public class RobotContainer {
                         new StartEndCommand(
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+        
+        this.m_Joysticks.getOperatorButton(Button.kSquare).
+                toggleWhenPressed(
+                        new ConditionalCommand(
+                                new InstantCommand(() -> this.m_Climber.setPosition(ClimberState.UP)), 
+                                new InstantCommand(() -> this.m_Climber.setPosition(ClimberState.DOWN)), 
+                                m_Climber::isLastPositionDown));
 
         m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
