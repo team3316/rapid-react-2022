@@ -52,4 +52,21 @@ public class Joysticks {
         return new JoystickButton(this._driveController, button.value);
     }
 
+    private class POVButton {
+        PS5Controller _controller;
+        int _degs;
+
+        public POVButton(PS5Controller controller, int degrees) {
+            _controller = controller;
+            _degs = degrees;
+        }
+
+        public boolean isPressed() {
+            if (_controller.getPOV() == _degs) {
+                return true;
+            }
+            return false;
+        }
+    }
+
 }
