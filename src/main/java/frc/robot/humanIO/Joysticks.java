@@ -51,7 +51,11 @@ public class Joysticks {
         return new JoystickButton(this._driveController, button.value);
     }
 
-    private class POVButton {
+    public POVButton getOperatorPOVButton(int povDegs) {
+        return new POVButton(_operatorController, povDegs);
+    }
+
+    public class POVButton extends edu.wpi.first.wpilibj2.command.button.Button {
         PS5Controller _controller;
         int _degs;
 
