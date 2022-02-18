@@ -97,7 +97,12 @@ public class RobotContainer {
 
         this.m_Joysticks.getOperatorPOVButton(0).toggleWhenPressed(
                 new StartEndCommand(
-                        () -> this.m_Climber.set(Constants.Climber.Up.velocity),
+                        () -> this.m_Climber.set(Constants.Climber.upMotorPercentage),
+                        () -> this.m_Climber.set(0.0)));
+
+        this.m_Joysticks.getOperatorPOVButton(180).toggleWhenPressed(
+                new StartEndCommand(
+                        () -> this.m_Climber.set(Constants.Climber.downMotorPercentage),
                         () -> this.m_Climber.set(0.0)));
 
         m_Joysticks.getDriveButton(Button.kShare)
