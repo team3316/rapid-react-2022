@@ -156,8 +156,8 @@ public final class Constants {
     }
 
     public final class Climber {
-        public static final int leftID = 1;
-        public static final int rightID = 2;
+        public static final int leftID = 19;
+        public static final int rightID = 18;
 
         public static final double gearRatio = 12.0;
 
@@ -165,7 +165,7 @@ public final class Constants {
         public static final double downMotorPercentage = -0.2;
 
         public static final double startingPosition = 0.0;
-        public static final double climbExtentionHeight = 0.86; // this is for temp arm the real distance is 0.94
+        public static final double climbExtentionHeight = 0.86; // TODO calibrate
 
         public static final double conversionFactor = 30e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }
