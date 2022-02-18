@@ -154,23 +154,29 @@ public final class Constants {
         public static final double deadband = 0.08;
         public static final int driverControllerPort = 0;
     }
-    
+
     public final class Climber {
-        //TODO change to real values
-        public static final int leftID = 0; 
-        public static final int rightID = 1;
+        public static final int leftID = 1;
+        public static final int rightID = 2;
+
+        // TODO change channel
+        public static final int channel = 0;
+
         public static final double gearRatio = 12.0;
 
+        public static final double startingPosition = 0.0;
+        public static final double climbExtentionHeight = 0.86; // this is for temp arm the real distance is 0.94
+
+        // TODO change to real values
         public final class Down {
             public static final int PIDslot = 0;
 
             public static final double kP = 0.0;
             public static final double kF = 0.125;
 
-            public static final double maxAccMetersPerSecondSqrd = 0.0;
-            public static final double maxVelMetersPerSecond = 0.0;
-            public static final double minVelMetersPerSecond = 0.0;
-            public static final double allowedError = 0.0;
+            public static final double outputRange = 0.2;
+
+            public static final double velocity = -0.2;
         }
 
         public final class Up {
@@ -179,12 +185,11 @@ public final class Constants {
             public static final double kP = 0.0;
             public static final double kF = 0.0;
 
-            public static final double maxAccMetersPerSecondSqrd = 0.0;
-            public static final double maxVelMetersPerSecond = 0.0;
-            public static final double minVelMetersPerSecond = 0.0;
-            public static final double allowedError = 0.0;
+            public static final double outputRange = 0.2;
+
+            public static final double velocity = 0.2;
         }
-        
-        public static final double conversionFactor = 30e-3 * Math.PI / gearRatio;  // in m: Winch diameter is 30mm
+
+        public static final double conversionFactor = 30e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }
 }
