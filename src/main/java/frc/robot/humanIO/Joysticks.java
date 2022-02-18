@@ -1,5 +1,7 @@
 package frc.robot.humanIO;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants;
 import frc.robot.humanIO.PS5Controller.Button;
@@ -51,25 +53,15 @@ public class Joysticks {
         return new JoystickButton(this._driveController, button.value);
     }
 
-    public POVButton getOperatorPOVButton(int povDegs) {
-        return new POVButton(_operatorController, povDegs);
-    }
+    public edu.wpi.first.wpilibj2.command.button.Button getOperatorPOVButton(int povDegs) {
+        return new edu.wpi.first.wpilibj2.command.button.Button(new BooleanSupplier() {
 
-    public class POVButton extends edu.wpi.first.wpilibj2.command.button.Button {
-        PS5Controller _controller;
-        int _degs;
-
-        public POVButton(PS5Controller controller, int degrees) {
-            _controller = controller;
-            _degs = degrees;
-        }
-
-        public boolean isPressed() {
-            if (_controller.getPOV() == _degs) {
-                return true;
+            @Override
+            public boolean getAsBoolean() {
+                return _operatorController.getPOV() == povDegs;
             }
-            return false;
-        }
+
+        });
     }
 
 }

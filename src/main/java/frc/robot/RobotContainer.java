@@ -95,12 +95,12 @@ public class RobotContainer {
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
 
-        this.m_Joysticks.getOperatorPOVButton(0).toggleWhenPressed(
+        this.m_Joysticks.getOperatorPOVButton(0).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.set(Constants.Climber.upMotorPercentage),
                         () -> this.m_Climber.set(0.0)));
 
-        this.m_Joysticks.getOperatorPOVButton(180).toggleWhenPressed(
+        this.m_Joysticks.getOperatorPOVButton(180).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.set(Constants.Climber.downMotorPercentage),
                         () -> this.m_Climber.set(0.0)));
