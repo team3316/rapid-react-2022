@@ -136,16 +136,18 @@ public final class Constants {
     }
 
     public final static class Trigger {
+        // 200 to give it the maximum angle
         public final static class Left {
             public final static int channel = 8;
             public final static double inAngle = 0.0;
-            public final static double outAngle = 90.0;
+            public final static double outAngle = 200.0;
         }
 
         public final static class Right {
             public final static int channel = 9;
+
             public final static double inAngle = 200.0;
-            public final static double outAngle = 110;
+            public final static double outAngle = 0;
         }
     }
 
