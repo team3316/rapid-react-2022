@@ -109,7 +109,7 @@ public class RobotContainer {
                 new StartEndCommand(
                         () -> this.m_Climber.setL(-0.1),
                         () -> this.m_Climber.setL(0.0)));
-                        
+
         this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.setR(-0.1),
@@ -145,5 +145,9 @@ public class RobotContainer {
         m_arm.disabledInit();
         m_Drivetrain.stop();
         m_Manipulator.setState(ManipulatorState.OFF);
+    }
+
+    public void calibrateDrivetrainSteering() {
+        m_Drivetrain.calibrateSteering();
     }
 }
