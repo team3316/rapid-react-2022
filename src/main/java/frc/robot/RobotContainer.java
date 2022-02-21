@@ -105,6 +105,16 @@ public class RobotContainer {
                         () -> this.m_Climber.set(Constants.Climber.downMotorPercentage),
                         () -> this.m_Climber.set(0.0)));
 
+        this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.setL(-0.1),
+                        () -> this.m_Climber.setL(0.0)));
+                        
+        this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.setR(-0.1),
+                        () -> this.m_Climber.setR(0.0)));
+
         m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
 
