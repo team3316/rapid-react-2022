@@ -165,8 +165,8 @@ public final class Constants {
         public static final double downMotorPercentage = -0.2;
 
         public static final double startingPosition = 0.0;
-        public static final double climbExtentionHeight = 0.86; // TODO calibrate
+        public static final double climbExtentionHeight = 0.93;
 
-        public static final double conversionFactor = 30e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
+        public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }
 }
