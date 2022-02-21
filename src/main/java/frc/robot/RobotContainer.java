@@ -21,6 +21,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 import frc.robot.subsystems.trigger.Trigger;
+import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,6 +41,8 @@ public class RobotContainer {
     private final Drivetrain m_Drivetrain = new Drivetrain();
 
     private final Arm m_arm = new Arm();
+
+    private final Climber m_Climber = new Climber();
 
     private final Joysticks m_Joysticks = new Joysticks();
 
@@ -91,6 +94,26 @@ public class RobotContainer {
                         new StartEndCommand(
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+
+        this.m_Joysticks.getOperatorPOVButton(0).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.set(Constants.Climber.upMotorPercentage),
+                        () -> this.m_Climber.set(0.0)));
+
+        this.m_Joysticks.getOperatorPOVButton(180).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.set(Constants.Climber.downMotorPercentage),
+                        () -> this.m_Climber.set(0.0)));
+
+        this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.setL(-0.1),
+                        () -> this.m_Climber.setL(0.0)));
+                        
+        this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
+                new StartEndCommand(
+                        () -> this.m_Climber.setR(-0.1),
+                        () -> this.m_Climber.setR(0.0)));
 
         m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());

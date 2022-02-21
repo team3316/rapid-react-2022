@@ -156,4 +156,19 @@ public final class Constants {
         public static final double deadband = 0.08;
         public static final int driverControllerPort = 0;
     }
+
+    public final class Climber {
+        public static final int leftID = 19;
+        public static final int rightID = 18;
+
+        public static final double gearRatio = 12.0;
+
+        public static final double upMotorPercentage = 0.2;
+        public static final double downMotorPercentage = -0.2;
+
+        public static final double startingPosition = 0.0;
+        public static final double climbExtentionHeight = 0.93;
+
+        public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
+    }
 }
