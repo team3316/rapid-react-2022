@@ -47,7 +47,8 @@ public class Arm extends SubsystemBase {
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
-        _lastGoal = ArmConstants.startingAngle;
+        _lastGoal = getArmInitPosition();
+        _leader.setPosition(getArmInitPosition());
 
         // initSDB();
     }
@@ -57,6 +58,16 @@ public class Arm extends SubsystemBase {
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _reverseLimit.enableLimitSwitch(true);
+    }
+
+    private double getArmInitPosition() {
+        if (_forwardState.update(_forwardLimit.isPressed())) {
+            return ArmConstants.intakeAngle;
+        }
+        if (_forwardState.update(_reverseLimit.isPressed())) {
+            return ArmConstants.shootAngle;
+        }
+        return ArmConstants.startingAngle;
     }
 
     private void updatePIDFromSDB() {
