@@ -22,7 +22,6 @@ public class Arm extends SubsystemBase {
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
     private LatchedBoolean _forwardState;
-    private LatchedBoolean _reverseState;
     private ArmFeedforward _feedforward;
 
     private double _lastGoal;
@@ -45,7 +44,6 @@ public class Arm extends SubsystemBase {
         enableLimitSwitch();
 
         _forwardState = new LatchedBoolean();
-        _reverseState = new LatchedBoolean();
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
@@ -146,9 +144,6 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         if (_forwardState.update(_forwardLimit.isPressed())) {
             _leader.setPosition(ArmConstants.intakeAngle);
-
-        } else if (_reverseState.update(_reverseLimit.isPressed())) {
-            _leader.setPosition(ArmConstants.shootAngle);
         }
         // updateSDB();
     }
