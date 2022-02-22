@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -54,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
         setDesiredStates(moduleStates);
     }
 
-    private void setDesiredStates(SwerveModuleState[] moduleStates) {
+    public void setDesiredStates(SwerveModuleState[] moduleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates,
                 Constants.Drivetrain.SwerveModuleConstants.freeSpeedMetersPerSecond);
 
@@ -68,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
         this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),
                 this._modules[2].getState(),
                 this._modules[3].getState());
-        // updateSDB();
+        updateSDB();
     }
 
     public void stop() {
@@ -77,14 +78,20 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    @SuppressWarnings({ "unused" })
+    // @SuppressWarnings({ "unused" })
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
         }
+
+        SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
     }
 
-    private double getHeading() {
+    public Pose2d getPose(){
+        return this._odometry.getPoseMeters();
+    }
+
+    public double getHeading() {
         return this._pigeon.getFusedHeading();
     }
 
@@ -94,6 +101,10 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetYaw() {
         this._pigeon.setFusedHeading(0);
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        this._odometry.resetPosition(pose, getRotation2d());
     }
 
     public void calibrateSteering() {

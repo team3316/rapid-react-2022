@@ -48,9 +48,9 @@ public final class Constants {
 
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
-            public static final double driveKp = 0.0002; // in minutes per motor rotation
-            public static final double driveKd = 0.01; // in minutes per motor rotation
-            public static final double driveKf = 0.167 / 902.0; // percent to motor / RPM of motor at that
+            public static final double driveKp = 0.0004; // in minutes per motor rotation
+            public static final double driveKd = 0; // in minutes per motor rotation
+            public static final double driveKf = 0.75 / 4300; // percent to motor / RPM of motor at that
                                                                 // percent
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
@@ -170,5 +170,22 @@ public final class Constants {
         public static final double climbExtentionHeight = 0.93;
 
         public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
+    }
+
+    public static final class Autonomous {
+        // TODO: Calibrate
+        public static final double kMaxSpeedMetersPerSecond = 3.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 3.6;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 10.7;
+
+        public static final String defaultPath = "straight_path";
+
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 6;
+
+        public static final Constraints kThetaControllerConstraints = new Constraints(
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 }
