@@ -19,7 +19,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -60,7 +59,6 @@ public class Robot extends TimedRobot {
   @Override 
   public void autonomousInit() {
     m_robotContainer.calibrateDrivetrainSteering();
-
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -82,6 +80,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.calibrateDrivetrainSteering();
+
+
   }
 
   /** This function is called periodically during operator control. */

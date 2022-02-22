@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.commands.AutoShoot;
+import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.arm.Arm;
@@ -45,6 +46,8 @@ public class RobotContainer {
     private final Climber m_Climber = new Climber();
 
     private final Joysticks m_Joysticks = new Joysticks();
+
+    private final FollowTrajectory m_FollowTrajectory = new FollowTrajectory(m_Drivetrain);
 
     private boolean _fieldRelative = true;
 
@@ -138,7 +141,8 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new InstantCommand();
+        // this.m_FollowTrajectory = new FollowTrajectory(path, m_Drivetrain);
+        return this.m_FollowTrajectory.getFollowTrajectoryCommand();
     }
 
     public void disableInit() {
