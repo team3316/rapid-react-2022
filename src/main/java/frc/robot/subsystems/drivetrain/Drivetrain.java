@@ -95,4 +95,10 @@ public class Drivetrain extends SubsystemBase {
     public void resetYaw() {
         this._pigeon.setFusedHeading(0);
     }
+
+    public void calibrateSteering() {
+        for (SwerveModule swerveModule : _modules) {
+            swerveModule.calibrateSteering();
+        }
+    }
 }
