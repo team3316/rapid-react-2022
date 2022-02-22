@@ -103,12 +103,6 @@ public class Drivetrain extends SubsystemBase {
         this._pigeon.setFusedHeading(0);
     }
 
-    public void calibrateSteering() {
-        for (SwerveModule swerveModule : _modules) {
-            swerveModule.calibrateSteering();
-        }
-    }
-    
     public void resetOdometry(Pose2d pose) {
         this._odometry.resetPosition(pose, getRotation2d());
     }
