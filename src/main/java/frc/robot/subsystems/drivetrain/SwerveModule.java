@@ -3,13 +3,11 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.PIDFGains;
 
 /**
  * SwerveModule
@@ -22,33 +20,21 @@ public class SwerveModule {
     private CANCoder _absEncoder;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        this._driveMotor = createSparkMax(
+        this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
+
+        this._driveMotor = DBugSparkMax.create(
                 constants.idDrive,
+                constants.driveGains,
                 SwerveModuleConstants.drivePositionConversionFactor,
                 SwerveModuleConstants.driveVelocityConversionFactor,
-                constants.driveGains);
+                0);
 
-        this._steerMotor = createSparkMax(
+        this._steerMotor = DBugSparkMax.create(
                 constants.idSteering,
+                constants.steeringGains,
                 SwerveModuleConstants.steeringPositionConversionFactor,
                 SwerveModuleConstants.steeringVelocityConversionFactor,
-                constants.steeringGains);
-
-        this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
-        this.calibrateSteering();
-    }
-
-    private static DBugSparkMax createSparkMax(int id, double positionFactor, double velocityFactor, PIDFGains gains) {
-        DBugSparkMax sparkMax = new DBugSparkMax(id);
-        sparkMax.restoreFactoryDefaults();
-        sparkMax.setupPIDF(gains);
-        sparkMax.setConversionFactors(positionFactor, velocityFactor);
-        sparkMax.setSmartCurrentLimit(40);
-        sparkMax.enableVoltageCompensation(12);
-        sparkMax.setIdleMode(IdleMode.kBrake);
-        sparkMax.setOpenLoopRampRate(0.01);
-        sparkMax.setClosedLoopRampRate(0.01);
-        return sparkMax;
+                _absEncoder.getAbsolutePosition());
     }
 
     private static CANCoder createCANCoder(int id, double zeroAngle) {

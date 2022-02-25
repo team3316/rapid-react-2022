@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,23 +11,24 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 
 public class Climber extends SubsystemBase {
 
     private DBugSparkMax _leftSparkMax, _rightSparkMax;
 
     private static DBugSparkMax createSparkMax(int id) {
-        DBugSparkMax sparkMax = new DBugSparkMax(id);
-        sparkMax.restoreFactoryDefaults();
-        sparkMax.setConversionFactors(Constants.Climber.conversionFactor, Constants.Climber.conversionFactor / 60);
-        sparkMax.setSmartCurrentLimit(40);
-        sparkMax.enableVoltageCompensation(12);
-        sparkMax.setIdleMode(IdleMode.kBrake);
+        DBugSparkMax sparkMax = DBugSparkMax.create(
+                id,
+                new PIDFGains(0),
+                Constants.Climber.conversionFactor,
+                Constants.Climber.conversionFactor / 60,
+                0);
+                
         sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
         sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
         sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Climber.climbExtentionHeight);
         sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Climber.startingPosition);
-        sparkMax.setPosition(Constants.Climber.startingPosition);
         return sparkMax;
     }
 

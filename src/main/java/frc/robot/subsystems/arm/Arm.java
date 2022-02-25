@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
@@ -32,17 +31,15 @@ public class Arm extends SubsystemBase {
     private double _lastGoal;
 
     private static DBugSparkMax createSparkMax(int id) {
-        DBugSparkMax sparkMax = new DBugSparkMax(id);
-        sparkMax.restoreFactoryDefaults();
-        sparkMax.setupPIDF(ArmConstants.gains);
-        sparkMax.setConversionFactors(ArmConstants.motorToArmConversionFactor,
-                ArmConstants.motorToArmConversionFactor / 60);
-        sparkMax.setSmartCurrentLimit(40);
-        sparkMax.enableVoltageCompensation(12);
-        sparkMax.setIdleMode(IdleMode.kBrake);
+        DBugSparkMax sparkMax = DBugSparkMax.create(
+            id,
+            ArmConstants.gains,
+            ArmConstants.motorToArmConversionFactor,
+            ArmConstants.motorToArmConversionFactor / 60,
+            ArmConstants.startingAngle);
+
         sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
         sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
-        sparkMax.setPosition(ArmConstants.startingAngle);
         return sparkMax;
     }
 
