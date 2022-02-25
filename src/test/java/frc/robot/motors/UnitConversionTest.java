@@ -14,7 +14,7 @@ public class UnitConversionTest {
 
     @BeforeClass
     public static void init() {
-        conversions = new UnitConversions(0.7, 4, EncoderModel.Bourns);
+        conversions = new UnitConversions(0.7, 4, 1024);
     }
 
     @Test
