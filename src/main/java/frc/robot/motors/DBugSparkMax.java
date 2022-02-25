@@ -46,4 +46,24 @@ public class DBugSparkMax extends CANSparkMax {
     public double getPosition() {
         return this._encoder.getPosition();
     }
+
+    public static DBugSparkMax create(
+            int id,
+            PIDFGains gains,
+            double positionFactor,
+            double velocityFactor,
+            double position) {
+        DBugSparkMax sparkMax = new DBugSparkMax(id);
+        sparkMax.restoreFactoryDefaults();
+        sparkMax.setupPIDF(gains);
+        sparkMax.setConversionFactors(positionFactor, velocityFactor);
+        sparkMax.setSmartCurrentLimit(40);
+        sparkMax.enableVoltageCompensation(12);
+        sparkMax.setIdleMode(IdleMode.kBrake);
+        sparkMax.setOpenLoopRampRate(0.01);
+        sparkMax.setClosedLoopRampRate(0.01);
+        sparkMax.setPosition(position);
+        return sparkMax;
+    }
+
 }
