@@ -31,7 +31,7 @@ public class DBugSparkMax extends CANSparkMax {
         this._pidController.setD(gains.kD);
         this._pidController.setFF(gains.kF);
         this._pidController.setIZone(gains.iZone);
-        this._pidController.setOutputRange(-1.0, 1.0);
+        this._pidController.setOutputRange(-gains.outputRange, gains.outputRange);
     }
 
     public void setPosition(double value) {
