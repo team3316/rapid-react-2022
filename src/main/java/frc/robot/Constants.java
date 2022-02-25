@@ -4,8 +4,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.robot.motors.PIDFGains;
-import frc.robot.motors.units.UnitConversions;
-import frc.robot.motors.units.VelocityUnit;
 
 /**
  * Constants
@@ -55,12 +53,17 @@ public final class Constants {
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
             private static final double neoMaxSpeed = 5600;
-            public static final double driveRatio = 1.0 / 8.14;
-            public static final double steeringRatio = 1.0 / 12.8;
-            public static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
-            public static final double freeSpeedMetersPerSecond = neoMaxSpeed *
-                    new UnitConversions(driveRatio, wheelDiameterMeters)
-                            .getRPMModifier(VelocityUnit.MetersPerSecond); // 3.6598
+            private static final double driveRatio = 1.0 / 8.14;
+            private static final double steeringRatio = 1.0 / 12.8;
+            private static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
+
+            public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m / rotation
+            public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // m / (rotation * seconds/minute)
+            
+            public static final double steeringPositionConversionFactor = steeringRatio * 360; // degrees / rotation
+            public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees / (rotation * seconds/minute)
+
+            public static final double freeSpeedMetersPerSecond = neoMaxSpeed * driveVelocityConversionFactor;
 
             public final Translation2d position;
             public final int idDrive;
