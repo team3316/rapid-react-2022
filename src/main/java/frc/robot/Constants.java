@@ -51,7 +51,7 @@ public final class Constants {
             public static final double driveKp = 0.0004; // in minutes per motor rotation
             public static final double driveKd = 0; // in minutes per motor rotation
             public static final double driveKf = 0.75 / 4300; // percent to motor / RPM of motor at that
-                                                                // percent
+                                                              // percent
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
             private static final double neoMaxSpeed = 5600;
@@ -88,10 +88,10 @@ public final class Constants {
         public static final double frontWheelDistMeters = 0.6703;
         public static final double sideWheelDistMeters = 0.5102;
 
-        public final static double cancoderTLOffset = 215.8;
-        public final static double cancoderTROffset = 289.6;
-        public final static double cancoderBLOffset = 54.3;
-        public final static double cancoderBROffset = 190.1;
+        public final static double cancoderTLOffset = 10.1;
+        public final static double cancoderTROffset = 234.3;
+        public final static double cancoderBLOffset = 109.6;
+        public final static double cancoderBROffset = 35.8;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
                 new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4,
