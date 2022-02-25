@@ -1,9 +1,7 @@
 package frc.robot.subsystems.arm;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
@@ -17,11 +15,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.motors.DBugSparkMax;
 import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends SubsystemBase {
-    private CANSparkMax _leader;
-    private CANSparkMax _follower;
+    private DBugSparkMax _leader;
+    private DBugSparkMax _follower;
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
     private LatchedBoolean _forwardState;
@@ -29,46 +28,36 @@ public class Arm extends SubsystemBase {
     private RelativeEncoder _encoder;
     private SparkMaxPIDController _PIDController;
     private ArmFeedforward _feedforward;
-    
+
     private double _lastGoal;
-    
+
+    private static DBugSparkMax createSparkMax(int id) {
+        DBugSparkMax sparkMax = new DBugSparkMax(id);
+        sparkMax.restoreFactoryDefaults();
+        sparkMax.setupPIDF(ArmConstants.gains);
+        sparkMax.setConversionFactors(ArmConstants.motorToArmConversionFactor,
+                ArmConstants.motorToArmConversionFactor / 60);
+        sparkMax.setSmartCurrentLimit(40);
+        sparkMax.enableVoltageCompensation(12);
+        sparkMax.setIdleMode(IdleMode.kBrake);
+        sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
+        sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
+        sparkMax.setPosition(ArmConstants.startingAngle);
+        return sparkMax;
+    }
 
     public Arm() {
-        _leader = new CANSparkMax(ArmConstants.leaderCANID, MotorType.kBrushless);
-        _follower = new CANSparkMax(ArmConstants.followerCANID, MotorType.kBrushless);
-
-        _leader.restoreFactoryDefaults();
-        _follower.restoreFactoryDefaults();
+        _leader = createSparkMax(ArmConstants.leaderCANID);
+        _follower = createSparkMax(ArmConstants.followerCANID);
 
         _leader.setInverted(ArmConstants.motorInverted);
-        _leader.setIdleMode(IdleMode.kBrake);
-        _follower.setIdleMode(IdleMode.kBrake);
-
-        _forwardLimit = _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        _forwardLimit.enableLimitSwitch(true);
-        _reverseLimit.enableLimitSwitch(true);
+        _follower.follow(_leader, true);
 
         _forwardState = new LatchedBoolean();
         _reverseState = new LatchedBoolean();
 
-        _follower.follow(_leader, true);
-
-        _encoder = _leader.getEncoder();
-        _encoder.setPositionConversionFactor(ArmConstants.motorToArmConversionFactor);
-        _encoder.setVelocityConversionFactor(ArmConstants.motorToArmConversionFactor / 60);
-
-        _PIDController = _leader.getPIDController();
-        _PIDController.setP(ArmConstants.kP, ArmConstants.kPIDSlot);
-        _PIDController.setI(0, ArmConstants.kPIDSlot);
-        _PIDController.setD(0, ArmConstants.kPIDSlot);
-        _PIDController.setIZone(0, ArmConstants.kPIDSlot);
-        _PIDController.setFF(0, ArmConstants.kPIDSlot);
-        _PIDController.setOutputRange(-ArmConstants.kMaxOutput, ArmConstants.kMaxOutput, ArmConstants.kPIDSlot);
-
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
-        _encoder.setPosition(ArmConstants.startingAngle);
         _lastGoal = ArmConstants.startingAngle;
 
         // initSDB();
@@ -104,7 +93,7 @@ public class Arm extends SubsystemBase {
 
     private Command getActiveGoalFromSDB() {
         return getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
-        
+
     }
 
     public void useState(TrapezoidProfile.State state) {
@@ -156,7 +145,6 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
         SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
     }
-    
 
     @Override
     public void periodic() {
@@ -166,6 +154,6 @@ public class Arm extends SubsystemBase {
         } else if (_reverseState.update(_reverseLimit.isPressed())) {
             _encoder.setPosition(ArmConstants.shootAngle);
         }
-        //updateSDB();
+        // updateSDB();
     }
 }
