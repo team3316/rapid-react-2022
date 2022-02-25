@@ -47,22 +47,31 @@ public final class Constants {
 
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
-            public static final double driveKp = 0.0004; // in minutes per motor rotation
-            public static final double driveKd = 0; // in minutes per motor rotation
-            public static final double driveKf = 0.75 / 4300; // percent to motor / RPM of motor at that
-                                                                // percent
-            public static final double steeringKp = 0.35; // in 1 / motor rotation
+            public static final double driveKp = 0.612; // in seconds per meter
+            public static final double driveKd = 0; // in seconds per meter
+            public static final double driveKf = 0.75 / 2.81; // percent to motor / m/s at that
+                                                              // percent
+            public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
             private static final double neoMaxSpeed = 5600;
             private static final double driveRatio = 1.0 / 8.14;
             private static final double steeringRatio = 1.0 / 12.8;
             private static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
 
-            public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m / rotation
-            public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // m / (rotation * seconds/minute)
-            
+            public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m
+                                                                                                                   // /
+                                                                                                                   // rotation
+            public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // m /
+                                                                                                           // (rotation
+                                                                                                           // *
+                                                                                                           // seconds/minute)
+
             public static final double steeringPositionConversionFactor = steeringRatio * 360; // degrees / rotation
-            public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees / (rotation * seconds/minute)
+            public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees
+                                                                                                                 // /
+                                                                                                                 // (rotation
+                                                                                                                 // *
+                                                                                                                 // seconds/minute)
 
             public static final double freeSpeedMetersPerSecond = neoMaxSpeed * driveVelocityConversionFactor;
 
