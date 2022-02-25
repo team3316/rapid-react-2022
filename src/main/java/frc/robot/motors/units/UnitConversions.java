@@ -1,15 +1,9 @@
 package frc.robot.motors.units;
 
-import frc.robot.motors.EncoderModel;
-
 public class UnitConversions {
     public final double gearRatio;
     public final double wheelDiameterMeters;
     public final double upr;
-
-    public UnitConversions(double gearRatio, double wheelDiameterMeters, EncoderModel model) {
-        this(gearRatio, wheelDiameterMeters, model.upr);
-    }
 
     public UnitConversions(double gearRatio, double wheelDiameterMeters, double upr) {
         this.gearRatio = gearRatio;
