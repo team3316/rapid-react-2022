@@ -38,6 +38,7 @@ public final class Constants {
         public static final int kPIDSlot = 0;
         public static final double kP = 0.03;
         public static final double kMaxOutput = 0.4;
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, 0, kMaxOutput);
 
         // Arm feedforward
         public static final double gravityFF = -0.07; // in Motor%
@@ -67,9 +68,9 @@ public final class Constants {
 
             public final Translation2d position;
             public final int idDrive;
-            public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKf, 0, 0);
+            public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKf);
             public final int idSteering;
-            public final PIDFGains steeringGains = new PIDFGains(steeringKp, 0.0, 0, 0, 0, 0);
+            public final PIDFGains steeringGains = new PIDFGains(steeringKp);
             public final double cancoderZeroAngle;
             public final int canCoderId;
 
@@ -127,7 +128,7 @@ public final class Constants {
 
         public static final double kP = 0.1; //
         public static final double kF = 0.75 * 1023 / 14750; // units at 75% / measured native velocity at 75%
-        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF);
 
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
