@@ -51,7 +51,7 @@ public final class Constants {
             public static final double driveKp = 0.0004; // in minutes per motor rotation
             public static final double driveKd = 0; // in minutes per motor rotation
             public static final double driveKf = 0.75 / 4300; // percent to motor / RPM of motor at that
-                                                                // percent
+                                                              // percent
             public static final double steeringKp = 0.35; // in 1 / motor rotation
 
             private static final double neoMaxSpeed = 5600;
@@ -174,16 +174,17 @@ public final class Constants {
 
     public static final class Autonomous {
         // TODO: Calibrate
-        public static final double kMaxSpeedMetersPerSecond = 3.0;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 3.6;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 10.7;
+        public static final double kMaxSpeedMetersPerSecond = 2.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 100;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 100;
 
-        public static final String defaultPath = "straight_path";
+        public static final String defaultPath = "rotate";
 
         public static final double kPXController = 1;
         public static final double kPYController = 1;
-        public static final double kPThetaController = 6;
+        public static final double kPThetaController = 1;
+        public static final double kIThetaController = 3;
 
         public static final Constraints kThetaControllerConstraints = new Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);

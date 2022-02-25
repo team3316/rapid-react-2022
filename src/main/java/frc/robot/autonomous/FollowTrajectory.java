@@ -13,9 +13,11 @@ import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +42,41 @@ public class FollowTrajectory extends SubsystemBase {
 
     private SendableChooser<String> _chooser;
 
+    private class MyProfiledPIDController extends ProfiledPIDController {
+        static final int TAPS = 5;
+        private LinearFilter _previousGoal;
+        private LinearFilter _previousMeasurement;
+        private double m_kP;
+        private double m_kI;
+
+        public MyProfiledPIDController(double Kp, double Ki, double Kd, Constraints constraints) {
+            super(Kp, Ki, Kd, constraints);
+            m_kP = Kp;
+            m_kI = Ki;
+        }
+
+        private double averageVelocity(double val, LinearFilter fil) {
+            return (val - fil.calculate(val)) / (getPeriod() * TAPS / 2);
+        }
+
+        @Override
+        public double calculate(double measurement, double goal) {
+            double velocity = averageVelocity(measurement, _previousMeasurement);
+            double goalVelocity = averageVelocity(goal, _previousGoal);
+
+            return goalVelocity + m_kP * (goalVelocity - velocity) + m_kI * (goal - measurement);
+        }
+
+        @Override
+        public void reset(double measuredPosition) {
+            super.reset(measuredPosition);
+            _previousGoal = LinearFilter.movingAverage(TAPS);
+            _previousGoal.calculate(measuredPosition);
+            _previousMeasurement = LinearFilter.movingAverage(TAPS);
+            _previousMeasurement.calculate(measuredPosition);
+        }
+    }
+
     public FollowTrajectory(Drivetrain drivetrain) {
         this.m_drivetrain = drivetrain;
         this.m_trajectory = PathPlanner.loadPath(Constants.Autonomous.defaultPath,
@@ -49,10 +86,12 @@ public class FollowTrajectory extends SubsystemBase {
         this._kinematics = Constants.Drivetrain.kinematics;
         this._xController = new PIDController(Constants.Autonomous.kPXController, 0, 0);
         this._yController = new PIDController(Constants.Autonomous.kPYController, 0, 0);
-        this._thetaController = new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0,
+        this._thetaController = new MyProfiledPIDController(Constants.Autonomous.kPThetaController,
+                Constants.Autonomous.kIThetaController, 0,
                 Constants.Autonomous.kThetaControllerConstraints);
         this._outputModuleStates = this.m_drivetrain::setDesiredStates;
         initSDB();
+        this._thetaController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     private void initSDB() {
@@ -65,7 +104,8 @@ public class FollowTrajectory extends SubsystemBase {
 
         SmartDashboard.putData("Update Auto PID", new InstantCommand(() -> updatePID()));
         SmartDashboard.putData("Drive 2M in X", new InstantCommand(() -> getCalibrateXControllerCommand().schedule()));
-        SmartDashboard.putData("Rotate 180 in Theta", new InstantCommand( () -> getCalibrateThetaControllerCommand().schedule()));
+        SmartDashboard.putData("Rotate 180 in Theta",
+                new InstantCommand(() -> getCalibrateThetaControllerCommand().schedule()));
         SmartDashboard.putData("Update Auto Trajectory", new InstantCommand(() -> updateTrajectory()));
 
         this._chooser = new SendableChooser<String>();
@@ -78,31 +118,35 @@ public class FollowTrajectory extends SubsystemBase {
         SmartDashboard.putData("paths chooser", this._chooser);
     }
 
-    public void periodic(){
+    public void periodic() {
         SmartDashboard.putNumber("x pose", m_drivetrain.getPose().getX());
     }
 
     private void updatePID() {
         _xController.setP(SmartDashboard.getNumber("P Gain Auto xController", Constants.Autonomous.kPXController));
         _yController.setP(SmartDashboard.getNumber("P Gain Auto yController", Constants.Autonomous.kPYController));
-        _thetaController.setP(SmartDashboard.getNumber("P Gain Auto thetaCotroller", Constants.Autonomous.kPThetaController));
+        _thetaController
+                .setP(SmartDashboard.getNumber("P Gain Auto thetaCotroller", Constants.Autonomous.kPThetaController));
     }
 
     private Command getCalibrateXControllerCommand() {
         return new PIDCommand(this._xController,
                 () -> m_drivetrain.getPose().getX(),
                 2.0,
-                (double value) -> m_drivetrain.drive(value, 0, 0, false)).beforeStarting(() -> m_drivetrain.resetOdometry(new Pose2d()));
+                (double value) -> m_drivetrain.drive(value, 0, 0, false))
+                        .beforeStarting(() -> m_drivetrain.resetOdometry(new Pose2d()));
     }
 
     private Command getCalibrateThetaControllerCommand() {
-        ProfiledPIDCommand command =  new ProfiledPIDCommand(this._thetaController,
-        () -> m_drivetrain.getRotation2d().getRadians(),
-        Math.PI + m_drivetrain.getRotation2d().getRadians(),
-        (Double value, State state) -> {m_drivetrain.drive(0, 0, value, false);
-             SmartDashboard.putNumber("output", value);
-             SmartDashboard.putNumber("wanted pos", state.position); });
-            
+        ProfiledPIDCommand command = new ProfiledPIDCommand(this._thetaController,
+                () -> m_drivetrain.getRotation2d().getRadians(),
+                Math.PI + m_drivetrain.getRotation2d().getRadians(),
+                (Double value, State state) -> {
+                    m_drivetrain.drive(0, 0, value, false);
+                    SmartDashboard.putNumber("output", value);
+                    SmartDashboard.putNumber("wanted pos", state.position);
+                });
+
         command.getController().enableContinuousInput(-Math.PI, Math.PI);
         return command;
     }
@@ -110,12 +154,14 @@ public class FollowTrajectory extends SubsystemBase {
     private void updateTrajectory() {
         this.m_trajectory = PathPlanner.loadPath(this._chooser.getSelected(),
                 SmartDashboard.getNumber("Auto max velocity", Constants.Autonomous.kMaxSpeedMetersPerSecond),
-                SmartDashboard.getNumber("Auto Max Accleration", Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared));
+                SmartDashboard.getNumber("Auto Max Accleration",
+                        Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared));
     }
 
     public Command getFollowTrajectoryCommand() {
-        // return new PPSwerveControllerCommand(m_trajectory, _pose, _kinematics, _xController, _yController,
-        //         _thetaController, _outputModuleStates, m_drivetrain);
+        // return new PPSwerveControllerCommand(m_trajectory, _pose, _kinematics,
+        // _xController, _yController,
+        // _thetaController, _outputModuleStates, m_drivetrain);
 
         PathPlannerState initState = m_trajectory.getInitialState();
 
