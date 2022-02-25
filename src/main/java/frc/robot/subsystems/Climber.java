@@ -4,48 +4,37 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.motors.DBugSparkMax;
 
 public class Climber extends SubsystemBase {
 
-    private CANSparkMax _leftSparkMax, _rightSparkMax;
-    private RelativeEncoder _leftEncoder, _rightEncoder;
+    private DBugSparkMax _leftSparkMax, _rightSparkMax;
 
-    private static void configureSparkMax(CANSparkMax sparkMax) {
+    private static DBugSparkMax createSparkMax(int id) {
+        DBugSparkMax sparkMax = new DBugSparkMax(id);
         sparkMax.restoreFactoryDefaults();
+        sparkMax.setConversionFactors(Constants.Climber.conversionFactor, Constants.Climber.conversionFactor / 60);
+        sparkMax.setSmartCurrentLimit(40);
+        sparkMax.enableVoltageCompensation(12);
         sparkMax.setIdleMode(IdleMode.kBrake);
-
         sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
         sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
         sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Climber.climbExtentionHeight);
         sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Climber.startingPosition);
-    }
-
-    private static void configureEncoder(RelativeEncoder encoder) {
-        encoder.setPositionConversionFactor(Constants.Climber.conversionFactor);
-        encoder.setVelocityConversionFactor(Constants.Climber.conversionFactor / 60);
-        encoder.setPosition(Constants.Climber.startingPosition);
+        sparkMax.setPosition(Constants.Climber.startingPosition);
+        return sparkMax;
     }
 
     public Climber() {
-        this._leftSparkMax = new CANSparkMax(Constants.Climber.leftID, MotorType.kBrushless);
-        this._rightSparkMax = new CANSparkMax(Constants.Climber.rightID, MotorType.kBrushless);
-        configureSparkMax(_leftSparkMax);
-        configureSparkMax(_rightSparkMax);
-
-        this._leftEncoder = _leftSparkMax.getEncoder();
-        this._rightEncoder = _rightSparkMax.getEncoder();
-        configureEncoder(_leftEncoder);
-        configureEncoder(_rightEncoder);
+        this._leftSparkMax = createSparkMax(Constants.Climber.leftID);
+        this._rightSparkMax = createSparkMax(Constants.Climber.rightID);
 
         this._rightSparkMax.setInverted(false);
 
@@ -66,11 +55,11 @@ public class Climber extends SubsystemBase {
     }
 
     private double getLeftPosition() {
-        return this._leftSparkMax.getEncoder().getPosition();
+        return this._leftSparkMax.getPosition();
     }
 
     private double getRightPosition() {
-        return this._rightSparkMax.getEncoder().getPosition();
+        return this._rightSparkMax.getPosition();
     }
 
     private void initSDB() {
@@ -103,11 +92,6 @@ public class Climber extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("Climber Left Position", getLeftPosition());
         SmartDashboard.putNumber("Climber Right Position", getRightPosition());
-    }
-
-    public void setEncoderPosition(double position) {
-        this._rightEncoder.setPosition(position);
-        this._leftEncoder.setPosition(position);
     }
 
     public void disableInit() {
