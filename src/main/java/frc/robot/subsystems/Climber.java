@@ -17,24 +17,21 @@ public class Climber extends SubsystemBase {
 
     private DBugSparkMax _leftSparkMax, _rightSparkMax;
 
-    private static DBugSparkMax createSparkMax(int id) {
-        DBugSparkMax sparkMax = DBugSparkMax.create(
-                id,
+    public Climber() {
+        this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
                 new PIDFGains(0),
                 Constants.Climber.conversionFactor,
                 Constants.Climber.conversionFactor / 60,
-                0);
-                
-        sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-        sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
-        sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Climber.climbExtentionHeight);
-        sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Climber.startingPosition);
-        return sparkMax;
-    }
+                Constants.Climber.startingPosition);
+        this._rightSparkMax = DBugSparkMax.create(Constants.Climber.rightID,
+                new PIDFGains(0),
+                Constants.Climber.conversionFactor,
+                Constants.Climber.conversionFactor / 60,
+                Constants.Climber.startingPosition);
 
-    public Climber() {
-        this._leftSparkMax = createSparkMax(Constants.Climber.leftID);
-        this._rightSparkMax = createSparkMax(Constants.Climber.rightID);
+        enableSoftLimit(true);
+        updateSoftLimitPosition((float) Constants.Climber.startingPosition,
+                (float) Constants.Climber.climbExtentionHeight);
 
         this._rightSparkMax.setInverted(false);
 
@@ -63,12 +60,13 @@ public class Climber extends SubsystemBase {
     }
 
     private void initSDB() {
-        SmartDashboard.setDefaultNumber("soft limit forward", Constants.Climber.climbExtentionHeight);
-        SmartDashboard.setDefaultNumber("soft limit reverse", Constants.Climber.startingPosition);
+        // SmartDashboard.setDefaultNumber("soft limit forward", Constants.Climber.climbExtentionHeight);
+        // SmartDashboard.setDefaultNumber("soft limit reverse", Constants.Climber.startingPosition);
 
         SmartDashboard.putData("enable left soft limit", new InstantCommand(() -> enableSoftLimit(true)));
         SmartDashboard.putData("disable left soft limit", new InstantCommand(() -> enableSoftLimit(false)));
-        SmartDashboard.putData("update soft limit position", new InstantCommand(() -> updateSoftLimitPosition()));
+        // SmartDashboard.putData("update soft limit position",
+        //         new InstantCommand(() -> updateSoftLimitPositionFromSDB()));
     }
 
     private void enableSoftLimit(boolean enabled) {
@@ -78,11 +76,16 @@ public class Climber extends SubsystemBase {
         this._rightSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, enabled);
     }
 
-    private void updateSoftLimitPosition() {
+    @SuppressWarnings("unused")
+    private void updateSoftLimitPositionFromSDB() {
         float reverseLimit = (float) SmartDashboard.getNumber("soft limit reverse",
                 Constants.Climber.startingPosition);
         float forwardLimit = (float) SmartDashboard.getNumber("soft limit forward",
                 Constants.Climber.climbExtentionHeight);
+        updateSoftLimitPosition(reverseLimit, forwardLimit);
+    }
+
+    private void updateSoftLimitPosition(float reverseLimit, float forwardLimit) {
         this._rightSparkMax.setSoftLimit(SoftLimitDirection.kReverse, reverseLimit);
         this._rightSparkMax.setSoftLimit(SoftLimitDirection.kForward, forwardLimit);
         this._leftSparkMax.setSoftLimit(SoftLimitDirection.kReverse, reverseLimit);
