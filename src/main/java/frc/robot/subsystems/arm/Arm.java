@@ -30,25 +30,22 @@ public class Arm extends SubsystemBase {
 
     private double _lastGoal;
 
-    private static DBugSparkMax createSparkMax(int id) {
-        DBugSparkMax sparkMax = DBugSparkMax.create(
-            id,
-            ArmConstants.gains,
-            ArmConstants.motorToArmConversionFactor,
-            ArmConstants.motorToArmConversionFactor / 60,
-            ArmConstants.startingAngle);
-
-        sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
-        sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
-        return sparkMax;
-    }
-
     public Arm() {
-        _leader = createSparkMax(ArmConstants.leaderCANID);
-        _follower = createSparkMax(ArmConstants.followerCANID);
+        _leader = DBugSparkMax.create(ArmConstants.leaderCANID,
+                ArmConstants.gains,
+                ArmConstants.motorToArmConversionFactor,
+                ArmConstants.motorToArmConversionFactor / 60,
+                ArmConstants.startingAngle);
+        _follower = DBugSparkMax.create(ArmConstants.followerCANID,
+                ArmConstants.gains,
+                ArmConstants.motorToArmConversionFactor,
+                ArmConstants.motorToArmConversionFactor / 60,
+                ArmConstants.startingAngle);
 
         _leader.setInverted(ArmConstants.motorInverted);
         _follower.follow(_leader, true);
+
+        enableLimitSwitch();
 
         _forwardState = new LatchedBoolean();
         _reverseState = new LatchedBoolean();
@@ -58,6 +55,13 @@ public class Arm extends SubsystemBase {
         _lastGoal = ArmConstants.startingAngle;
 
         // initSDB();
+    }
+
+    private void enableLimitSwitch() {
+        _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
+        _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
+        _follower.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
+        _follower.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
     }
 
     private void updatePIDFromSDB() {
