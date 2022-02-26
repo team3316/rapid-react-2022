@@ -18,29 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-/**
- * A command that uses two PID controllers ({@link PIDController}) and a
- * ProfiledPIDController
- * ({@link ProfiledPIDController}) to follow a trajectory
- * {@link PathPlannerTrajectory}
- * with a swerve drive.
- *
- * <p>
- * This command outputs the raw desired Swerve Module States
- * ({@link SwerveModuleState}) in an
- * array. The desired wheel and module rotation velocities should be taken from
- * those and used in
- * velocity PIDs.
- *
- * <p>
- * The robot angle controller does not follow the angle given by the trajectory
- * but rather goes
- * to the angle given in the final state of the trajectory.
- *
- * <p>
- * This class is provided by the NewCommands VendorDep
- */
-@SuppressWarnings("MemberName")
 public class DBugPPSwerveControllerCommand extends CommandBase {
     private final boolean DEBUG = true;
 
@@ -52,35 +29,6 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
     private final Consumer<SwerveModuleState[]> m_outputModuleStates;
     private final Supplier<Rotation2d> m_desiredRotation;
 
-    /**
-     * Constructs a new PPSwerveControllerCommand that when executed will follow the
-     * provided
-     * trajectory. This command will not return output voltages but rather raw
-     * module states from the
-     * position controllers which need to be put into a velocity PID.
-     *
-     * <p>
-     * Note: The controllers will *not* set the outputVolts to zero upon completion
-     * of the path-
-     * this is left to the user, since it is not appropriate for paths with
-     * nonstationary endstates.
-     *
-     * @param trajectory         The trajectory to follow.
-     * @param pose               A function that supplies the robot pose - use one
-     *                           of the odometry classes to
-     *                           provide this.
-     * @param kinematics         The kinematics for the robot drivetrain.
-     * @param xController        The Trajectory Tracker PID controller for the
-     *                           robot's x position.
-     * @param yController        The Trajectory Tracker PID controller for the
-     *                           robot's y position.
-     * @param thetaController    The Trajectory Tracker PID controller for angle for
-     *                           the robot.
-     * @param outputModuleStates The raw output module states from the position
-     *                           controllers.
-     * @param requirements       The subsystems to require.
-     */
-    @SuppressWarnings("ParameterName")
     public DBugPPSwerveControllerCommand(
             PathPlannerTrajectory trajectory,
             Supplier<Pose2d> pose,
@@ -112,7 +60,7 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
         m_timer.reset();
         m_timer.start();
         if (DEBUG)
-            System.out.printf("time,xError,xP,xF,yError,yP,yF,aError\n");
+            System.out.printf("time,xError,xP,xF,yError,yP,yF,aError,aPF\n");
     }
 
     @Override
@@ -122,7 +70,7 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
         var desiredState = (PathPlannerState) m_trajectory.sample(curTime);
         Pose2d currentPose = m_pose.get();
 
-        var targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
+        var targetChassisSpeeds = m_controller.calculate(currentPose, desiredState, m_desiredRotation.get());
 
         if (DEBUG) {
             // Calculate back the constituate parts of the chassis speeds.
@@ -132,7 +80,7 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
             Pose2d desiredPose = desiredState.poseMeters;
             double xFF = desiredState.velocityMetersPerSecond * desiredPose.getRotation().getCos();
             double yFF = desiredState.velocityMetersPerSecond * desiredPose.getRotation().getSin();
-            System.out.printf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
+            System.out.printf("%f,%f,%f,%f,%f,%f,%f,%f,%f\n",
                     curTime,
                     desiredPose.getX() - currentPose.getX(),
                     fieldSpeeds.vxMetersPerSecond - xFF,
@@ -140,7 +88,8 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
                     desiredPose.getY() - currentPose.getY(),
                     fieldSpeeds.vyMetersPerSecond - yFF,
                     yFF,
-                    desiredState.holonomicRotation.getRadians() - currentPose.getRotation().getRadians());
+                    desiredState.holonomicRotation.getRadians() - currentPose.getRotation().getRadians(),
+                    fieldSpeeds.omegaRadiansPerSecond);
         }
 
         var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
