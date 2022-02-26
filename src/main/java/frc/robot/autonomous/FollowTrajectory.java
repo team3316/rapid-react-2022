@@ -51,6 +51,7 @@ public class FollowTrajectory extends SubsystemBase {
         this._yController = new PIDController(Constants.Autonomous.kPYController, 0, 0);
         this._thetaController = new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0,
                 Constants.Autonomous.kThetaControllerConstraints);
+        _thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this._outputModuleStates = this.m_drivetrain::setDesiredStates;
         initSDB();
     }
