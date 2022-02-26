@@ -1,9 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
