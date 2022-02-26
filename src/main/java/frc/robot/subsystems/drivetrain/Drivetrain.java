@@ -72,9 +72,9 @@ public class Drivetrain extends SubsystemBase {
         updateSDB();
     }
 
-    public void stop() {
+    public void disabledInit() {
         for (int i = 0; i < this._modules.length; i++) {
-            this._modules[i].stop();
+            this._modules[i].disable();
         }
     }
 
@@ -87,7 +87,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("rotation", getRotation2d().getRadians());
     }
 
-    public Pose2d getPose(){
+    public Pose2d getPose() {
         return this._odometry.getPoseMeters();
     }
 

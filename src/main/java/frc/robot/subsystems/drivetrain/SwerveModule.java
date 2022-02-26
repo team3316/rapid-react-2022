@@ -110,4 +110,9 @@ public class SwerveModule {
     public double getAbsAngle() {
         return _absEncoder.getAbsolutePosition();
     }
+
+    public void disable() {
+        this.stop();
+        this._steerMotor.set(0);
+    }
 }
