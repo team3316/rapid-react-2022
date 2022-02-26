@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
 
     private void enableLimitSwitch() {
         _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
-        _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
+        _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
     }
 
     private void updatePIDFromSDB() {
