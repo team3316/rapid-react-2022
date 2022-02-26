@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
+import frc.robot.motors.PIDFGains;
 import frc.robot.utils.LatchedBoolean;
 
 public class Arm extends SubsystemBase {
@@ -24,8 +25,6 @@ public class Arm extends SubsystemBase {
     private SparkMaxLimitSwitch _reverseLimit;
     private LatchedBoolean _forwardState;
     private LatchedBoolean _reverseState;
-    private RelativeEncoder _encoder;
-    private SparkMaxPIDController _PIDController;
     private ArmFeedforward _feedforward;
 
     private double _lastGoal;
@@ -60,15 +59,12 @@ public class Arm extends SubsystemBase {
     private void enableLimitSwitch() {
         _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
         _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
-        _follower.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(true);
-        _follower.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed).enableLimitSwitch(true);
     }
 
     private void updatePIDFromSDB() {
-        _PIDController.setP(SmartDashboard.getNumber("P Gain", ArmConstants.kP), ArmConstants.kPIDSlot);
-
+        double kP = SmartDashboard.getNumber("P Gain", ArmConstants.kP);
         double kMaxOutput = SmartDashboard.getNumber("Max Output", ArmConstants.kMaxOutput);
-        _PIDController.setOutputRange(-kMaxOutput, kMaxOutput, ArmConstants.kPIDSlot);
+        _leader.setupPIDF(new PIDFGains(kP, 0, 0, 0, kMaxOutput));
     }
 
     private void updateFeedForwardFromSDB() {
@@ -87,7 +83,7 @@ public class Arm extends SubsystemBase {
         TrapezoidProfile _profile = new TrapezoidProfile(
                 ArmConstants.trapezoidConstraints,
                 new TrapezoidProfile.State(angle, 0),
-                new TrapezoidProfile.State(_encoder.getPosition(), _encoder.getVelocity()));
+                new TrapezoidProfile.State(_leader.getPosition(), _leader.getVelocity()));
 
         return new TrapezoidProfileCommand(_profile, this::useState, this);
     }
@@ -101,8 +97,7 @@ public class Arm extends SubsystemBase {
 
         double feedforward = _feedforward.calculate(Math.toRadians(state.position), state.velocity);
 
-        _PIDController.setReference(state.position, ControlType.kPosition, ArmConstants.kPIDSlot, feedforward,
-                ArbFFUnits.kPercentOut);
+        _leader.setReference(state.position, ControlType.kPosition, 0, feedforward, ArbFFUnits.kPercentOut);
 
         // updateSDB(state, feedforward);
     }
@@ -129,8 +124,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
 
-        SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
+        SmartDashboard.putNumber("Arm Position", _leader.getPosition());
+        SmartDashboard.putNumber("Arm Velocity", _leader.getVelocity());
 
         SmartDashboard.putNumber("Arm State Position", state.position);
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);
@@ -143,17 +138,17 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
 
-        SmartDashboard.putNumber("Arm Position", _encoder.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _encoder.getVelocity());
+        SmartDashboard.putNumber("Arm Position", _leader.getPosition());
+        SmartDashboard.putNumber("Arm Velocity", _leader.getVelocity());
     }
 
     @Override
     public void periodic() {
         if (_forwardState.update(_forwardLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.intakeAngle);
+            _leader.setPosition(ArmConstants.intakeAngle);
 
         } else if (_reverseState.update(_reverseLimit.isPressed())) {
-            _encoder.setPosition(ArmConstants.shootAngle);
+            _leader.setPosition(ArmConstants.shootAngle);
         }
         // updateSDB();
     }
