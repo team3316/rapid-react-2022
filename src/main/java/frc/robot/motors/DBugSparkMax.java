@@ -3,6 +3,7 @@ package frc.robot.motors;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 public class DBugSparkMax extends CANSparkMax {
     private SparkMaxPIDController _pidController;
@@ -14,6 +15,15 @@ public class DBugSparkMax extends CANSparkMax {
         this._encoder = this.getEncoder();
 
         this._pidController = this.getPIDController();
+    }
+
+    public void setReference(
+            double value,
+            ControlType ctrl,
+            int pidSlot,
+            double arbFeedforward,
+            ArbFFUnits arbFFUnits) {
+        this._pidController.setReference(value, ctrl, pidSlot, arbFeedforward, arbFFUnits);
     }
 
     public void setReference(double value, ControlType ctrl) {
