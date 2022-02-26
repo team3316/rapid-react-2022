@@ -186,16 +186,16 @@ public final class Constants {
 
     public static final class Autonomous {
         // TODO: Calibrate
-        public static final double kMaxSpeedMetersPerSecond = 3.0;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 4.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 3.6;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 10.7;
+        public static final double kMaxSpeedMetersPerSecond = 2.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 3.0;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 10.0;
 
-        public static final String defaultPath = "straight_path";
+        public static final String defaultPath = "rotate";
 
         public static final double kPXController = 1;
         public static final double kPYController = 1;
-        public static final double kPThetaController = 6;
+        public static final double kPThetaController = 3;
 
         public static final Constraints kThetaControllerConstraints = new Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
