@@ -154,7 +154,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         if (_forwardState.update(_forwardLimit.isPressed())) {
-            _leader.setPosition(ArmConstants.intakeAngle);
+            _leader.setPosition(ArmConstants.intakeAngle - 1);
         }
         // updateSDB();
     }
