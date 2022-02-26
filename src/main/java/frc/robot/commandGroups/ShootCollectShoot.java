@@ -6,8 +6,10 @@ package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.autonomous.FollowTrajectory;
+import frc.robot.commands.SetManipulatorState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
@@ -21,13 +23,16 @@ public class ShootCollectShoot extends SequentialCommandGroup {
   public ShootCollectShoot(Manipulator manipulator, Trigger trigger, Arm arm, FollowTrajectory followTrajectory, FollowTrajectory followTrajectoryReverse) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle),
+    addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle).schedule()),
+                new WaitUntilCommand(arm::atGoal),
                 new AutoShoot(manipulator, trigger), 
-                arm.getActiveGoalCommand(Constants.ArmConstants.startingAngle),
-                raceWith(new InstantCommand(() -> manipulator.setState(ManipulatorState.COLLECT)),
+                new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
+                new WaitUntilCommand(arm::atGoal),
+                raceWith(new SetManipulatorState(manipulator, ManipulatorState.COLLECT),
                         followTrajectory.getFollowTrajectoryCommand()),
                 followTrajectoryReverse.getFollowTrajectoryCommand(),
-                arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle),
+                new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle).schedule()),
+                new WaitUntilCommand(arm::atGoal),
                 new AutoShoot(manipulator, trigger));
   }
 }
