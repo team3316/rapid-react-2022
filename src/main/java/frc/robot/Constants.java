@@ -4,8 +4,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.robot.motors.PIDFGains;
-import frc.robot.motors.units.UnitConversions;
-import frc.robot.motors.units.VelocityUnit;
 
 /**
  * Constants
@@ -40,6 +38,7 @@ public final class Constants {
         public static final int kPIDSlot = 0;
         public static final double kP = 0.03;
         public static final double kMaxOutput = 0.4;
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, 0, kMaxOutput);
 
         // Arm feedforward
         public static final double gravityFF = -0.07; // in Motor%
@@ -48,25 +47,39 @@ public final class Constants {
 
     public static final class Drivetrain {
         public static class SwerveModuleConstants {
-            public static final double driveKp = 0.0004; // in minutes per motor rotation
-            public static final double driveKd = 0; // in minutes per motor rotation
-            public static final double driveKf = 0.75 / 4300; // percent to motor / RPM of motor at that
+            public static final double driveKp = 0.612; // in seconds per meter
+            public static final double driveKd = 0; // in seconds per meter
+            public static final double driveKf = 0.75 / 2.81; // percent to motor / m/s at that
                                                               // percent
-            public static final double steeringKp = 0.35; // in 1 / motor rotation
+            public static final double steeringKp = 0.0124; // in 1 / wheel degrees
 
             private static final double neoMaxSpeed = 5600;
-            public static final double driveRatio = 1.0 / 8.14;
-            public static final double steeringRatio = 1.0 / 12.8;
-            public static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
-            public static final double freeSpeedMetersPerSecond = neoMaxSpeed *
-                    new UnitConversions(driveRatio, wheelDiameterMeters)
-                            .getRPMModifier(VelocityUnit.MetersPerSecond); // 3.6598
+            private static final double driveRatio = 1.0 / 8.14;
+            private static final double steeringRatio = 1.0 / 12.8;
+            private static final double wheelDiameterMeters = 4 * 2.54 / 100; // 4 inches in meters
+
+            public static final double drivePositionConversionFactor = driveRatio * wheelDiameterMeters * Math.PI; // m
+                                                                                                                   // /
+                                                                                                                   // rotation
+            public static final double driveVelocityConversionFactor = drivePositionConversionFactor / 60; // m /
+                                                                                                           // (rotation
+                                                                                                           // *
+                                                                                                           // seconds/minute)
+
+            public static final double steeringPositionConversionFactor = steeringRatio * 360; // degrees / rotation
+            public static final double steeringVelocityConversionFactor = steeringPositionConversionFactor / 60; // degrees
+                                                                                                                 // /
+                                                                                                                 // (rotation
+                                                                                                                 // *
+                                                                                                                 // seconds/minute)
+
+            public static final double freeSpeedMetersPerSecond = neoMaxSpeed * driveVelocityConversionFactor;
 
             public final Translation2d position;
             public final int idDrive;
-            public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKf, 0, 0);
+            public final PIDFGains driveGains = new PIDFGains(driveKp, 0, driveKd, driveKf);
             public final int idSteering;
-            public final PIDFGains steeringGains = new PIDFGains(steeringKp, 0.0, 0, 0, 0, 0);
+            public final PIDFGains steeringGains = new PIDFGains(steeringKp);
             public final double cancoderZeroAngle;
             public final int canCoderId;
 
@@ -124,7 +137,7 @@ public final class Constants {
 
         public static final double kP = 0.1; //
         public static final double kF = 0.75 * 1023 / 14750; // units at 75% / measured native velocity at 75%
-        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF, 0, 0);
+        public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF);
 
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;

@@ -2,17 +2,12 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
-import frc.robot.motors.ControlMode;
 import frc.robot.motors.DBugSparkMax;
-import frc.robot.motors.PIDFGains;
-import frc.robot.motors.units.PositionUnit;
-import frc.robot.motors.units.UnitConversions;
-import frc.robot.motors.units.VelocityUnit;
 
 /**
  * SwerveModule
@@ -25,30 +20,21 @@ public class SwerveModule {
     private CANCoder _absEncoder;
 
     public SwerveModule(SwerveModuleConstants constants) {
-        this._driveMotor = createSparkMax(
-                constants.idDrive,
-                new UnitConversions(SwerveModuleConstants.driveRatio, SwerveModuleConstants.wheelDiameterMeters),
-                constants.driveGains);
-
-        this._steerMotor = createSparkMax(
-                constants.idSteering,
-                new UnitConversions(SwerveModuleConstants.steeringRatio),
-                constants.steeringGains);
-
         this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
-        this.calibrateSteering();
-    }
 
-    private static DBugSparkMax createSparkMax(int id, UnitConversions conversions, PIDFGains gains) {
-        DBugSparkMax sparkMax = new DBugSparkMax(id, conversions);
-        sparkMax.restoreFactoryDefaults();
-        sparkMax.setupPIDF(gains);
-        sparkMax.setSmartCurrentLimit(40);
-        sparkMax.enableVoltageCompensation(12);
-        sparkMax.setIdleMode(IdleMode.kBrake);
-        sparkMax.setOpenLoopRampRate(0.01);
-        sparkMax.setClosedLoopRampRate(0.01);
-        return sparkMax;
+        this._driveMotor = DBugSparkMax.create(
+                constants.idDrive,
+                constants.driveGains,
+                SwerveModuleConstants.drivePositionConversionFactor,
+                SwerveModuleConstants.driveVelocityConversionFactor,
+                0);
+
+        this._steerMotor = DBugSparkMax.create(
+                constants.idSteering,
+                constants.steeringGains,
+                SwerveModuleConstants.steeringPositionConversionFactor,
+                SwerveModuleConstants.steeringVelocityConversionFactor,
+                _absEncoder.getAbsolutePosition());
     }
 
     private static CANCoder createCANCoder(int id, double zeroAngle) {
@@ -63,38 +49,30 @@ public class SwerveModule {
     }
 
     public void calibrateSteering() {
-        this._steerMotor.setPosition(_absEncoder.getAbsolutePosition() / 360 / SwerveModuleConstants.steeringRatio);
-    }
-
-    public void setSteeringPercent(double percent) {
-        this._steerMotor.set(ControlMode.PercentOutput, percent);
-    }
-
-    public void setDrivePercent(double percent) {
-        this._driveMotor.set(ControlMode.PercentOutput, percent);
+        this._steerMotor.setPosition(_absEncoder.getAbsolutePosition());
     }
 
     public void stop() {
-        this.setDrivePercent(0);
+        _driveMotor.set(0);
     }
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                this._driveMotor.getVelocity(VelocityUnit.MetersPerSecond),
-                new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition(PositionUnit.Degrees))));
+                this._driveMotor.getVelocity(),
+                new Rotation2d().rotateBy(Rotation2d.fromDegrees(this._steerMotor.getPosition())));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition(PositionUnit.Degrees));
+        SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition());
 
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
-            this._steerMotor.set(ControlMode.Position, state.angle.getDegrees(), PositionUnit.Degrees);
+            this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
         if (state.speedMetersPerSecond == 0)
             this.stop();
         else
-            this._driveMotor.set(ControlMode.Velocity, state.speedMetersPerSecond, VelocityUnit.MetersPerSecond);
+            this._driveMotor.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     }
 
     public static SwerveModuleState optimize(SwerveModuleState desiredState, double currentAngle) {
