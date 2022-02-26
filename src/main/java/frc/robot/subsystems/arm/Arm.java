@@ -15,6 +15,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.utils.LatchedBoolean;
+import frc.robot.utils.Within;
 
 public class Arm extends SubsystemBase {
     private DBugSparkMax _leader;
@@ -73,6 +74,10 @@ public class Arm extends SubsystemBase {
 
     public boolean isLastGoalIntake() {
         return (_lastGoal == ArmConstants.intakeAngle);
+    }
+
+    public boolean atGoal(){
+        return Within.range(_leader.getPosition(), _lastGoal, 1.0);
     }
 
     public Command getActiveGoalCommand(double angle) {
