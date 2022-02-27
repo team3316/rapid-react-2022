@@ -22,7 +22,7 @@ public class AutoShoot extends SequentialCommandGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
-                new WaitCommand(1.3),
+                new WaitCommand(0.75 - 0.25),
                 new InstantCommand(() -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle)),
                 new WaitCommand(0.6),
                 parallel(

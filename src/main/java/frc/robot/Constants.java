@@ -142,7 +142,7 @@ public final class Constants {
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
 
-        public static final int maxAccelerationSeconds = 1;
+        public static final double maxAccelerationSeconds = 0.5;
         public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
                                                                              // (native velocity to RPM)
         public static final double kPeakOutput = 1;
