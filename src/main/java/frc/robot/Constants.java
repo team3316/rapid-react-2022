@@ -176,8 +176,7 @@ public final class Constants {
 
         public static final double gearRatio = 12.0;
 
-        public static final double upMotorPercentage = 0.2;
-        public static final double downMotorPercentage = -0.2;
+        public static final double voltageCompensation = 10.0;
 
         public static final double startingPosition = 0.0;
         public static final double climbExtentionHeight = 0.93;

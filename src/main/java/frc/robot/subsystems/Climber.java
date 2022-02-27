@@ -28,6 +28,9 @@ public class Climber extends SubsystemBase {
                 Constants.Climber.conversionFactor,
                 Constants.Climber.conversionFactor / 60,
                 Constants.Climber.startingPosition);
+                
+        this._leftSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
+        this._rightSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
 
         enableSoftLimit(true);
         updateSoftLimitPosition((float) Constants.Climber.startingPosition,
