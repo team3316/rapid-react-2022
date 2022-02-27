@@ -66,6 +66,7 @@ public class Manipulator extends SubsystemBase {
     @Override
     public void periodic() {
         // updateSDB();
+        System.out.print(getRPM() + " " + getTargetRPM() + " ");
     }
 
     public void setState(ManipulatorState state) {

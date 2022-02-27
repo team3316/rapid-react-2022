@@ -26,6 +26,7 @@ public class Trigger extends SubsystemBase {
     }
 
     public void setRightAngle(double angle) {
+
         this._servoRight.setAngle(angle);
     }
 
@@ -40,10 +41,20 @@ public class Trigger extends SubsystemBase {
     @Override
     public void periodic() {
         // updateSDB();
+        System.out.println(
+                (Math.abs(getLeftAngle() - Constants.Trigger.Left.outAngle) <= 0.01
+                        ? -1000
+                        : 0)
+                        + " " +
+                        (Math.abs(getRightAngle() - Constants.Trigger.Right.outAngle) <= 0.01
+                                ? -1000
+                                : 0));
     }
 
     @SuppressWarnings({ "unused" })
     private void updateSDB() {
+
+        System.out.println();
         SmartDashboard.putBoolean(
                 "Left Trigger Out",
                 Math.abs(getLeftAngle() - Constants.Trigger.Left.outAngle) <= 0.01);
