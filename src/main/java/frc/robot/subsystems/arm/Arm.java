@@ -22,7 +22,6 @@ public class Arm extends SubsystemBase {
     private SparkMaxLimitSwitch _forwardLimit;
     private SparkMaxLimitSwitch _reverseLimit;
     private LatchedBoolean _forwardState;
-    private LatchedBoolean _reverseState;
     private ArmFeedforward _feedforward;
 
     private double _lastGoal;
@@ -45,11 +44,11 @@ public class Arm extends SubsystemBase {
         enableLimitSwitch();
 
         _forwardState = new LatchedBoolean();
-        _reverseState = new LatchedBoolean();
 
         _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
-        _lastGoal = ArmConstants.startingAngle;
+        _lastGoal = getArmInitPosition();
+        _leader.setPosition(getArmInitPosition());
 
         // initSDB();
     }
@@ -59,6 +58,16 @@ public class Arm extends SubsystemBase {
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _reverseLimit.enableLimitSwitch(true);
+    }
+
+    private double getArmInitPosition() {
+        if (_forwardState.update(_forwardLimit.isPressed())) {
+            return ArmConstants.intakeAngle;
+        }
+        if (_forwardState.update(_reverseLimit.isPressed())) {
+            return ArmConstants.shootAngle;
+        }
+        return ArmConstants.startingAngle;
     }
 
     private void updatePIDFromSDB() {
@@ -145,10 +154,7 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         if (_forwardState.update(_forwardLimit.isPressed())) {
-            _leader.setPosition(ArmConstants.intakeAngle);
-
-        } else if (_reverseState.update(_reverseLimit.isPressed())) {
-            _leader.setPosition(ArmConstants.shootAngle);
+            _leader.setPosition(ArmConstants.intakeAngle - ArmConstants.overshootDelta);
         }
         // updateSDB();
     }
