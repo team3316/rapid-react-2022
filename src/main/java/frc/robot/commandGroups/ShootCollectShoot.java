@@ -4,12 +4,12 @@
 
 package frc.robot.commandGroups;
 
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.autonomous.FollowTrajectory;
-import frc.robot.commands.SetManipulatorState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
@@ -28,7 +28,12 @@ public class ShootCollectShoot extends SequentialCommandGroup {
                 new AutoShoot(manipulator, trigger), 
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
-                raceWith(new SetManipulatorState(manipulator, ManipulatorState.COLLECT),
+                raceWith(new FunctionalCommand(
+                                () -> manipulator.setState(ManipulatorState.COLLECT), 
+                                () -> {}, 
+                                interrupted -> manipulator.setState(ManipulatorState.OFF), 
+                                () -> false, 
+                                manipulator),
                         followTrajectory.getFollowTrajectoryCommand()),
                 followTrajectoryReverse.getFollowTrajectoryCommand(),
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle).schedule()),
