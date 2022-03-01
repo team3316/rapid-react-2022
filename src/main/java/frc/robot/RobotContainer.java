@@ -38,13 +38,14 @@ import frc.robot.subsystems.trigger.Trigger;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Manipulator m_Manipulator = new Manipulator();
 
     private final Trigger m_Trigger = new Trigger();
 
     private final Drivetrain m_Drivetrain = new Drivetrain();
 
     private final Arm m_arm = new Arm();
+
+    private final Manipulator m_Manipulator = new Manipulator(() -> m_arm.isLastGoalIntake() && m_arm.atGoal());
 
     private final Climber m_Climber = new Climber();
 
