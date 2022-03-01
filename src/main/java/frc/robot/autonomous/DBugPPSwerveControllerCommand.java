@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class DBugPPSwerveControllerCommand extends CommandBase {
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     private final Timer m_timer = new Timer();
     private final PathPlannerTrajectory m_trajectory;
