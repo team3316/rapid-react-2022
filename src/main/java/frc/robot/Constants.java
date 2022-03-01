@@ -24,8 +24,7 @@ public final class Constants {
         public static final double intakeAngle = 36 + overshootDelta; // in Degrees: measured. Theoretical was -37.6
         public static final double shootAngle = -122; // in Degrees: measured. Theoretical was 119.6
 
-        // TODO: Define a legal starting angle, or create homing sequence
-        public static final double startingAngle = intakeAngle;
+        public static final double startingAngle = -90;
 
         // motion profile.
         public static final double movementTime = 1.5; // in secs.
