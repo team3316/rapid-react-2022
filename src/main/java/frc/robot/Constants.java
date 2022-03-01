@@ -186,7 +186,6 @@ public final class Constants {
     }
 
     public static final class Autonomous {
-        // TODO: Calibrate
         public static final double kMaxSpeedMetersPerSecond = 2.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = 3.0;
