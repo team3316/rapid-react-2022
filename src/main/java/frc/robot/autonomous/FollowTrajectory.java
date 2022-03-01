@@ -16,13 +16,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -65,9 +62,6 @@ public class FollowTrajectory extends SubsystemBase {
                 Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared);
 
         SmartDashboard.putData("Update Auto PID", new InstantCommand(() -> updatePID()));
-        SmartDashboard.putData("Drive 2M in X", new InstantCommand(() -> getCalibrateXControllerCommand().schedule()));
-        SmartDashboard.putData("Rotate 180 in Theta",
-                new InstantCommand(() -> getCalibrateThetaControllerCommand().schedule()));
         SmartDashboard.putData("Update Auto Trajectory", new InstantCommand(() -> updateTrajectory()));
 
         this._chooser = new SendableChooser<String>();
@@ -91,28 +85,6 @@ public class FollowTrajectory extends SubsystemBase {
                 .setP(SmartDashboard.getNumber("P Gain Auto thetaCotroller", Constants.Autonomous.kPThetaController));
     }
 
-    private Command getCalibrateXControllerCommand() {
-        return new PIDCommand(this._xController,
-                () -> m_drivetrain.getPose().getX(),
-                2.0,
-                (double value) -> m_drivetrain.drive(value, 0, 0, false))
-                        .beforeStarting(() -> m_drivetrain.resetOdometry(new Pose2d()));
-    }
-
-    private Command getCalibrateThetaControllerCommand() {
-        ProfiledPIDCommand command = new ProfiledPIDCommand(this._thetaController,
-                () -> m_drivetrain.getRotation2d().getRadians(),
-                Math.PI + m_drivetrain.getRotation2d().getRadians(),
-                (Double value, State state) -> {
-                    m_drivetrain.drive(0, 0, value, false);
-                    SmartDashboard.putNumber("output", value);
-                    SmartDashboard.putNumber("wanted pos", state.position);
-                });
-
-        command.getController().enableContinuousInput(-Math.PI, Math.PI);
-        return command;
-    }
-
     private void updateTrajectory() {
         this.m_trajectory = PathPlanner.loadPath(this._chooser.getSelected(),
                 SmartDashboard.getNumber("Auto max velocity", Constants.Autonomous.kMaxSpeedMetersPerSecond),
@@ -121,9 +93,6 @@ public class FollowTrajectory extends SubsystemBase {
     }
 
     public Command getFollowTrajectoryCommand() {
-        // return new PPSwerveControllerCommand(m_trajectory, _pose, _kinematics,
-        // _xController, _yController,
-        // _thetaController, _outputModuleStates, m_drivetrain);
 
         PathPlannerState initState = m_trajectory.getInitialState();
 
