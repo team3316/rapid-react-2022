@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,13 +20,23 @@ public class AutoShoot extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
                 new WaitCommand(1.3),
-                new InstantCommand(() -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle)),
-                new WaitCommand(0.6),
-                parallel(
-                        new InstantCommand(() -> trigger.setLeftAngle(Constants.Trigger.Left.inAngle)),
-                        new InstantCommand(() -> trigger.setRightAngle(Constants.Trigger.Right.outAngle))),
-                new WaitCommand(0.6),
-                new InstantCommand(() -> trigger.setRightAngle(Constants.Trigger.Right.inAngle)),
+
+                new ConditionalCommand(
+                        sequence(
+                                new InstantCommand(() -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle)),
+                                new WaitCommand(0.6),
+                                new InstantCommand(() -> trigger.setLeftAngle(Constants.Trigger.Left.inAngle))),
+                        new InstantCommand(),
+                        () -> manipulator.getCargoState().leftCargo),
+
+                new ConditionalCommand(
+                        sequence(
+                                new InstantCommand(() -> trigger.setRightAngle(Constants.Trigger.Right.outAngle)),
+                                new WaitCommand(0.6),
+                                new InstantCommand(() -> trigger.setRightAngle(Constants.Trigger.Right.inAngle))),
+                        new InstantCommand(),
+                        () -> manipulator.getCargoState().rightCargo),
+
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator));
     }
 }
