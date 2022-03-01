@@ -6,14 +6,20 @@ package frc.robot.subsystems.manipulator;
 
 /** Add your docs here. */
 public class ManipulatorCargoState {
-    public final boolean leftCargo;
-    public final boolean rightCargo;
-    public ManipulatorCargoState(boolean leftCargo, boolean rightCargo){
+    public boolean leftCargo;
+    public boolean rightCargo;
+
+    public ManipulatorCargoState(boolean leftCargo, boolean rightCargo) {
         this.leftCargo = leftCargo;
         this.rightCargo = rightCargo;
     }
 
-    public boolean hasBoth(){
+    public ManipulatorCargoState(ManipulatorCargoState cargoState) {
+        this.leftCargo = cargoState.leftCargo;
+        this.rightCargo = cargoState.leftCargo;
+    }
+
+    public boolean hasBoth() {
         return leftCargo && rightCargo;
     }
 }
