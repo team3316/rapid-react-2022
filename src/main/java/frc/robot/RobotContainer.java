@@ -47,9 +47,11 @@ public class RobotContainer {
 
     private final Joysticks m_Joysticks = new Joysticks();
 
-    private final FollowTrajectory m_FollowTrajectory = new FollowTrajectory(m_Drivetrain);
+    private final FollowTrajectory m_FollowTrajectory = new FollowTrajectory(m_Drivetrain, false);
+    private final FollowTrajectory m_FollowTrajectoryReversed = new FollowTrajectory(m_Drivetrain, true);
 
     private boolean _fieldRelative = true;
+    private boolean runInverted = false;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -142,7 +144,8 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         // this.m_FollowTrajectory = new FollowTrajectory(path, m_Drivetrain);
-        return this.m_FollowTrajectory.getFollowTrajectoryCommand();
+        runInverted = !runInverted;
+        return !runInverted ? this.m_FollowTrajectory.getFollowTrajectoryCommand() : this.m_FollowTrajectoryReversed.getFollowTrajectoryCommand();
     }
 
     public void disableInit() {

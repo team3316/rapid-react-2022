@@ -37,11 +37,11 @@ public class FollowTrajectory extends SubsystemBase {
 
     private SendableChooser<String> _chooser;
 
-    public FollowTrajectory(Drivetrain drivetrain) {
+    public FollowTrajectory(Drivetrain drivetrain, boolean reversed) {
         this.m_drivetrain = drivetrain;
         this.m_trajectory = PathPlanner.loadPath(Constants.Autonomous.defaultPath,
                 Constants.Autonomous.kMaxSpeedMetersPerSecond,
-                Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared);
+                Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared, reversed);
         this._pose = m_drivetrain::getPose;
         this._kinematics = Constants.Drivetrain.kinematics;
         this._xController = new PIDController(Constants.Autonomous.kPXController, 0, 0);
