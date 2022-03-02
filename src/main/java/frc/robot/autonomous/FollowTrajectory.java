@@ -37,11 +37,11 @@ public class FollowTrajectory extends SubsystemBase {
 
     private SendableChooser<String> _chooser;
 
-    public FollowTrajectory(Drivetrain drivetrain, boolean reversed) {
+    public FollowTrajectory(Drivetrain drivetrain,String path) {
         this.m_drivetrain = drivetrain;
-        this.m_trajectory = PathPlanner.loadPath(Constants.Autonomous.defaultPath,
+        this.m_trajectory = PathPlanner.loadPath(path,
                 Constants.Autonomous.kMaxSpeedMetersPerSecond,
-                Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared, reversed);
+                Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared);
         this._pose = m_drivetrain::getPose;
         this._kinematics = Constants.Drivetrain.kinematics;
         this._xController = new PIDController(Constants.Autonomous.kPXController, 0, 0);
@@ -68,6 +68,7 @@ public class FollowTrajectory extends SubsystemBase {
         _chooser.setDefaultOption("straight path", "straight_path");
         _chooser.addOption("s path", "s");
         _chooser.addOption("180 rotation path", "rotate");
+        _chooser.addOption("collect 1 CARGO", "collect");
         // Add a new autonomous path:
         // _chooser.addOption("straight path", "straight_path");
 

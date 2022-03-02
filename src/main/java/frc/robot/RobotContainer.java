@@ -13,8 +13,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
-import frc.robot.commands.AutoShoot;
 import frc.robot.autonomous.FollowTrajectory;
+import frc.robot.commands.AutoShoot;
+import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.arm.Arm;
@@ -47,11 +48,10 @@ public class RobotContainer {
 
     private final Joysticks m_Joysticks = new Joysticks();
 
-    private final FollowTrajectory m_FollowTrajectory = new FollowTrajectory(m_Drivetrain, false);
-    private final FollowTrajectory m_FollowTrajectoryReversed = new FollowTrajectory(m_Drivetrain, true);
+    private final FollowTrajectory m_followTrajectory = new FollowTrajectory(m_Drivetrain, "collect");
+    private final FollowTrajectory m_followTrajectoryReversed = new FollowTrajectory(m_Drivetrain, "collect_rev");
 
     private boolean _fieldRelative = true;
-    private boolean runInverted = false;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -140,10 +140,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        // this.m_FollowTrajectory = new FollowTrajectory(path, m_Drivetrain);
-        runInverted = !runInverted;
-        return !runInverted ? this.m_FollowTrajectory.getFollowTrajectoryCommand() : this.m_FollowTrajectoryReversed.getFollowTrajectoryCommand();
+        return new ShootCollectShoot(m_Manipulator, m_Trigger, m_arm, m_followTrajectory, m_followTrajectoryReversed);
     }
 
     public void disableInit() {
