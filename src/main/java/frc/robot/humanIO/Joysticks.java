@@ -16,6 +16,12 @@ public class Joysticks {
         this._operatorController = new PS5Controller(1);
     }
 
+    private static double calculateDeadband(double value) {
+        return Math.abs(value) > Constants.Joysticks.deadband
+                        ? value
+                        : 0;
+    }
+
     private static double calculateDeadband(double value, double other) {
         return Math.abs(value) > Constants.Joysticks.deadband
                 || Math.abs(other) > Constants.Joysticks.deadband
@@ -43,6 +49,10 @@ public class Joysticks {
 
     public double getDriveX() {
         return squareInputs(calculateDeadband(this._driveController.getLeftX(), -this._driveController.getLeftY()));
+    }
+
+    public double getClimbY() {
+        return squareInputs(calculateDeadband(-this._operatorController.getLeftY()));
     }
 
     public JoystickButton getOperatorButton(Button button) {

@@ -67,6 +67,12 @@ public class RobotContainer {
                                 m_Joysticks.getSteerX() * 11.5,
                                 _fieldRelative),
                         m_Drivetrain));
+
+        m_Climber.setDefaultCommand(
+                new RunCommand(
+                        () -> m_Climber.set(m_Joysticks.getClimbY()), 
+                        m_Climber)
+        );
     }
 
     /**
@@ -100,25 +106,17 @@ public class RobotContainer {
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
                                 () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
 
-        this.m_Joysticks.getOperatorPOVButton(0).whenHeld(
-                new StartEndCommand(
-                        () -> this.m_Climber.set(Constants.Climber.upMotorPercentage),
-                        () -> this.m_Climber.set(0.0)));
-
-        this.m_Joysticks.getOperatorPOVButton(180).whenHeld(
-                new StartEndCommand(
-                        () -> this.m_Climber.set(Constants.Climber.downMotorPercentage),
-                        () -> this.m_Climber.set(0.0)));
-
         this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.setL(-0.1),
-                        () -> this.m_Climber.setL(0.0)));
+                        () -> this.m_Climber.setL(0.0),
+                        m_Climber));
 
         this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.setR(-0.1),
-                        () -> this.m_Climber.setR(0.0)));
+                        () -> this.m_Climber.setR(0.0),
+                        m_Climber));
 
         m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
