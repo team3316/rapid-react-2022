@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.manipulator;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -38,10 +36,7 @@ public class Manipulator extends SubsystemBase {
     private DigitalInput _rightSwitch;
     private TalonFXConfiguration _leaderConfig;
 
-    private ManipulatorCargoState _cargoState;
-    private BooleanSupplier _areSwitchesValidSupplier;
-
-    public Manipulator(BooleanSupplier areSwitchesValidSupplier) {
+    public Manipulator() {
         this._leaderMotor = new TalonFX(Constants.Manipulator.leaderId);
         this._followerMotor = new TalonFX(Constants.Manipulator.followerId);
 
@@ -65,17 +60,11 @@ public class Manipulator extends SubsystemBase {
         _leaderMotor.configAllSettings(_leaderConfig);
 
         // initSDB();
-        this._cargoState = new ManipulatorCargoState(!this._leftSwitch.get(), !this._rightSwitch.get());
 
-        this._areSwitchesValidSupplier = areSwitchesValidSupplier;
     }
 
     @Override
     public void periodic() {
-        if (this._areSwitchesValidSupplier.getAsBoolean()) { // Don't update when the arm is up
-            this._cargoState.leftCargo = !this._leftSwitch.get();
-            this._cargoState.rightCargo = !this._rightSwitch.get();
-        }
         // updateSDB();
     }
 
@@ -84,7 +73,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public ManipulatorCargoState getCargoState() {
-        return new ManipulatorCargoState(this._cargoState);
+        return new ManipulatorCargoState(!this._leftSwitch.get(), !this._rightSwitch.get());
     }
 
     private void setTargetRPM(double rpm) {
