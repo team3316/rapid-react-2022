@@ -14,16 +14,18 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.autonomous.FollowTrajectory;
-import frc.robot.commands.AutoShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
+import frc.robot.commands.AutoShoot;
+import frc.robot.commands.OpenLeftTrigger;
+import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 import frc.robot.subsystems.trigger.Trigger;
-import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -70,9 +72,8 @@ public class RobotContainer {
 
         m_Climber.setDefaultCommand(
                 new RunCommand(
-                        () -> m_Climber.set(m_Joysticks.getClimbY()), 
-                        m_Climber)
-        );
+                        () -> m_Climber.set(m_Joysticks.getClimbY()),
+                        m_Climber));
     }
 
     /**
@@ -92,19 +93,24 @@ public class RobotContainer {
                                 m_Manipulator)
                                         .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
 
+        m_Joysticks.getOperatorButton(Button.kSquare)
+                .whileHeld(
+                        new StartEndCommand(
+                                () -> m_Manipulator.setState(ManipulatorState.SHOOT),
+                                () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                m_Manipulator));
+
         m_Joysticks.getOperatorButton(Button.kR1)
-                .whenPressed(new AutoShoot(m_Manipulator, m_Trigger));
+                .whenPressed(
+                        new ConditionalCommand(
+                                new AutoShoot(m_Manipulator, m_Trigger),
+                                new InstantCommand(),
+                                () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
         m_Joysticks.getOperatorButton(Button.kCross)
-                .whenHeld(
-                        new StartEndCommand(
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
-                                () -> this.m_Trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
+                .whenHeld(new OpenLeftTrigger(m_Trigger));
         m_Joysticks.getOperatorButton(Button.kCircle)
-                .whenHeld(
-                        new StartEndCommand(
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.outAngle),
-                                () -> this.m_Trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+                .whenHeld(new OpenRightTrigger(m_Trigger));
 
         this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
                 new StartEndCommand(
