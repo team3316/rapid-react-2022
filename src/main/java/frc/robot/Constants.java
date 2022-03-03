@@ -140,7 +140,7 @@ public final class Constants {
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF);
 
         public static final double collectRPM = 2400;
-        public static final double shootRPM = -4250;
+        public static final double shootRPM = -4500;
 
         public static final int maxAccelerationSeconds = 1;
         public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
