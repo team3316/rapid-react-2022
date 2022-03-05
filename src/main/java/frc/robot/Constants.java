@@ -22,7 +22,7 @@ public final class Constants {
         // Arm motion
         public static final double overshootDelta = 1;
         public static final double intakeAngle = 36 + overshootDelta; // in Degrees: measured. Theoretical was -37.6
-        public static final double shootAngle = -122; // in Degrees: measured. Theoretical was 119.6
+        public static final double shootAngle = -118; // in Degrees: measured. Theoretical was 119.6
 
         public static final double startingAngle = -90;
 
