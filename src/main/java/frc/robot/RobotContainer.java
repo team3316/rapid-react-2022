@@ -18,7 +18,7 @@ import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
-import frc.robot.commands.AutoShoot;
+import frc.robot.commands.AutoShootBoth;
 import frc.robot.commands.OpenLeftTrigger;
 import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
@@ -116,7 +116,7 @@ public class RobotContainer {
         m_Joysticks.getOperatorButton(Button.kR1)
                 .whenPressed(
                         new ConditionalCommand(
-                                new AutoShoot(m_Manipulator, m_Trigger),
+                                new AutoShootBoth(m_Manipulator, m_Trigger),
                                 new InstantCommand(),
                                 () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
