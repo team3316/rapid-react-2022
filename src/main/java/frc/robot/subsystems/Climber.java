@@ -36,7 +36,8 @@ public class Climber extends SubsystemBase {
         updateSoftLimitPosition((float) Constants.Climber.startingPosition,
                 (float) Constants.Climber.climbExtentionHeight);
 
-        this._rightSparkMax.setInverted(false);
+        this._rightSparkMax.setInverted(true);
+        this._leftSparkMax.setInverted(true);
 
         initSDB();
     }
