@@ -18,6 +18,6 @@ public class OpenLeftTrigger extends SequentialCommandGroup {
 
                 new StartEndCommand(
                         () -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
-                        () -> trigger.setLeftAngle(Constants.Trigger.Left.inAngle), trigger));
+                        () -> trigger.setLeftAngle(Constants.Trigger.Left.inAngle)));
     }
 }
