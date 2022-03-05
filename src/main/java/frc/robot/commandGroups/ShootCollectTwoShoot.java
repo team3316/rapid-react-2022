@@ -14,18 +14,17 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.trigger.Trigger;
 
-public class ShootCollectShoot extends SequentialCommandGroup {
+public class ShootCollectTwoShoot extends SequentialCommandGroup {
 
-    public ShootCollectShoot(Manipulator manipulator, Trigger trigger, Arm arm, FollowTrajectory followTrajectory,
-            FollowTrajectory followTrajectoryReverse) {
+    public ShootCollectTwoShoot(Arm arm, Manipulator manipulator, Trigger trigger, FollowTrajectory path1,
+            FollowTrajectory path2, FollowTrajectory path3) {
 
-        addCommands(
-                new AutonomousShoot(arm, manipulator, trigger),
+        addCommands(new AutonomousShoot(arm, manipulator, trigger),
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
-                followTrajectory.getResetOddometryCommand(),
-                followTrajectory.getFollowTrajectoryCommand().deadlineWith(new Collect(manipulator)),
-                followTrajectoryReverse.getFollowTrajectoryCommand(),
+                sequence(path1.getFollowTrajectoryCommand().beforeStarting(path1.getResetOddometryCommand()),
+                        path2.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator)),
+                path3.getFollowTrajectoryCommand(),
                 new AutonomousShoot(arm, manipulator, trigger));
     }
 }

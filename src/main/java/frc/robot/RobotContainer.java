@@ -15,6 +15,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.commandGroups.ShootCollectShoot;
+import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.OpenLeftTrigger;
 import frc.robot.commands.OpenRightTrigger;
@@ -53,6 +54,10 @@ public class RobotContainer {
 
     private final FollowTrajectory m_followTrajectory = new FollowTrajectory(m_Drivetrain, "collect");
     private final FollowTrajectory m_followTrajectoryReversed = new FollowTrajectory(m_Drivetrain, "collect_rev");
+
+    private final FollowTrajectory path1 = new FollowTrajectory(m_Drivetrain, "collect_two_path1");
+    private final FollowTrajectory path2 = new FollowTrajectory(m_Drivetrain, "collect_two_path2");
+    private final FollowTrajectory path3 = new FollowTrajectory(m_Drivetrain, "collect_two_path3");
 
     private boolean _fieldRelative = true;
 
@@ -147,7 +152,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new ShootCollectShoot(m_Manipulator, m_Trigger, m_arm, m_followTrajectory, m_followTrajectoryReversed);
+        return new ShootCollectTwoShoot(m_arm, m_Manipulator, m_Trigger, path1, path2, path3);
     }
 
     public void disableInit() {
