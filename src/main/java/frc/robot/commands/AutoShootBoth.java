@@ -11,16 +11,10 @@ import frc.robot.subsystems.trigger.Trigger;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoShootBoth extends SequentialCommandGroup {
-    /** Creates a new AutoShootBoth. */
     public AutoShootBoth(Manipulator manipulator, Trigger trigger) {
-        // Add your commands in the addCommands() call, e.g6
-        // addCommands(new FooCommand(), new BarCommand());
         addCommands(new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
-                new WaitCommand(0.6),
+                new WaitCommand(0.3),
 
                 new OpenBothTriggers(trigger).withTimeout(0.8),
 
