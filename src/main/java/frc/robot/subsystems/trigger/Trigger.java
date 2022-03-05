@@ -29,6 +29,11 @@ public class Trigger extends SubsystemBase {
         this._servoRight.setAngle(angle);
     }
 
+    public void setBothAngle(double leftAngle, double rightAngle){
+        setLeftAngle(leftAngle);
+        setRightAngle(rightAngle);
+    }
+
     public double getLeftAngle() {
         return this._servoLeft.getAngle();
     }

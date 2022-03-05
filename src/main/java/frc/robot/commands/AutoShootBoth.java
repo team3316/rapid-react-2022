@@ -20,10 +20,7 @@ public class AutoShootBoth extends SequentialCommandGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
 
-                parallel(
-                    new OpenRightTrigger(trigger),
-                    new OpenLeftTrigger(trigger)
-                ).withTimeout(0.8),
+                new OpenBothTriggers(trigger).withTimeout(0.8),
 
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator));
     }

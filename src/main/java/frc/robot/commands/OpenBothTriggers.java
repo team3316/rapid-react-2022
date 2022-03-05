@@ -9,16 +9,18 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.trigger.Trigger;
 
-public class OpenLeftTrigger extends SequentialCommandGroup {
-    /** Creates a new SetRightTrigger. */
-    public OpenLeftTrigger(Trigger trigger) {
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class OpenBothTriggers extends SequentialCommandGroup {
+    /** Creates a new OpenBothTriggers. */
+    public OpenBothTriggers(Trigger trigger) {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
-
                 new StartEndCommand(
-                        () -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle),
-                        () -> trigger.setLeftAngle(Constants.Trigger.Left.inAngle),
+                        () -> trigger.setBothAngle(Constants.Trigger.Left.outAngle, Constants.Trigger.Right.outAngle),
+                        () -> trigger.setBothAngle(Constants.Trigger.Left.inAngle, Constants.Trigger.Right.inAngle),
                         trigger));
     }
 }

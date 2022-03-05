@@ -18,6 +18,7 @@ public class OpenRightTrigger extends SequentialCommandGroup {
 
                 new StartEndCommand(
                         () -> trigger.setRightAngle(Constants.Trigger.Right.outAngle),
-                        () -> trigger.setRightAngle(Constants.Trigger.Right.inAngle)));
+                        () -> trigger.setRightAngle(Constants.Trigger.Right.inAngle),
+                        trigger));
     }
 }
