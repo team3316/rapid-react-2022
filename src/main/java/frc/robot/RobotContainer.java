@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
-import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
@@ -53,13 +52,6 @@ public class RobotContainer {
 
     private final Joysticks m_Joysticks = new Joysticks();
 
-    private final FollowTrajectory m_followTrajectory = new FollowTrajectory(m_Drivetrain, "collect");
-    private final FollowTrajectory m_followTrajectoryReversed = new FollowTrajectory(m_Drivetrain, "collect_rev");
-
-    private final FollowTrajectory path1 = new FollowTrajectory(m_Drivetrain, "collect_two_path1");
-    private final FollowTrajectory path2 = new FollowTrajectory(m_Drivetrain, "collect_two_path2");
-    private final FollowTrajectory path3 = new FollowTrajectory(m_Drivetrain, "collect_two_path3");
-
     private boolean _fieldRelative = true;
 
     private SendableChooser<Command> chooser;
@@ -90,8 +82,8 @@ public class RobotContainer {
 
     public void initChooser(){
         this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
-        this.chooser.addOption("autonomous 2 CARGO", new ShootCollectShoot(m_Manipulator, m_Trigger, m_arm, m_followTrajectory, m_followTrajectoryReversed));
-        this.chooser.addOption("autonomous 3 CARGO", new ShootCollectTwoShoot(m_arm, m_Manipulator, m_Trigger, path1, path2, path3));
+        this.chooser.addOption("autonomous 2 CARGO", new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
+        this.chooser.addOption("autonomous 3 CARGO", new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
     }
 
     /**

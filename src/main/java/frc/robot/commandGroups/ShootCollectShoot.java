@@ -11,13 +11,16 @@ import frc.robot.Constants;
 import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.commands.Collect;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.trigger.Trigger;
 
 public class ShootCollectShoot extends SequentialCommandGroup {
 
-    public ShootCollectShoot(Manipulator manipulator, Trigger trigger, Arm arm, FollowTrajectory followTrajectory,
-            FollowTrajectory followTrajectoryReverse) {
+    public ShootCollectShoot(Drivetrain drivetrain, Manipulator manipulator, Trigger trigger, Arm arm) {
+
+        FollowTrajectory followTrajectory = new FollowTrajectory(drivetrain, "collect");
+        FollowTrajectory followTrajectoryReversed = new FollowTrajectory(drivetrain, "collect_rev");
 
         addCommands(
                 new AutonomousShoot(arm, manipulator, trigger),
@@ -25,7 +28,7 @@ public class ShootCollectShoot extends SequentialCommandGroup {
                 new WaitUntilCommand(arm::atGoal),
                 followTrajectory.getResetOddometryCommand(),
                 followTrajectory.getFollowTrajectoryCommand().deadlineWith(new Collect(manipulator)),
-                followTrajectoryReverse.getFollowTrajectoryCommand(),
+                followTrajectoryReversed.getFollowTrajectoryCommand(),
                 new AutonomousShoot(arm, manipulator, trigger));
     }
 }

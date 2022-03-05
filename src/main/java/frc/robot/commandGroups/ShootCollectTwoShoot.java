@@ -11,13 +11,17 @@ import frc.robot.Constants;
 import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.commands.Collect;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.trigger.Trigger;
 
 public class ShootCollectTwoShoot extends SequentialCommandGroup {
 
-    public ShootCollectTwoShoot(Arm arm, Manipulator manipulator, Trigger trigger, FollowTrajectory path1,
-            FollowTrajectory path2, FollowTrajectory path3) {
+    public ShootCollectTwoShoot(Drivetrain drivetrain, Arm arm, Manipulator manipulator, Trigger trigger) {
+
+        FollowTrajectory path1 = new FollowTrajectory(drivetrain, "collect_two_path1");
+        FollowTrajectory path2 = new FollowTrajectory(drivetrain, "collect_two_path2");
+        FollowTrajectory path3 = new FollowTrajectory(drivetrain, "collect_two_path3");
 
         addCommands(new AutonomousShoot(arm, manipulator, trigger),
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
