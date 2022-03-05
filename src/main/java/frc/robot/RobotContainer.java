@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.autonomous.FollowTrajectory;
+import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
@@ -60,10 +62,15 @@ public class RobotContainer {
 
     private boolean _fieldRelative = true;
 
+    private SendableChooser<Command> chooser;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        this.chooser = new SendableChooser<Command>();
+        initChooser();
         // Configure the button bindings
         configureButtonBindings();
         m_Drivetrain.setDefaultCommand(
@@ -79,6 +86,12 @@ public class RobotContainer {
                 new RunCommand(
                         () -> m_Climber.set(m_Joysticks.getClimbY()),
                         m_Climber));
+    }
+
+    public void initChooser(){
+        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
+        this.chooser.addOption("autonomous 2 CARGO", new ShootCollectShoot(m_Manipulator, m_Trigger, m_arm, m_followTrajectory, m_followTrajectoryReversed));
+        this.chooser.addOption("autonomous 3 CARGO", new ShootCollectTwoShoot(m_arm, m_Manipulator, m_Trigger, path1, path2, path3));
     }
 
     /**
@@ -151,7 +164,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new ShootCollectTwoShoot(m_arm, m_Manipulator, m_Trigger, path1, path2, path3);
+        return this.chooser.getSelected();
     }
 
     public void disableInit() {
