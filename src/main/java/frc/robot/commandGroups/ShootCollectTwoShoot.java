@@ -15,20 +15,20 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.trigger.Trigger;
 
-public class ShootCollectShoot extends SequentialCommandGroup {
+public class ShootCollectTwoShoot extends SequentialCommandGroup {
 
-    public ShootCollectShoot(Drivetrain drivetrain, Manipulator manipulator, Trigger trigger, Arm arm) {
+    public ShootCollectTwoShoot(Drivetrain drivetrain, Arm arm, Manipulator manipulator, Trigger trigger) {
 
-        FollowTrajectory followTrajectory = new FollowTrajectory(drivetrain, "collect");
-        FollowTrajectory followTrajectoryReversed = new FollowTrajectory(drivetrain, "collect_rev");
+        FollowTrajectory path1 = new FollowTrajectory(drivetrain, "collect_two_path1");
+        FollowTrajectory path2 = new FollowTrajectory(drivetrain, "collect_two_path2");
+        FollowTrajectory path3 = new FollowTrajectory(drivetrain, "collect_two_path3");
 
-        addCommands(
-                new AutonomousShoot(arm, manipulator, trigger),
+        addCommands(new AutonomousShoot(arm, manipulator, trigger),
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
-                followTrajectory.getResetOddometryCommand(),
-                followTrajectory.getFollowTrajectoryCommand().deadlineWith(new Collect(manipulator)),
-                followTrajectoryReversed.getFollowTrajectoryCommand(),
+                sequence(path1.getFollowTrajectoryCommand().beforeStarting(path1.getResetOddometryCommand()),
+                        path2.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator)),
+                path3.getFollowTrajectoryCommand(),
                 new AutonomousShoot(arm, manipulator, trigger));
     }
 }

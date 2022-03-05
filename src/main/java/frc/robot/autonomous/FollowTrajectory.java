@@ -94,17 +94,20 @@ public class FollowTrajectory extends SubsystemBase {
     }
 
     public Command getFollowTrajectoryCommand() {
-
-        PathPlannerState initState = m_trajectory.getInitialState();
-
+        
         return new DBugPPSwerveControllerCommand(m_trajectory,
                 _pose, _kinematics,
                 _xController, _yController,
                 _thetaController,
                 _outputModuleStates,
                 () -> m_trajectory.getEndState().holonomicRotation,
-                m_drivetrain)
-                        .beforeStarting(() -> m_drivetrain.resetOdometry(
-                                new Pose2d(initState.poseMeters.getTranslation(), initState.holonomicRotation)));
+                m_drivetrain);
+    }
+
+    public Command getResetOddometryCommand(){
+        PathPlannerState initState = m_trajectory.getInitialState();
+
+        return new InstantCommand(() -> m_drivetrain.resetOdometry(
+            new Pose2d(initState.poseMeters.getTranslation(), initState.holonomicRotation)));
     }
 }
