@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.trigger.Trigger;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
@@ -19,6 +20,7 @@ public class AutoShootBoth extends SequentialCommandGroup {
         // Add your commands in the addCommands() call, e.g6
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
+                new WaitCommand(0.6),
 
                 new OpenBothTriggers(trigger).withTimeout(0.8),
 
