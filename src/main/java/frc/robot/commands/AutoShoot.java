@@ -19,9 +19,9 @@ public class AutoShoot extends SequentialCommandGroup {
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
                 new WaitCommand(0.3),
 
-                new OpenRightTrigger(trigger).withTimeout(0.8),
+                new OpenRightTrigger(trigger).withTimeout(1.0),
 
-                new OpenLeftTrigger(trigger).withTimeout(0.8),
+                new OpenLeftTrigger(trigger).withTimeout(1.0),
 
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator));
     }
