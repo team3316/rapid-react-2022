@@ -88,7 +88,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atGoal(){
-        return Within.range(_leader.getPosition(), _lastGoal, 1.0);
+        return Within.range(_leader.getPosition(), _lastGoal, 3.5);
     }
 
     public Command getActiveGoalCommand(double angle) {
