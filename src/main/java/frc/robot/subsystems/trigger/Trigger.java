@@ -44,7 +44,7 @@ public class Trigger extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // updateSDB();
+        updateSDB();
     }
 
     @SuppressWarnings({ "unused" })
