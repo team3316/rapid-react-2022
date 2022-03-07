@@ -159,7 +159,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return this.chooser.getSelected();
+        return this.chooser.getSelected().beforeStarting(new InstantCommand(()->m_arm.setArmEncoder(ArmConstants.startingAngle)));
     }
 
     public void disableInit() {
@@ -171,4 +171,5 @@ public class RobotContainer {
     public void calibrateDrivetrainSteering() {
         m_Drivetrain.calibrateSteering();
     }
+    
 }
