@@ -178,7 +178,7 @@ public final class Constants {
         public static final double voltageCompensation = 10.0;
 
         public static final double startingPosition = 0.0;
-        public static final double climbExtentionHeight = 0.93;
+        public static final double climbExtentionHeight = 0.95;
 
         public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }
