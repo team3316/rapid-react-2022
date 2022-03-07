@@ -69,7 +69,7 @@ public class Drivetrain extends SubsystemBase {
         this._odometry.update(getRotation2d(), this._modules[0].getState(), this._modules[1].getState(),
                 this._modules[2].getState(),
                 this._modules[3].getState());
-        updateSDB();
+        // updateSDB();
     }
 
     public void disabledInit() {
@@ -78,7 +78,8 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    // @SuppressWarnings({ "unused" })
+    @SuppressWarnings({ "unused" })
+    
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());

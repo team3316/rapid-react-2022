@@ -147,13 +147,13 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm Feed Forward", feedforward);
     }
 
-    @SuppressWarnings("unused")
+    // @SuppressWarnings("unused")
     private void updateSDB() {
         SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
         SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
 
         SmartDashboard.putNumber("Arm Position", _leader.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _leader.getVelocity());
+        // SmartDashboard.putNumber("Arm Velocity", _leader.getVelocity());
     }
 
     @Override
@@ -161,6 +161,11 @@ public class Arm extends SubsystemBase {
         if (_forwardState.update(_forwardLimit.isPressed())) {
             _leader.setPosition(ArmConstants.intakeAngle - ArmConstants.overshootDelta);
         }
-        // updateSDB();
+
+        updateSDB();
+    }
+
+    public void setArmEncoder(double angle) {
+        _leader.setPosition(angle);
     }
 }

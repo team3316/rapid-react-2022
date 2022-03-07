@@ -50,7 +50,7 @@ public class FollowTrajectory extends SubsystemBase {
                 Constants.Autonomous.kThetaControllerConstraints);
         _thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this._outputModuleStates = this.m_drivetrain::setDesiredStates;
-        initSDB();
+        // initSDB();
     }
 
     private void initSDB() {
