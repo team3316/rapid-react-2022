@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
-import frc.robot.autonomous.FollowTrajectory;
+import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
@@ -54,8 +54,6 @@ public class RobotContainer {
 
     private final Joysticks m_Joysticks = new Joysticks();
 
-    private final FollowTrajectory taxi_path = new FollowTrajectory(m_Drivetrain, "taxi");
-
     private boolean _fieldRelative = true;
 
     private SendableChooser<Command> chooser;
@@ -86,7 +84,7 @@ public class RobotContainer {
 
     public void initChooser() {
         this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
-        this.chooser.addOption("taxi 2 meter", taxi_path.getFollowTrajectoryCommand());
+        this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
         this.chooser.addOption("autonomous 2 CARGO",
                 new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
         this.chooser.addOption("autonomous 3 CARGO",
