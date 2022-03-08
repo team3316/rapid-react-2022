@@ -58,7 +58,7 @@ public class Arm extends SubsystemBase {
         _forwardLimit = _leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         _forwardLimit.enableLimitSwitch(true);
         _reverseLimit = _leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        _reverseLimit.enableLimitSwitch(true);
+        _reverseLimit.enableLimitSwitch(false);
     }
 
     private double getArmInitPosition() {
@@ -118,6 +118,10 @@ public class Arm extends SubsystemBase {
 
     public void disabledInit() {
         _leader.set(0);
+    }
+
+    public void setPercent(double percenct) {
+        _leader.set(percenct);
     }
 
     @SuppressWarnings("unused")
