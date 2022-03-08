@@ -186,8 +186,8 @@ public final class Constants {
     public static final class Autonomous {
         public static final double kMaxSpeedMetersPerSecond = 2.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = 3.0;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 10.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 1.5;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 5;
 
         public static final String defaultPath = "rotate";
 
