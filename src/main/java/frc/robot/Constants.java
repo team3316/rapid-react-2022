@@ -104,7 +104,7 @@ public final class Constants {
         public final static double cancoderTLOffset = 10.1;
         public final static double cancoderTROffset = 234.3;
         public final static double cancoderBLOffset = 109.6;
-        public final static double cancoderBROffset = 35.8;
+        public final static double cancoderBROffset = 339.3 -180.0;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
                 new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4,
