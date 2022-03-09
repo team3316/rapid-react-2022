@@ -27,8 +27,8 @@ public class ShootCollectTwoShoot extends SequentialCommandGroup {
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 sequence(path1.getFollowTrajectoryCommand().beforeStarting(path1.getResetOddometryCommand()),
-                        path2.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator)),
-                path3.getFollowTrajectoryCommand(),
+                        path2.getFollowTrajectoryCommand(), 
+                        path3.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator)),
                 new AutonomousShoot(arm, manipulator, trigger));
     }
 }
