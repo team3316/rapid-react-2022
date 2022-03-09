@@ -18,6 +18,7 @@ public final class Constants {
 
         public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear
                                                                             // reduction
+        public static final double keepPrecent = -0.1;                                                              
 
         // Arm motion
         public static final double overshootDelta = 1;
