@@ -10,6 +10,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,6 +28,9 @@ public class Drivetrain extends SubsystemBase {
     private PigeonIMU _pigeon;
 
     private SwerveDriveOdometry _odometry;
+    private DoubleLogEntry m_logX, m_logY, m_logR;
+    private int m_counter = 0;
+    private static final int LOG_EVERY = 10;
 
     public Drivetrain() {
         this._modules = new SwerveModule[] {
@@ -37,6 +43,11 @@ public class Drivetrain extends SubsystemBase {
         _pigeon = new PigeonIMU(_pigeonTalon); // We need the talon
 
         this._odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
+
+        DataLog log = DataLogManager.getLog();
+        m_logX = new DoubleLogEntry(log, "/drivetrain/position/x");
+        m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
+        m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -70,6 +81,15 @@ public class Drivetrain extends SubsystemBase {
                 this._modules[2].getState(),
                 this._modules[3].getState());
         // updateSDB();
+
+        if (m_counter++ == LOG_EVERY) {
+            Pose2d pose = _odometry.getPoseMeters();
+            m_logX.append(pose.getX());
+            m_logY.append(pose.getY());
+            m_logR.append(pose.getRotation().getDegrees());
+            m_counter = 0;
+        }
+
     }
 
     public void disabledInit() {
