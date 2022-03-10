@@ -89,7 +89,8 @@ public class RobotContainer {
         this.chooser.addOption("autonomous 3 CARGO",
                 new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
         this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
-        SmartDashboard.putData(this.chooser);
+
+        SmartDashboard.putData("autonomous", this.chooser);
     }
 
     /**
