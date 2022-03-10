@@ -79,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     @SuppressWarnings({ "unused" })
-    
+
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
@@ -102,6 +102,10 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetYaw() {
         this._pigeon.setFusedHeading(0);
+    }
+
+    public void setYaw(double angle) {
+        this._pigeon.setFusedHeading(angle);
     }
 
     public void resetOdometry(Pose2d pose) {
