@@ -69,7 +69,10 @@ public class Manipulator extends SubsystemBase {
     }
 
     public void setState(ManipulatorState state) {
-        setTargetRPM(state.rpm);
+        if (state == ManipulatorState.OFF)
+            _leaderMotor.set(TalonFXControlMode.PercentOutput, 0);
+        else
+            setTargetRPM(state.rpm);
     }
 
     public ManipulatorCargoState getCargoState() {
