@@ -100,6 +100,7 @@ public class DBugPPSwerveControllerCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_timer.stop();
+        m_outputModuleStates.accept(m_kinematics.toSwerveModuleStates(new ChassisSpeeds())); // stop drivetrain
     }
 
     @Override
