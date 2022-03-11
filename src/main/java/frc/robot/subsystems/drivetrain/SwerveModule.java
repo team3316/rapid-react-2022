@@ -43,7 +43,7 @@ public class SwerveModule {
         // Always set CANCoder relative encoder to 0 on boot
         canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
         // Configure the offset angle of the magnet
-        canCoder.configMagnetOffset(360 - zeroAngle);
+        canCoder.configMagnetOffset(360 - zeroAngle, 30);
 
         return canCoder;
     }

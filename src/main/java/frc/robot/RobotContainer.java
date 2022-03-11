@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
@@ -81,11 +82,13 @@ public class RobotContainer {
                         m_Climber));
     }
 
-    public void initChooser(){
+    public void initChooser() {
         this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
-        this.chooser.addOption("autonomous 2 CARGO", new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
-        this.chooser.addOption("autonomous 3 CARGO", new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
-
+        this.chooser.addOption("autonomous 2 CARGO",
+                new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
+        this.chooser.addOption("autonomous 3 CARGO",
+                new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
+        this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
         SmartDashboard.putData(this.chooser);
     }
 
@@ -146,9 +149,9 @@ public class RobotContainer {
         m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
                 new ConditionalCommand(
                         new InstantCommand(
-                            () -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle)
-                        .andThen(() -> m_arm.setPercent(-0.1))
-                        .schedule()),
+                                () -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle)
+                                        .andThen(() -> m_arm.setPercent(-0.1))
+                                        .schedule()),
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
                         m_arm::isLastGoalIntake)
                                 .beforeStarting(new InstantCommand(
@@ -162,7 +165,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return this.chooser.getSelected().beforeStarting(new InstantCommand(()->m_arm.setArmEncoder(ArmConstants.startingAngle)));
+        return this.chooser.getSelected()
+                .beforeStarting(new InstantCommand(() -> m_arm.setArmEncoder(ArmConstants.startingAngle)));
     }
 
     public void disableInit() {
@@ -174,5 +178,5 @@ public class RobotContainer {
     public void calibrateDrivetrainSteering() {
         m_Drivetrain.calibrateSteering();
     }
-    
+
 }
