@@ -13,16 +13,18 @@ import frc.robot.subsystems.trigger.Trigger;
 
 public class AutoShoot extends SequentialCommandGroup {
 
-    public AutoShoot(Manipulator manipulator, Trigger trigger) {
+    public AutoShoot(Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight) {
 
         addCommands(
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
                 new WaitCommand(0.3),
 
-                new OpenRightTrigger(trigger).withTimeout(1.0),
-
-                new OpenLeftTrigger(trigger).withTimeout(1.0),
+                new OpenTriggersWithDelay(trigger, shootLeft, shootRight),
 
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator));
+    }
+
+    public AutoShoot(Manipulator manipulator, Trigger trigger) {
+        this(manipulator, trigger, true, true);
     }
 }
