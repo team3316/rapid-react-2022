@@ -23,7 +23,7 @@ public class ShootCollectTwoShoot extends SequentialCommandGroup {
         FollowTrajectory path2 = new FollowTrajectory(drivetrain, "collect_two_path2");
         FollowTrajectory path3 = new FollowTrajectory(drivetrain, "collect_two_path3");
 
-        addCommands(new AutonomousShoot(arm, manipulator, trigger),
+        addCommands(new AutonomousShoot(arm, manipulator, trigger, false, true),
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 sequence(path1.getFollowTrajectoryCommand().beforeStarting(path1.getResetOddometryCommand()),

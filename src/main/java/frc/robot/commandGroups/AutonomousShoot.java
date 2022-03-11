@@ -15,9 +15,14 @@ import frc.robot.subsystems.trigger.Trigger;
 
 public class AutonomousShoot extends SequentialCommandGroup {
 
-    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger) {
+    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight) {
         addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle).schedule()),
                 new WaitUntilCommand(arm::atGoal),
-                new AutoShoot(manipulator, trigger));
+                new AutoShoot(manipulator, trigger, shootLeft, shootRight));
     }
+
+    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger) {
+        this(arm, manipulator, trigger, true, true);
+    }
+
 }
