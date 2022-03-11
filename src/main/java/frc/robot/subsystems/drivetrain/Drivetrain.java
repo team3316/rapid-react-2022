@@ -45,7 +45,7 @@ public class Drivetrain extends SubsystemBase {
 
         ChassisSpeeds speeds;
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d());
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
         }
@@ -79,7 +79,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     @SuppressWarnings({ "unused" })
-
     private void updateSDB() {
         for (int i = 0; i < this._modules.length; i++) {
             SmartDashboard.putNumber("abs " + i, this._modules[i].getAbsAngle());
@@ -101,11 +100,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetYaw() {
-        this._pigeon.setFusedHeading(0);
-    }
-
-    public void setYaw(double angle) {
-        this._pigeon.setFusedHeading(angle);
+        Pose2d pose = getPose();
+        this._odometry.resetPosition(new Pose2d(pose.getTranslation(), new Rotation2d()), getRotation2d());
     }
 
     public void resetOdometry(Pose2d pose) {

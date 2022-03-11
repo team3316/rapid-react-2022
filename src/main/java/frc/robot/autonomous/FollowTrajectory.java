@@ -110,7 +110,6 @@ public class FollowTrajectory extends SubsystemBase {
         return new InstantCommand(() -> {
             m_drivetrain.resetOdometry(
                     new Pose2d(initState.poseMeters.getTranslation(), initState.holonomicRotation));
-            m_drivetrain.setYaw(initState.holonomicRotation.getDegrees());
         });
     }
 }
