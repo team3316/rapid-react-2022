@@ -18,7 +18,7 @@ public final class Constants {
 
         public static final double motorToArmConversionFactor = 360 / 33.6; // in Degrees: 360 degrees / gear
                                                                             // reduction
-        public static final double keepPrecent = -0.1;                                                              
+        public static final double keepPrecent = -0.1;
 
         // Arm motion
         public static final double overshootDelta = 1;
@@ -136,8 +136,8 @@ public final class Constants {
         public static final int leftChannel = 8;
         public static final int rightChannel = 9;
 
-        public static final double kP = 0.1; //
-        public static final double kF = 0.75 * 1023 / 14750; // units at 75% / measured native velocity at 75%
+        public static final double kP = 0.05; //
+        public static final double kF = 0.75 * 1023 / 13360; // units at 75% / measured native velocity at 75%
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF);
 
         public static final double collectRPM = 2400;

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.DoubleLatchedBoolean;
+import frc.robot.utils.Within;
 
 public class Manipulator extends SubsystemBase {
 
@@ -61,9 +62,11 @@ public class Manipulator extends SubsystemBase {
         _leaderConfig.slot0.kP = Constants.Manipulator.kP;
         _leaderConfig.slot0.closedLoopPeakOutput = Constants.Manipulator.kPeakOutput;
         _leaderConfig.closedloopRamp = Constants.Manipulator.maxAccelerationSeconds;
+        _leaderConfig.voltageCompSaturation = 10.0; // volts
 
         _leaderMotor.configAllSettings(_leaderConfig);
 
+        _leaderMotor.enableVoltageCompensation(true);
         // initSDB();
 
     }
@@ -126,6 +129,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void updateSDB() {
+        // if (!Within.range(getTargetRPM(), 0, 10))
         // SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
         ManipulatorCargoState state = getCargoState();
