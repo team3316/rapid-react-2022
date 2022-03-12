@@ -18,8 +18,8 @@ public class Joysticks {
 
     private static double calculateDeadband(double value) {
         return Math.abs(value) > Constants.Joysticks.deadband
-                        ? value
-                        : 0;
+                ? value
+                : 0;
     }
 
     private static double calculateDeadband(double value, double other) {
@@ -43,12 +43,12 @@ public class Joysticks {
         return Math.copySign(input * input, input);
     }
 
-    public double getDriveY() {
+    public double getDriveX() {
         return squareInputs(calculateDeadband(-this._driveController.getLeftY(), -this._driveController.getLeftX()));
     }
 
-    public double getDriveX() {
-        return squareInputs(calculateDeadband(this._driveController.getLeftX(), -this._driveController.getLeftY()));
+    public double getDriveY() {
+        return squareInputs(calculateDeadband(-this._driveController.getLeftX(), -this._driveController.getLeftY()));
     }
 
     public double getClimbY() {
