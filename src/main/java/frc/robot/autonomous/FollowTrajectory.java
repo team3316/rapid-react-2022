@@ -37,7 +37,7 @@ public class FollowTrajectory extends SubsystemBase {
 
     private SendableChooser<String> _chooser;
 
-    public FollowTrajectory(Drivetrain drivetrain,String path) {
+    public FollowTrajectory(Drivetrain drivetrain, String path) {
         this.m_drivetrain = drivetrain;
         this.m_trajectory = PathPlanner.loadPath(path,
                 Constants.Autonomous.kMaxSpeedMetersPerSecond,
@@ -94,7 +94,7 @@ public class FollowTrajectory extends SubsystemBase {
     }
 
     public Command getFollowTrajectoryCommand() {
-        
+
         return new DBugPPSwerveControllerCommand(m_trajectory,
                 _pose, _kinematics,
                 _xController, _yController,
@@ -104,10 +104,12 @@ public class FollowTrajectory extends SubsystemBase {
                 m_drivetrain);
     }
 
-    public Command getResetOddometryCommand(){
+    public Command getResetOddometryCommand() {
         PathPlannerState initState = m_trajectory.getInitialState();
 
-        return new InstantCommand(() -> m_drivetrain.resetOdometry(
-            new Pose2d(initState.poseMeters.getTranslation(), initState.holonomicRotation)));
+        return new InstantCommand(() -> {
+            m_drivetrain.resetOdometry(
+                    new Pose2d(initState.poseMeters.getTranslation(), initState.holonomicRotation));
+        });
     }
 }
