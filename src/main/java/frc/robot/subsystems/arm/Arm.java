@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
         return (_lastGoal == ArmConstants.intakeAngle);
     }
 
-    public boolean atGoal(){
+    public boolean atGoal() {
         return Within.range(_leader.getPosition(), _lastGoal, 3.5);
     }
 
@@ -102,10 +102,11 @@ public class Arm extends SubsystemBase {
                 new TrapezoidProfile.State(_leader.getPosition(), _leader.getVelocity()));
 
         return new TrapezoidProfileCommand(_profile, this::useState, this).andThen(
-            new ConditionalCommand(
-                new InstantCommand(() -> setPercent(Constants.ArmConstants.keepPrecent))
-                , new InstantCommand()
-                , () -> !isLastGoalIntake()));
+                new ConditionalCommand(
+                        new InstantCommand(
+                                () -> setPercent(Constants.ArmConstants.keepPrecent)),
+                        new InstantCommand(),
+                        () -> !isLastGoalIntake()));
     }
 
     private Command getActiveGoalFromSDB() {
