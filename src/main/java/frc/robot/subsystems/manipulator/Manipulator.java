@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.DoubleLatchedBoolean;
 
 public class Manipulator extends SubsystemBase {
 
@@ -33,7 +34,9 @@ public class Manipulator extends SubsystemBase {
     private TalonFX _leaderMotor;
     private TalonFX _followerMotor;
     private DigitalInput _leftSwitch;
+    private DoubleLatchedBoolean _leftSwitchBoolean;
     private DigitalInput _rightSwitch;
+    private DoubleLatchedBoolean _rightSwitchBoolean;
     private TalonFXConfiguration _leaderConfig;
 
     public Manipulator() {
@@ -41,7 +44,9 @@ public class Manipulator extends SubsystemBase {
         this._followerMotor = new TalonFX(Constants.Manipulator.followerId);
 
         this._leftSwitch = new DigitalInput(Constants.Manipulator.leftChannel);
+        _leftSwitchBoolean = new DoubleLatchedBoolean();
         this._rightSwitch = new DigitalInput(Constants.Manipulator.rightChannel);
+        _rightSwitchBoolean = new DoubleLatchedBoolean();
 
         _leaderConfig = new TalonFXConfiguration();
 
@@ -65,7 +70,7 @@ public class Manipulator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // updateSDB();
+        updateSDB();
     }
 
     public void setState(ManipulatorState state) {
@@ -82,6 +87,8 @@ public class Manipulator extends SubsystemBase {
     private void setTargetRPM(double rpm) {
         _leaderMotor.set(TalonFXControlMode.Velocity, (rpm /
                 Constants.Manipulator.kVelocityConversionFactor));
+
+        SmartDashboard.putNumber("Manipulator Target", getTargetRPM());
     }
 
     private double getTargetRPM() {
@@ -89,6 +96,7 @@ public class Manipulator extends SubsystemBase {
                 Constants.Manipulator.kVelocityConversionFactor;
     }
 
+    @SuppressWarnings({ "unused" })
     private double getRPM() {
         return _leaderMotor.getSelectedSensorVelocity() *
                 Constants.Manipulator.kVelocityConversionFactor;
@@ -118,13 +126,15 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void updateSDB() {
-        SmartDashboard.putNumber("Manipulator Velocity", getRPM());
+        // SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
-        SmartDashboard.putNumber("Manipulator Target", getTargetRPM());
+        ManipulatorCargoState state = getCargoState();
 
-        SmartDashboard.putBoolean("left switch", !this._leftSwitch.get());
-        SmartDashboard.putBoolean("right switch", !this._rightSwitch.get());
-        SmartDashboard.putBoolean("both switches", getCargoState().hasBoth());
+        if (_leftSwitchBoolean.update(state.leftCargo))
+            SmartDashboard.putBoolean("Manipulator Left Switch", state.leftCargo);
+
+        if (_rightSwitchBoolean.update(state.rightCargo))
+            SmartDashboard.putBoolean("Manipulator Left Switch", state.rightCargo);
     }
 
     @SuppressWarnings({ "unused" })
@@ -152,8 +162,6 @@ public class Manipulator extends SubsystemBase {
         SmartDashboard.putData(
                 "Update Manipulator from SDB",
                 new InstantCommand(() -> updateConfig()));
-
-        updateSDB();
 
     }
 }

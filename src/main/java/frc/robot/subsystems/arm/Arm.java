@@ -146,12 +146,6 @@ public class Arm extends SubsystemBase {
 
     @SuppressWarnings("unused")
     private void updateSDB(TrapezoidProfile.State state, double feedforward) {
-        SmartDashboard.putBoolean("Forward Limit pressed", _forwardLimit.isPressed());
-        SmartDashboard.putBoolean("Reverse Limit pressed", _reverseLimit.isPressed());
-
-        SmartDashboard.putNumber("Arm Position", _leader.getPosition());
-        SmartDashboard.putNumber("Arm Velocity", _leader.getVelocity());
-
         SmartDashboard.putNumber("Arm State Position", state.position);
         SmartDashboard.putNumber("Arm State Velocity", state.velocity);
 
