@@ -8,9 +8,11 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
@@ -87,7 +89,7 @@ public class Arm extends SubsystemBase {
         return (_lastGoal == ArmConstants.intakeAngle);
     }
 
-    public boolean atGoal(){
+    public boolean atGoal() {
         return Within.range(_leader.getPosition(), _lastGoal, 3.5);
     }
 
@@ -99,7 +101,12 @@ public class Arm extends SubsystemBase {
                 new TrapezoidProfile.State(angle, 0),
                 new TrapezoidProfile.State(_leader.getPosition(), _leader.getVelocity()));
 
-        return new TrapezoidProfileCommand(_profile, this::useState, this);
+        return new TrapezoidProfileCommand(_profile, this::useState, this).andThen(
+                new ConditionalCommand(
+                        new InstantCommand(
+                                () -> setPercent(Constants.ArmConstants.keepPrecent)),
+                        new InstantCommand(),
+                        () -> !isLastGoalIntake()));
     }
 
     private Command getActiveGoalFromSDB() {
