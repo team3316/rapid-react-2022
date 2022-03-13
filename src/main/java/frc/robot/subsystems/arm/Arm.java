@@ -108,24 +108,15 @@ public class Arm extends SubsystemBase {
                         new InstantCommand(
                                 () -> {
                                     setPercent(Constants.ArmConstants.keepPrecent);
-                                    if(led != null){
-                                        led.setRobotLEDs(RobotColorState.ARM_UP);
-                                    }
+                                    led.setLED(RobotColorState.ARM_UP);
                                 }),
                         new InstantCommand(
-                            () -> {
-                                if(led != null)
-                                    led.setRobotLEDs(RobotColorState.DEFAULT);
-                            }),
+                            () -> led.setLED(RobotColorState.DEFAULT)),
                         () -> !isLastGoalIntake()));
     }
 
-    public Command getActiveGoalCommand(double angle) {
-        return getActiveGoalCommand(angle, null);
-    }
-
-    private Command getActiveGoalFromSDB() {
-        return getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle));
+    private Command getActiveGoalFromSDB(LED led) {
+        return getActiveGoalCommand(SmartDashboard.getNumber("Arm Goal", ArmConstants.startingAngle), led);
 
     }
 
@@ -147,7 +138,7 @@ public class Arm extends SubsystemBase {
     }
 
     @SuppressWarnings("unused")
-    private void initSDB() {
+    private void initSDB(LED led) {
         SmartDashboard.setDefaultNumber("P Gain", ArmConstants.kP);
         SmartDashboard.setDefaultNumber("Max Output", ArmConstants.kMaxOutput);
         SmartDashboard.setDefaultNumber("Arm Goal", ArmConstants.startingAngle);
@@ -156,7 +147,7 @@ public class Arm extends SubsystemBase {
 
         SmartDashboard.putData("Update PID", new InstantCommand(() -> updatePIDFromSDB()));
         SmartDashboard.putData("Set Feed Forward", new InstantCommand(() -> updateFeedForwardFromSDB()));
-        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> getActiveGoalFromSDB().schedule()));
+        SmartDashboard.putData("Set Arm Goal", new InstantCommand(() -> getActiveGoalFromSDB(led).schedule()));
     }
 
     @SuppressWarnings("unused")

@@ -90,11 +90,11 @@ public class RobotContainer {
     }
 
     public void initChooser() {
-        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
+        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("autonomous 2 CARGO",
-                new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
+                new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm, m_led));
         this.chooser.addOption("autonomous 3 CARGO",
-                new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
+                new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
 
         SmartDashboard.putData("autonomous", this.chooser);
