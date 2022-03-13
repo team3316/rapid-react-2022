@@ -118,7 +118,7 @@ public class RobotContainer {
                         new StartEndCommand(
                                 () -> m_Manipulator.setState(ManipulatorState.SHOOT),
                                 () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator));
+                                m_Manipulator).andThen(new InstantCommand(() -> this.m_led.setLED(RobotColorState.DEFAULT))));
 
         m_Joysticks.getOperatorButton(Button.kR1)
                 .whenPressed(
