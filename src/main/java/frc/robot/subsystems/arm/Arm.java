@@ -16,6 +16,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LED.RobotColorState;
 import frc.robot.utils.LatchedBoolean;
 import frc.robot.utils.Within;
 
@@ -93,7 +95,7 @@ public class Arm extends SubsystemBase {
         return Within.range(_leader.getPosition(), _lastGoal, 3.5);
     }
 
-    public Command getActiveGoalCommand(double angle) {
+    public Command getActiveGoalCommand(double angle, LED led) {
         _lastGoal = angle;
 
         TrapezoidProfile _profile = new TrapezoidProfile(
@@ -104,9 +106,22 @@ public class Arm extends SubsystemBase {
         return new TrapezoidProfileCommand(_profile, this::useState, this).andThen(
                 new ConditionalCommand(
                         new InstantCommand(
-                                () -> setPercent(Constants.ArmConstants.keepPrecent)),
-                        new InstantCommand(),
+                                () -> {
+                                    setPercent(Constants.ArmConstants.keepPrecent);
+                                    if(led != null){
+                                        led.setRobotLEDs(RobotColorState.ARM_UP);
+                                    }
+                                }),
+                        new InstantCommand(
+                            () -> {
+                                if(led != null)
+                                    led.setRobotLEDs(RobotColorState.DEFAULT);
+                            }),
                         () -> !isLastGoalIntake()));
+    }
+
+    public Command getActiveGoalCommand(double angle) {
+        return getActiveGoalCommand(angle, null);
     }
 
     private Command getActiveGoalFromSDB() {
