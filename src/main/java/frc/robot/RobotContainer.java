@@ -20,6 +20,7 @@ import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
+import frc.robot.commands.Collect;
 import frc.robot.commands.OpenLeftTrigger;
 import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
@@ -110,11 +111,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         m_Joysticks.getOperatorButton(Button.kL1)
                 .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> m_Manipulator.setState(ManipulatorState.COLLECT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator)
-                                        .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
+                        new Collect(m_Manipulator, m_led));
 
         m_Joysticks.getOperatorButton(Button.kSquare)
                 .whileHeld(

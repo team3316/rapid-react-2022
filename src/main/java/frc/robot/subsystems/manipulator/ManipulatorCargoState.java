@@ -16,4 +16,8 @@ public class ManipulatorCargoState {
     public boolean hasBoth(){
         return leftCargo && rightCargo;
     }
+
+    public boolean hasOne(){
+        return leftCargo != rightCargo;
+    }
 }
