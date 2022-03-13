@@ -26,7 +26,6 @@ public class Collect extends CommandBase {
 
         this._led = led;
         this._cargoState = new LatchedBoolean();
-        this._cargoState.update(false);
     }
 
     public Collect(Manipulator manipulator) {
@@ -39,14 +38,14 @@ public class Collect extends CommandBase {
     @Override
     public void initialize() {
         this._manipulator.setState(ManipulatorState.COLLECT);
-        this._led.setRobotLEDs(RobotColorState.COLLECT);
+        this._led.setLED(RobotColorState.COLLECT);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(_cargoState.update(this._manipulator.getCargoState().hasOne())){
-            this._led.setRobotLEDs(RobotColorState.ONE_CARGO);
+        if (_cargoState.update(this._manipulator.getCargoState().hasOne())) {
+            this._led.setLED(RobotColorState.ONE_CARGO);
         }
     }
 
@@ -54,11 +53,10 @@ public class Collect extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         this._manipulator.setState(ManipulatorState.OFF);
-        if(interrupted){
-            this._led.setRobotLEDs(RobotColorState.DEFAULT);
-        }
-        else{
-            this._led.setRobotLEDs(RobotColorState.TWO_CARGO);
+        if (interrupted) {
+            this._led.setLED(RobotColorState.DEFAULT);
+        } else {
+            this._led.setLED(RobotColorState.TWO_CARGO);
         }
     }
 
