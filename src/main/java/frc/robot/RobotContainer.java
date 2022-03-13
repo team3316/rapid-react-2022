@@ -25,6 +25,8 @@ import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LED.RobotColorState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -53,6 +55,8 @@ public class RobotContainer {
     private final Climber m_Climber = new Climber();
 
     private final Joysticks m_Joysticks = new Joysticks();
+
+    private final LED m_led = new LED();
 
     private boolean _fieldRelative = true;
 
@@ -177,6 +181,10 @@ public class RobotContainer {
 
     public void calibrateDrivetrainSteering() {
         m_Drivetrain.calibrateSteering();
+    }
+
+    public void setBlinkLEDs(RobotColorState state){
+        this.m_led.setBlink(state);
     }
 
 }

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.motors.PIDFGains;
 
 /**
@@ -202,5 +203,25 @@ public final class Constants {
 
         public static final Constraints kThetaControllerConstraints = new Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class LED {
+        // TODO: change values
+        public static final int port = 0;
+        public static final int length = 0;
+
+        public static final Color oneCargoColor = Color.kBlue;
+        public static final Color bothCargoColor = Color.kBlue;
+        public static final Color noneCargoColor = Color.kBlue;
+        public static final Color defaultCargoColor = Color.kBlue;
+
+        public static final Color armUpColor = Color.kBlue;
+
+        public static final Color maxHeightClimbColor = Color.kBlue;
+
+        public static final double endgameTime = 15.0;
+        public static final Color fifteenSecColor = Color.kBlue;
+        public static final Color fiveSecColor = Color.kBlue;
+
     }
 }
