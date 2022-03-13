@@ -206,18 +206,20 @@ public final class Constants {
         public static final int port = 0;
         public static final int length = 0;
 
-        public static final Color oneCargoColor = Color.kBlue;
-        public static final Color bothCargoColor = Color.kBlue;
-        public static final Color noneCargoColor = Color.kBlue;
-        public static final Color defaultCargoColor = Color.kBlue;
-
-        public static final Color armUpColor = Color.kBlue;
-
-        public static final Color maxHeightClimbColor = Color.kBlue;
-
-        public static final double endgameTime = 15.0;
-        public static final Color fifteenSecColor = Color.kBlue;
-        public static final Color fiveSecColor = Color.kBlue;
-
+        public static enum RobotColorState {
+            ONE_CARGO(Color.kYellow), // collect one CARGO
+            TWO_CARGO(Color.kGreen), // collect two CARGO
+            COLLECT(Color.kRed), // defualt color for collecting (if there aren't CARGOs)
+            ARM_UP(Color.kBlue), // arm in shooting position
+            FIFTEEN_SEC(Color.kGray), // fifteen seconds left until the match ends
+            FIVE_SEC(Color.kWhite), // five seconds left until the match ends
+            DEFAULT(Color.kOrange); // defualt color
+    
+            public Color color;
+    
+            private RobotColorState(Color color) {
+                this.color = color;
+            }
+        }
     }
 }
