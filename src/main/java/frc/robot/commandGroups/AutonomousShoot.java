@@ -9,20 +9,21 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.commands.AutoShoot;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.trigger.Trigger;
 
 public class AutonomousShoot extends SequentialCommandGroup {
 
-    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight) {
-        addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle).schedule()),
+    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led) {
+        addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle, led).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 new AutoShoot(manipulator, trigger, shootLeft, shootRight));
     }
 
-    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger) {
-        this(arm, manipulator, trigger, true, true);
+    public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, LED led) {
+        this(arm, manipulator, trigger, true, true, led);
     }
 
 }
