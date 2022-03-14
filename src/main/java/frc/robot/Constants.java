@@ -206,9 +206,8 @@ public final class Constants {
     }
 
     public static final class LED {
-        // TODO: change values
         public static final int port = 0;
-        public static final int length = 0;
+        public static final int length = 116;
 
         public static enum RobotColorState {
             ONE_CARGO(Color.kYellow), // collect one CARGO
