@@ -184,4 +184,8 @@ public class RobotContainer {
         this.m_led.setBlink(state);
     }
 
+    public void rainBow(){
+        this.m_led.rainbow();
+    }
+
 }
