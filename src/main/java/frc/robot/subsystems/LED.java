@@ -24,6 +24,8 @@ public class LED extends SubsystemBase {
     private final RobotColorState _offState;
     private final double _interval;
 
+    private int m_rainbowFirstPixelHue = 0;
+
     public LED() {
         this._led = new AddressableLED(Constants.LED.port);
         this._mainBuffer = new AddressableLEDBuffer(Constants.LED.length);
@@ -61,6 +63,18 @@ public class LED extends SubsystemBase {
         this._led.setData(this._blinkBuffer);
     }
 
+    public void rainbow() {
+        for (var i = 0; i < this._mainBuffer.getLength() / 2 - 1; i++) {
+          final var hue = (m_rainbowFirstPixelHue + (i * 180 / this._mainBuffer.getLength())) % 180;
+          this._mainBuffer.setHSV(i, hue, 255, 128);
+          this._mainBuffer.setHSV(this._mainBuffer.getLength() - i - 1, hue, 255, 128);
+        }
+
+        m_rainbowFirstPixelHue += 3;
+        m_rainbowFirstPixelHue %= 180;
+
+        this._led.setData(this._mainBuffer);
+    }
     @Override
     public void periodic() {
         if(this._isBlinking){
