@@ -21,7 +21,9 @@ public class Climber extends SubsystemBase {
 
     private LED _led;
 
-    private LatchedBoolean _upperHeight, _lowerHeight;
+    private boolean _passedHeight;
+
+    private LatchedBoolean _upperHeight, _lowerHeight, _maxHeight;
 
     public Climber(LED led) {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
@@ -49,6 +51,7 @@ public class Climber extends SubsystemBase {
 
         this._lowerHeight = new LatchedBoolean();
         this._upperHeight = new LatchedBoolean();
+        this._maxHeight = new LatchedBoolean();
 
         initSDB();
     }
@@ -124,10 +127,14 @@ public class Climber extends SubsystemBase {
 
         if (_upperHeight.update(getRightPosition() > Constants.Climber.checkHeight)) {
             this._led.setLED(RobotColorState.DEFAULT);
+            this._passedHeight = true;
             
         }
-        if (_lowerHeight.update(getRightPosition() < Constants.Climber.maxClimbHeight)) {
+        if (_lowerHeight.update(getRightPosition() < Constants.Climber.maxClimbHeight) && this._passedHeight) {
             this._led.setLED(RobotColorState.MAX_CLIMB);
+        }
+        if(_maxHeight.update(getRightPosition() >= Constants.Climber.climbExtentionHeight)){
+            this._led.setLED(RobotColorState.MAX_HEIGHT);
         }
     }
 }
