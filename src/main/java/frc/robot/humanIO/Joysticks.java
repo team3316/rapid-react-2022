@@ -51,8 +51,12 @@ public class Joysticks {
         return squareInputs(calculateDeadband(-this._driveController.getLeftX(), -this._driveController.getLeftY()));
     }
 
-    public double getClimbY() {
+    public double getMidClimbY() {
         return squareInputs(calculateDeadband(-this._operatorController.getLeftY()));
+    }
+
+    public double getHighClimbY(){
+        return squareInputs(calculateDeadband(-this._operatorController.getRightY()));
     }
 
     public JoystickButton getOperatorButton(Button button) {

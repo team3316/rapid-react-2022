@@ -15,7 +15,7 @@ import frc.robot.motors.PIDFGains;
 
 public class Climber extends SubsystemBase {
 
-    private DBugSparkMax _leftSparkMax, _rightSparkMax;
+    private DBugSparkMax _leftSparkMax, _rightSparkMax, _highClimbSparkMax;
 
     public Climber() {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
@@ -28,13 +28,18 @@ public class Climber extends SubsystemBase {
                 Constants.Climber.conversionFactor,
                 Constants.Climber.conversionFactor / 60,
                 Constants.Climber.startingPosition);
+        this._highClimbSparkMax = DBugSparkMax.create(Constants.Climber.highClimbID, new PIDFGains(0),
+        Constants.Climber.conversionFactor,
+        Constants.Climber.conversionFactor / 60,
+        Constants.Climber.startingPosition);
                 
         this._leftSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
         this._rightSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
+        this._highClimbSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
 
         enableSoftLimit(true);
         updateSoftLimitPosition((float) Constants.Climber.startingPosition,
-                (float) Constants.Climber.climbExtentionHeight);
+                (float) Constants.Climber.midClimbExtentionHeight, (float) Constants.Climber.highClimbExtentionHeight);
 
         this._rightSparkMax.setInverted(true);
         this._leftSparkMax.setInverted(true);
@@ -55,6 +60,10 @@ public class Climber extends SubsystemBase {
         _rightSparkMax.set(value);
     }
 
+    public void setHighClimb(double value){
+        this._highClimbSparkMax.set(value);
+    }
+
     private double getLeftPosition() {
         return this._leftSparkMax.getPosition();
     }
@@ -63,8 +72,13 @@ public class Climber extends SubsystemBase {
         return this._rightSparkMax.getPosition();
     }
 
+    private double getHighClimbPosition(){
+        return this._highClimbSparkMax.getPosition();
+    }
+
     private void initSDB() {
-        // SmartDashboard.setDefaultNumber("soft limit forward", Constants.Climber.climbExtentionHeight);
+        // SmartDashboard.setDefaultNumber("mid soft limit forward", Constants.Climber.climbExtentionHeight);
+        // SmartDashboard.setDefaultNumber("high soft limit forward", Constants.Climber.climbExtentionHeight);
         // SmartDashboard.setDefaultNumber("soft limit reverse", Constants.Climber.startingPosition);
 
         SmartDashboard.putData("enable left soft limit", new InstantCommand(() -> enableSoftLimit(true)));
@@ -78,31 +92,39 @@ public class Climber extends SubsystemBase {
         this._leftSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, enabled);
         this._rightSparkMax.enableSoftLimit(SoftLimitDirection.kForward, enabled);
         this._rightSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, enabled);
+        this._highClimbSparkMax.enableSoftLimit(SoftLimitDirection.kForward, enabled);
+        this._highClimbSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, enabled);
     }
 
     @SuppressWarnings("unused")
     private void updateSoftLimitPositionFromSDB() {
         float reverseLimit = (float) SmartDashboard.getNumber("soft limit reverse",
                 Constants.Climber.startingPosition);
-        float forwardLimit = (float) SmartDashboard.getNumber("soft limit forward",
-                Constants.Climber.climbExtentionHeight);
-        updateSoftLimitPosition(reverseLimit, forwardLimit);
+        float midForwardLimit = (float) SmartDashboard.getNumber("mid soft limit forward",
+                Constants.Climber.midClimbExtentionHeight);
+        float highForwardLimit = (float) SmartDashboard.getNumber("high soft limit forward",
+                Constants.Climber.midClimbExtentionHeight);
+        updateSoftLimitPosition(reverseLimit, midForwardLimit, highForwardLimit);
     }
 
-    private void updateSoftLimitPosition(float reverseLimit, float forwardLimit) {
+    private void updateSoftLimitPosition(float reverseLimit, float midForwardLimit, float highForwardLimit) {
         this._rightSparkMax.setSoftLimit(SoftLimitDirection.kReverse, reverseLimit);
-        this._rightSparkMax.setSoftLimit(SoftLimitDirection.kForward, forwardLimit);
+        this._rightSparkMax.setSoftLimit(SoftLimitDirection.kForward, midForwardLimit);
         this._leftSparkMax.setSoftLimit(SoftLimitDirection.kReverse, reverseLimit);
-        this._leftSparkMax.setSoftLimit(SoftLimitDirection.kForward, forwardLimit);
+        this._leftSparkMax.setSoftLimit(SoftLimitDirection.kForward, midForwardLimit);
+        this._highClimbSparkMax.setSoftLimit(SoftLimitDirection.kReverse, reverseLimit);
+        this._highClimbSparkMax.setSoftLimit(SoftLimitDirection.kForward, highForwardLimit);
     }
 
     private void updateSDB() {
         SmartDashboard.putNumber("Climber Left Position", getLeftPosition());
         SmartDashboard.putNumber("Climber Right Position", getRightPosition());
+        SmartDashboard.putNumber("high climber position", getHighClimbPosition());
     }
 
     public void disableInit() {
         set(0);
+        setHighClimb(0);
     }
 
     @Override

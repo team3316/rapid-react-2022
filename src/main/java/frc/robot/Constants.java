@@ -173,13 +173,16 @@ public final class Constants {
     public final class Climber {
         public static final int leftID = 19;
         public static final int rightID = 18;
+        public final static int highClimbID = 20;
 
         public static final double gearRatio = 12.0;
 
         public static final double voltageCompensation = 10.0;
 
         public static final double startingPosition = 0.0;
-        public static final double climbExtentionHeight = 0.95;
+        public static final double midClimbExtentionHeight = 0.95;
+        // TODO: calibrate high climber max extention
+        public static final double highClimbExtentionHeight = 0.0;
 
         public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }

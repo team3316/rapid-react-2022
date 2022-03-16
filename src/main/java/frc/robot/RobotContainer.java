@@ -78,8 +78,10 @@ public class RobotContainer {
 
         m_Climber.setDefaultCommand(
                 new RunCommand(
-                        () -> m_Climber.set(m_Joysticks.getClimbY()),
-                        m_Climber));
+                        () -> {
+                            m_Climber.set(m_Joysticks.getMidClimbY());
+                            m_Climber.setHighClimb(m_Joysticks.getHighClimbY());
+                        }, m_Climber));
     }
 
     public void initChooser() {
