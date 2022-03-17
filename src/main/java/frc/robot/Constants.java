@@ -126,7 +126,7 @@ public final class Constants {
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
                 TLModule.position, BRModule.position, BLModule.position);
 
-        public static final int pigeonTalonId = 9;
+        public static final int pigeonId = 9;
     }
 
     public static final class Manipulator {

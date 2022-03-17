@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
@@ -24,7 +23,6 @@ public class Drivetrain extends SubsystemBase {
 
     private SwerveModule[] _modules;
 
-    private TalonSRX _pigeonTalon;
     private PigeonIMU _pigeon;
 
     private SwerveDriveOdometry _odometry;
@@ -39,8 +37,7 @@ public class Drivetrain extends SubsystemBase {
                 new SwerveModule(Constants.Drivetrain.BRModule),
                 new SwerveModule(Constants.Drivetrain.BLModule)
         };
-        _pigeonTalon = new TalonSRX(Constants.Drivetrain.pigeonTalonId);
-        _pigeon = new PigeonIMU(_pigeonTalon); // We need the talon
+        _pigeon = new PigeonIMU(Constants.Drivetrain.pigeonId); // We need the talon; not anymore
 
         this._odometry = new SwerveDriveOdometry(Constants.Drivetrain.kinematics, getRotation2d());
 
