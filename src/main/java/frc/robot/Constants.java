@@ -181,8 +181,7 @@ public final class Constants {
 
         public static final double startingPosition = 0.0;
         public static final double midClimbExtentionHeight = 0.95;
-        // TODO: calibrate high climber max extention
-        public static final double highClimbExtentionHeight = 0.0;
+        public static final double highClimbExtentionHeight = 0.95;
 
         public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
     }
