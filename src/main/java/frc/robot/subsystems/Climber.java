@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
+import frc.robot.utils.LatchedBoolean;
 
 public class Climber extends SubsystemBase {
 
     private DBugSparkMax _leftSparkMax, _rightSparkMax, _highClimbSparkMax;
+
+    private LatchedBoolean _climbed = new LatchedBoolean();
 
     public Climber() {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
@@ -29,10 +32,10 @@ public class Climber extends SubsystemBase {
                 Constants.Climber.conversionFactor / 60,
                 Constants.Climber.startingPosition);
         this._highClimbSparkMax = DBugSparkMax.create(Constants.Climber.highClimbID, new PIDFGains(0),
-        Constants.Climber.conversionFactor,
-        Constants.Climber.conversionFactor / 60,
-        Constants.Climber.startingPosition);
-                
+                Constants.Climber.conversionFactor,
+                Constants.Climber.conversionFactor / 60,
+                Constants.Climber.startingPosition);
+
         this._leftSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
         this._rightSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
         this._highClimbSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
@@ -60,31 +63,46 @@ public class Climber extends SubsystemBase {
         _rightSparkMax.set(value);
     }
 
-    public void setHighClimb(double value){
+    public void setHighClimb(double value) {
         this._highClimbSparkMax.set(value);
     }
 
-    private double getLeftPosition() {
+    public double getLeftPosition() {
         return this._leftSparkMax.getPosition();
     }
 
-    private double getRightPosition() {
+    public double getRightPosition() {
         return this._rightSparkMax.getPosition();
     }
 
-    private double getHighClimbPosition(){
+    public double getHighClimbPosition() {
         return this._highClimbSparkMax.getPosition();
     }
 
     private void initSDB() {
-        // SmartDashboard.setDefaultNumber("mid soft limit forward", Constants.Climber.climbExtentionHeight);
-        // SmartDashboard.setDefaultNumber("high soft limit forward", Constants.Climber.climbExtentionHeight);
-        // SmartDashboard.setDefaultNumber("soft limit reverse", Constants.Climber.startingPosition);
+        // SmartDashboard.setDefaultNumber("mid soft limit forward",
+        // Constants.Climber.climbExtentionHeight);
+        // SmartDashboard.setDefaultNumber("high soft limit forward",
+        // Constants.Climber.climbExtentionHeight);
+        // SmartDashboard.setDefaultNumber("soft limit reverse",
+        // Constants.Climber.startingPosition);
 
         SmartDashboard.putData("enable left soft limit", new InstantCommand(() -> enableSoftLimit(true)));
         SmartDashboard.putData("disable left soft limit", new InstantCommand(() -> enableSoftLimit(false)));
+        SmartDashboard.putData("reset climber encoders", new InstantCommand(() -> setPosition(0.0)));
         // SmartDashboard.putData("update soft limit position",
-        //         new InstantCommand(() -> updateSoftLimitPositionFromSDB()));
+        // new InstantCommand(() -> updateSoftLimitPositionFromSDB()));
+    }
+
+    private void setPosition(double pos) {
+        this._leftSparkMax.setPosition(pos);
+        this._rightSparkMax.setPosition(pos);
+        this._highClimbSparkMax.setPosition(pos);
+
+        updateSoftLimitPosition((float) Constants.Climber.startingPosition,
+                (float) Constants.Climber.midClimbExtentionHeight, (float) Constants.Climber.highClimbExtentionHeight);
+
+        enableSoftLimit(true);
     }
 
     private void enableSoftLimit(boolean enabled) {
@@ -130,5 +148,13 @@ public class Climber extends SubsystemBase {
     @Override
     public void periodic() {
         updateSDB();
+        if (_climbed.update(getLeftPosition() > 0.6)) {
+            this._rightSparkMax.setSoftLimit(SoftLimitDirection.kReverse,
+                    (float) (Constants.Climber.startingPosition + 0.035));
+            this._leftSparkMax.setSoftLimit(SoftLimitDirection.kReverse,
+                    (float) (Constants.Climber.startingPosition + 0.035));
+
+        }
+
     }
 }

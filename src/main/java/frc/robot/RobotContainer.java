@@ -17,6 +17,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
+import frc.robot.commandGroups.ClimbHigh;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
@@ -142,6 +143,8 @@ public class RobotContainer {
                         () -> this.m_Climber.setR(-0.1),
                         () -> this.m_Climber.setR(0.0),
                         m_Climber));
+
+        m_Joysticks.getOperatorButton(Button.kShare).whenPressed(new ClimbHigh(m_Climber));
 
         m_Joysticks.getDriveButton(Button.kShare)
                 .whenPressed(() -> m_Drivetrain.resetYaw());
