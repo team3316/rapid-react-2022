@@ -39,6 +39,7 @@ public class Collect extends CommandBase {
     public void initialize() {
         this._manipulator.setState(ManipulatorState.COLLECT);
         this._led.setLED(RobotColorState.COLLECT);
+        this._cargoState.update(false);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
