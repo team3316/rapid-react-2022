@@ -19,7 +19,7 @@ public class AutonomousShoot extends SequentialCommandGroup {
     public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led) {
         addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle, led).schedule()),
                 new WaitUntilCommand(arm::atGoal),
-                new AutoShoot(manipulator, trigger, shootLeft, shootRight));
+                new AutoShoot(manipulator, trigger, shootLeft, shootRight, led));
     }
 
     public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, LED led) {

@@ -121,7 +121,7 @@ public class RobotContainer {
         m_Joysticks.getOperatorButton(Button.kR1)
                 .whenPressed(
                         new ConditionalCommand(
-                                new AutoShoot(m_Manipulator, m_Trigger),
+                                new AutoShoot(m_Manipulator, m_Trigger, m_led),
                                 new InstantCommand(),
                                 () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
