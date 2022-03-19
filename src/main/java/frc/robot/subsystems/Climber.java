@@ -21,9 +21,9 @@ public class Climber extends SubsystemBase {
 
     private LED _led;
 
-    private boolean _passedHeight;
-
-    private LatchedBoolean _upperHeight, _lowerHeight, _maxHeight;
+    private boolean _startedClimbing = false;
+    private LatchedBoolean _overUpper = new LatchedBoolean();
+    private LatchedBoolean _belowLower = new LatchedBoolean();
 
     public Climber(LED led) {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
@@ -49,9 +49,8 @@ public class Climber extends SubsystemBase {
 
         this._led = led;
 
-        this._lowerHeight = new LatchedBoolean();
-        this._upperHeight = new LatchedBoolean();
-        this._maxHeight = new LatchedBoolean();
+        this._belowLower = new LatchedBoolean();
+        this._overUpper = new LatchedBoolean();
 
         initSDB();
     }
@@ -125,16 +124,18 @@ public class Climber extends SubsystemBase {
     public void periodic() {
         updateSDB();
 
-        if (_upperHeight.update(getRightPosition() > Constants.Climber.checkHeight)) {
-            this._led.setLED(RobotColorState.DEFAULT);
-            this._passedHeight = true;
-            
+        if(this._startedClimbing){
+            if(this._overUpper.update(getRightPosition() > Constants.Climber.checkHeight)){
+                this._led.setLED(RobotColorState.DEFAULT);
+            }
+            if(this._belowLower.update(getRightPosition() < Constants.Climber.minClimbHeight)){
+                this._led.setLED(RobotColorState.MAX_CLIMB);
+            }
         }
-        if (_lowerHeight.update(getRightPosition() < Constants.Climber.maxClimbHeight) && this._passedHeight) {
-            this._led.setLED(RobotColorState.MAX_CLIMB);
-        }
-        if(_maxHeight.update(getRightPosition() >= Constants.Climber.climbExtentionHeight)){
-            this._led.setLED(RobotColorState.MAX_HEIGHT);
+        else{
+            if(this._overUpper.update(getRightPosition() > Constants.Climber.checkHeight)){
+                this._startedClimbing = true;
+            }
         }
     }
 }
