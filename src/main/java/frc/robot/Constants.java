@@ -222,7 +222,7 @@ public final class Constants {
             FIVE_SEC(Color.kWhite), // five seconds left until the match ends
             MIN_CLIMB(Color.kPurple),
             MAX_CLIMB(Color.kPink),
-            DEFAULT(Color.kOrange); // defualt color
+            DEFAULT(Color.kOrangeRed); // defualt color
     
             public Color color;
     
