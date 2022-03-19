@@ -17,7 +17,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.subsystems.LED;
-import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.utils.LatchedBoolean;
 import frc.robot.utils.Within;
 
@@ -108,10 +107,8 @@ public class Arm extends SubsystemBase {
                         new InstantCommand(
                                 () -> {
                                     setPercent(Constants.ArmConstants.keepPrecent);
-                                    led.setLED(RobotColorState.ARM_UP);
                                 }),
-                        new InstantCommand(
-                            () -> led.setLED(RobotColorState.DEFAULT)),
+                        new InstantCommand(),
                         () -> !isLastGoalIntake()));
     }
 
