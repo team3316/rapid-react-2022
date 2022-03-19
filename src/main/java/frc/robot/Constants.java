@@ -207,7 +207,7 @@ public final class Constants {
 
     public static final class LED {
         public static final int port = 0;
-        public static final int length = 116;
+        public static final int length = 26;
 
         public static enum RobotColorState {
             ONE_CARGO(Color.kYellow), // collect one CARGO
@@ -216,8 +216,8 @@ public final class Constants {
             ARM_UP(Color.kBlue), // arm in shooting position
             FIFTEEN_SEC(Color.kGray), // fifteen seconds left until the match ends
             FIVE_SEC(Color.kWhite), // five seconds left until the match ends
-            MAX_CLIMB(Color.kPurple),
-            MAX_HEIGHT(Color.kPink),
+            MIN_CLIMB(Color.kPurple),
+            MAX_CLIMB(Color.kPink),
             DEFAULT(Color.kOrange); // defualt color
     
             public Color color;
