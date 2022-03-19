@@ -63,6 +63,7 @@ public class LED extends SubsystemBase {
         this._led.setData(this._blinkBuffer);
     }
 
+    @SuppressWarnings({"unused"})
     public void rainbow() {
         for (var i = 0; i < this._mainBuffer.getLength() / 2 - 1; i++) {
           final var hue = (m_rainbowFirstPixelHue + (i * 180 / this._mainBuffer.getLength())) % 180;
