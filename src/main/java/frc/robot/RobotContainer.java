@@ -80,8 +80,8 @@ public class RobotContainer {
         m_Climber.setDefaultCommand(
                 new RunCommand(
                         () -> {
-                            m_Climber.set(m_Joysticks.getMidClimbY());
-                            m_Climber.setHighClimb(m_Joysticks.getHighClimbY());
+                            m_Climber.setMid(m_Joysticks.getMidClimbY());
+                            m_Climber.setHigh(m_Joysticks.getHighClimbY());
                         }, m_Climber));
     }
 
@@ -134,14 +134,14 @@ public class RobotContainer {
 
         this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
                 new StartEndCommand(
-                        () -> this.m_Climber.setL(-0.1),
-                        () -> this.m_Climber.setL(0.0),
+                        () -> this.m_Climber.setLeft(-0.1),
+                        () -> this.m_Climber.setLeft(0.0),
                         m_Climber));
 
         this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
                 new StartEndCommand(
-                        () -> this.m_Climber.setR(-0.1),
-                        () -> this.m_Climber.setR(0.0),
+                        () -> this.m_Climber.setRight(-0.1),
+                        () -> this.m_Climber.setRight(0.0),
                         m_Climber));
 
         m_Joysticks.getOperatorButton(Button.kShare).whenPressed(new ClimbHigh(m_Climber));

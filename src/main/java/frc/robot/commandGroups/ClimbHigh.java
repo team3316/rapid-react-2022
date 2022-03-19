@@ -22,24 +22,24 @@ public class ClimbHigh extends SequentialCommandGroup {
 
         addRequirements(climber);
         addCommands(
-                new InstantCommand(() -> climber.set(-1)),
+                new InstantCommand(() -> climber.setMid(-1)),
                 new WaitUntilCommand(
                         () -> Within.range(climber.getLeftPosition(), 0.1, 0.02)),
-                new InstantCommand(() -> climber.set(-0.4)),
+                new InstantCommand(() -> climber.setMid(-0.4)),
                 new WaitUntilCommand(
                         () -> Within.range(climber.getLeftPosition(), Constants.Climber.startingPosition, 0.04)),
-                new InstantCommand(() -> climber.setHighClimb(1)),
-                new WaitUntilCommand(() -> Within.range(climber.getHighClimbPosition(),
-                        Constants.Climber.highClimbExtentionHeight, 0.02)),
-                new InstantCommand(() -> climber.set(0.4)),
+                new InstantCommand(() -> climber.setHigh(1)),
+                new WaitUntilCommand(() -> Within.range(climber.getHighPosition(),
+                        Constants.Climber.highExtentionHeight, 0.02)),
+                new InstantCommand(() -> climber.setMid(0.4)),
                 new WaitUntilCommand(
                         () -> Within.range(climber.getLeftPosition(), 0.30, 0.02)),
-                new InstantCommand(() -> climber.set(0.2)),
-                new InstantCommand(() -> climber.setHighClimb(0.1)),
+                new InstantCommand(() -> climber.setMid(0.2)),
+                new InstantCommand(() -> climber.setHigh(0.1)),
                 new WaitUntilCommand(
                         () -> Within.range(climber.getLeftPosition(), 0.50, 0.02)),
-                new InstantCommand(() -> climber.set(0.5)),
-                new InstantCommand(() -> climber.setHighClimb(-1))
+                new InstantCommand(() -> climber.setMid(0.5)),
+                new InstantCommand(() -> climber.setHigh(-1))
         // new InstantCommand(() -> climber.set(0)),
         // new InstantCommand(() -> climber.setHighClimb(-0.7))
         );
