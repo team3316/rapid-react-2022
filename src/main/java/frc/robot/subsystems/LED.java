@@ -68,7 +68,12 @@ public class LED extends SubsystemBase {
         for (var i = 0; i < this._mainBuffer.getLength() / 2 - 1; i++) {
           final var hue = (m_rainbowFirstPixelHue + (i * 180 / this._mainBuffer.getLength())) % 180;
           this._mainBuffer.setHSV(i, hue, 255, 128);
-          this._mainBuffer.setHSV(this._mainBuffer.getLength() - i - 1, hue, 255, 128);
+          if(i < 6){
+              this._mainBuffer.setHSV(this._mainBuffer.getLength() - i - 1, hue, 255, 128);
+          }
+          else{
+              this._mainBuffer.setHSV(this._mainBuffer.getLength() - i - 3, hue, 255, 128);
+          }
         }
 
         m_rainbowFirstPixelHue += 3;
