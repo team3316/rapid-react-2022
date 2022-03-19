@@ -6,6 +6,7 @@ package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
@@ -39,7 +40,8 @@ public class ClimbHigh extends SequentialCommandGroup {
                 new WaitUntilCommand(
                         () -> Within.range(climber.getLeftPosition(), 0.50, 0.02)),
                 new InstantCommand(() -> climber.setMid(0.5)),
-                new InstantCommand(() -> climber.setHigh(-1))
+                new InstantCommand(() -> climber.setHigh(-1)),
+                new WaitCommand(3)
         // new InstantCommand(() -> climber.set(0)),
         // new InstantCommand(() -> climber.setHighClimb(-0.7))
         );
