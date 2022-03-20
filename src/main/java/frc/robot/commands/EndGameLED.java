@@ -15,14 +15,13 @@ public class EndGameLED extends CommandBase {
 
     private LED _led;
 
-    private double _onInterval = 2.0;
-    private final double _offInterval = 0.5;
-
     private LatchedBoolean _endGame;
 
     public EndGameLED(LED led) {
         this._led = led;
         addRequirements(this._led);
+
+        this._endGame = new LatchedBoolean();
     }
 
     // Called when the command is initially scheduled.
@@ -36,12 +35,8 @@ public class EndGameLED extends CommandBase {
     @Override
     public void execute() {
         double matchTime = DriverStation.getMatchTime();
-        if (this._endGame.update(matchTime < 20.0 && matchTime > 0.0)){
+        if (this._endGame.update(matchTime < 15.0 && matchTime > 0.0)){
             this._led.setType(LEDType.BLINK);
-            if(this._led.getOn())
-                this._led.setInterval(_onInterval - 0.1);
-            else
-                this._led.setInterval(_offInterval);
         }
     }
 

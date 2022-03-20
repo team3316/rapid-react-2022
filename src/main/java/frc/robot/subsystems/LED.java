@@ -37,7 +37,7 @@ public class LED extends SubsystemBase {
         this._led.start();
 
         this._lastChange = 0.0;
-        this._interval = 0.0;
+        this._interval = 0.5;
 
         this._on = false;
     }
@@ -56,14 +56,6 @@ public class LED extends SubsystemBase {
 
     public void setRobotColor(RobotColorState state){
         this._robotColorState = state;
-    }
-
-    public void setInterval(double interval){
-        this._interval = interval;
-    }
-
-    public boolean getOn(){
-        return this._on;
     }
 
     public void rainbow() {
