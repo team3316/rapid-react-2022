@@ -28,12 +28,6 @@ public class Collect extends CommandBase {
         this._cargoState = new LatchedBoolean();
     }
 
-    public Collect(Manipulator manipulator) {
-
-        this._manipulator = manipulator;
-        addRequirements(this._manipulator);
-    }
-
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {

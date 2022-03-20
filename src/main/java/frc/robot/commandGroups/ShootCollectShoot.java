@@ -28,7 +28,7 @@ public class ShootCollectShoot extends SequentialCommandGroup {
                 new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle, led).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 followTrajectory.getResetOddometryCommand(),
-                followTrajectory.getFollowTrajectoryCommand().deadlineWith(new Collect(manipulator)),
+                followTrajectory.getFollowTrajectoryCommand().deadlineWith(new Collect(manipulator, led)),
                 followTrajectoryReversed.getFollowTrajectoryCommand(),
                 new AutonomousShoot(arm, manipulator, trigger, led));
     }
