@@ -175,7 +175,8 @@ public final class Constants {
         public static final int rightID = 18;
         public final static int highID = 20;
 
-        public static final double gearRatio = 12.0;
+        public static final double midGearRatio = 12.0;
+        public static final double highGearRatio = 27.0;
 
         public static final double voltageCompensation = 10.0;
 
@@ -183,7 +184,8 @@ public final class Constants {
         public static final double midExtentionHeight = 0.95;
         public static final double highExtentionHeight = 0.95;
 
-        public static final double conversionFactor = 35e-3 * Math.PI / gearRatio; // in m: Winch diameter is 30mm
+        public static final double midConversionFactor = 35e-3 * Math.PI / midGearRatio; // in m: Winch diameter is 30mm
+        public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is 30mm
     }
 
     public static final class Autonomous {

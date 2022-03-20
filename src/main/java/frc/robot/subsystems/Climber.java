@@ -23,18 +23,18 @@ public class Climber extends SubsystemBase {
     public Climber() {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
                 new PIDFGains(0),
-                Constants.Climber.conversionFactor,
-                Constants.Climber.conversionFactor / 60,
+                Constants.Climber.midConversionFactor,
+                Constants.Climber.midConversionFactor / 60,
                 Constants.Climber.startingPosition);
         this._rightSparkMax = DBugSparkMax.create(Constants.Climber.rightID,
                 new PIDFGains(0),
-                Constants.Climber.conversionFactor,
-                Constants.Climber.conversionFactor / 60,
+                Constants.Climber.midConversionFactor,
+                Constants.Climber.midConversionFactor / 60,
                 Constants.Climber.startingPosition);
         this._highSparkMax = DBugSparkMax.create(Constants.Climber.highID, 
                 new PIDFGains(0),
-                Constants.Climber.conversionFactor,
-                Constants.Climber.conversionFactor / 60,
+                Constants.Climber.highConversionFactor,
+                Constants.Climber.highConversionFactor / 60,
                 Constants.Climber.startingPosition);
 
         this._leftSparkMax.enableVoltageCompensation(Constants.Climber.voltageCompensation);
