@@ -230,5 +230,11 @@ public final class Constants {
                 this.color = color;
             }
         }
+
+        public static enum LEDType {
+            SOLID,
+            BLINK,
+            RAINBOW;
+        }
     }
 }

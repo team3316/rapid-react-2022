@@ -38,7 +38,7 @@ public class Collect extends CommandBase {
     @Override
     public void initialize() {
         this._manipulator.setState(ManipulatorState.COLLECT);
-        this._led.setLED(RobotColorState.COLLECT);
+        this._led.setRobotColor(RobotColorState.COLLECT);
         this._cargoState.update(false);
     }
 
@@ -46,7 +46,7 @@ public class Collect extends CommandBase {
     @Override
     public void execute() {
         if (_cargoState.update(this._manipulator.getCargoState().hasOne())) {
-            this._led.setLED(RobotColorState.ONE_CARGO);
+            this._led.setRobotColor(RobotColorState.ONE_CARGO);
         }
     }
 
@@ -54,10 +54,8 @@ public class Collect extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         this._manipulator.setState(ManipulatorState.OFF);
-        if (interrupted) {
-            this._led.setLED(RobotColorState.DEFAULT);
-        } else {
-            this._led.setLED(RobotColorState.TWO_CARGO);
+        if (_cargoState.update(this._manipulator.getCargoState().hasBoth())) {
+            this._led.setRobotColor(RobotColorState.TWO_CARGO);
         }
     }
 

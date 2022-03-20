@@ -174,13 +174,13 @@ public class Climber extends SubsystemBase {
 
         if(this._startedClimbing){
             if(this._overUpper.update(getRightPosition() > Constants.Climber.checkHeight)){
-                this._led.setLED(RobotColorState.DEFAULT);
+                this._led.setRobotColor(RobotColorState.DEFAULT);
             }
             if(this._belowLower.update(getRightPosition() < Constants.Climber.minClimbHeight)){
-                this._led.setLED(RobotColorState.MIN_CLIMB);
+                this._led.setRobotColor(RobotColorState.MIN_CLIMB);
             }
             if(this._maxHeight.update(getRightPosition() >= Constants.Climber.climbExtentionHeight)){
-                this._led.setLED(RobotColorState.MAX_CLIMB);
+                this._led.setRobotColor(RobotColorState.MAX_CLIMB);
             }
         }
         else{

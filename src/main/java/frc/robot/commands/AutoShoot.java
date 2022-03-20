@@ -25,7 +25,7 @@ public class AutoShoot extends SequentialCommandGroup {
 
                 new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator),
 
-                new InstantCommand(() -> led.setLED(RobotColorState.COLLECT)));
+                new InstantCommand(() -> led.setRobotColor(RobotColorState.COLLECT)));
     }
 
     public AutoShoot(Manipulator manipulator, Trigger trigger, LED led) {
