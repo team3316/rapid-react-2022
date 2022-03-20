@@ -15,16 +15,20 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
+import frc.robot.commands.Collect;
+import frc.robot.commands.EndGameLED;
 import frc.robot.commands.OpenLeftTrigger;
 import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -42,6 +46,8 @@ import frc.robot.subsystems.trigger.Trigger;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    private final LED m_led = new LED();
+
     private final Manipulator m_Manipulator = new Manipulator();
 
     private final Trigger m_Trigger = new Trigger();
@@ -50,7 +56,7 @@ public class RobotContainer {
 
     private final Arm m_arm = new Arm();
 
-    private final Climber m_Climber = new Climber();
+    private final Climber m_Climber = new Climber(m_led);
 
     private final Joysticks m_Joysticks = new Joysticks();
 
@@ -85,11 +91,11 @@ public class RobotContainer {
     }
 
     public void initChooser() {
-        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger));
+        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("autonomous 2 CARGO",
-                new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm));
+                new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm, m_led));
         this.chooser.addOption("autonomous 3 CARGO",
-                new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger));
+                new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
 
         SmartDashboard.putData("autonomous", this.chooser);
@@ -106,23 +112,20 @@ public class RobotContainer {
     private void configureButtonBindings() {
         m_Joysticks.getOperatorButton(Button.kL1)
                 .toggleWhenPressed(
-                        new StartEndCommand(
-                                () -> m_Manipulator.setState(ManipulatorState.COLLECT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                m_Manipulator)
-                                        .withInterrupt(() -> m_Manipulator.getCargoState().hasBoth()));
+                        new Collect(m_Manipulator, m_led));
 
         m_Joysticks.getOperatorButton(Button.kSquare)
                 .whileHeld(
                         new StartEndCommand(
                                 () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                                () -> m_Manipulator.setState(ManipulatorState.OFF),
+                                () -> {m_Manipulator.setState(ManipulatorState.OFF);
+                                        m_led.setRobotColor(RobotColorState.COLLECT);},
                                 m_Manipulator));
 
         m_Joysticks.getOperatorButton(Button.kR1)
                 .whenPressed(
                         new ConditionalCommand(
-                                new AutoShoot(m_Manipulator, m_Trigger),
+                                new AutoShoot(m_Manipulator, m_Trigger, m_led),
                                 new InstantCommand(),
                                 () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
@@ -151,8 +154,8 @@ public class RobotContainer {
 
         m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
                 new ConditionalCommand(
-                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle).schedule()),
-                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle).schedule()),
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle, m_led).schedule()),
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle, m_led).schedule()),
                         m_arm::isLastGoalIntake)
                                 .beforeStarting(new InstantCommand(
                                         () -> m_Manipulator.setState(ManipulatorState.OFF),
@@ -177,6 +180,10 @@ public class RobotContainer {
 
     public void calibrateDrivetrainSteering() {
         m_Drivetrain.calibrateSteering();
+    }
+
+    public void startEndGame(){
+        new EndGameLED(m_led).schedule();
     }
 
 }

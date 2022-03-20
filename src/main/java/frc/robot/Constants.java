@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.motors.PIDFGains;
 
 /**
@@ -186,6 +187,10 @@ public final class Constants {
 
         public static final double midConversionFactor = 35e-3 * Math.PI / midGearRatio; // in m: Winch diameter is 30mm
         public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is 30mm
+
+        public static final double minClimbHeight = 0.2; // the min position of the climber when the robot is climbing
+        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean check for leds
+        public static final double checkHeight = minClimbHeight + climbHysteresis;
     }
 
     public static final class Autonomous {
@@ -202,5 +207,32 @@ public final class Constants {
 
         public static final Constraints kThetaControllerConstraints = new Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class LED {
+        public static final int port = 0;
+        public static final int length = 26;
+
+        public static enum RobotColorState {
+            ONE_CARGO(Color.kBlue), // collect one CARGO
+            TWO_CARGO(Color.kGreen), // collect two CARGO
+            COLLECT(Color.kRed), // default color for collecting (if there aren't CARGOs)
+            MIN_CLIMB(Color.kPurple),
+            MAX_CLIMB(Color.kPink),
+            DEFAULT(Color.kOrangeRed),
+            OFF(Color.kBlack); // defualt color
+    
+            public Color color;
+    
+            private RobotColorState(Color color) {
+                this.color = color;
+            }
+        }
+
+        public static enum LEDType {
+            SOLID,
+            BLINK,
+            RAINBOW;
+        }
     }
 }

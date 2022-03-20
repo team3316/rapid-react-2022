@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.autonomous.FollowTrajectory;
 import frc.robot.commands.Collect;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -17,18 +18,18 @@ import frc.robot.subsystems.trigger.Trigger;
 
 public class ShootCollectTwoShoot extends SequentialCommandGroup {
 
-    public ShootCollectTwoShoot(Drivetrain drivetrain, Arm arm, Manipulator manipulator, Trigger trigger) {
+    public ShootCollectTwoShoot(Drivetrain drivetrain, Arm arm, Manipulator manipulator, Trigger trigger, LED led) {
 
         FollowTrajectory path1 = new FollowTrajectory(drivetrain, "collect_two_path1");
         FollowTrajectory path2 = new FollowTrajectory(drivetrain, "collect_two_path2");
         FollowTrajectory path3 = new FollowTrajectory(drivetrain, "collect_two_path3");
 
-        addCommands(new AutonomousShoot(arm, manipulator, trigger, false, true),
-                new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle).schedule()),
+        addCommands(new AutonomousShoot(arm, manipulator, trigger, false, true, led),
+                new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.intakeAngle, led).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 sequence(path1.getFollowTrajectoryCommand().beforeStarting(path1.getResetOddometryCommand()),
                         path2.getFollowTrajectoryCommand(), 
-                        path3.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator)),
-                new AutonomousShoot(arm, manipulator, trigger));
+                        path3.getFollowTrajectoryCommand()).deadlineWith(new Collect(manipulator, led)),
+                new AutonomousShoot(arm, manipulator, trigger, led));
     }
 }
