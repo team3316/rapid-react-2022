@@ -45,6 +45,8 @@ import frc.robot.subsystems.trigger.Trigger;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    private final LED m_led = new LED();
+
     private final Manipulator m_Manipulator = new Manipulator();
 
     private final Trigger m_Trigger = new Trigger();
@@ -53,11 +55,9 @@ public class RobotContainer {
 
     private final Arm m_arm = new Arm();
 
-    private final Climber m_Climber = new Climber();
+    private final Climber m_Climber = new Climber(m_led);
 
     private final Joysticks m_Joysticks = new Joysticks();
-
-    private final LED m_led = new LED();
 
     private boolean _fieldRelative = true;
 

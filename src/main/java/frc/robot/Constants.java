@@ -187,6 +187,9 @@ public final class Constants {
 
         public static final double midConversionFactor = 35e-3 * Math.PI / midGearRatio; // in m: Winch diameter is 30mm
         public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is 30mm
+        public static final double maxClimbHeight = 0.2; // the min position of the climber when the robot is climbing
+        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean check for leds
+        public static final double checkHeight = maxClimbHeight + climbHysteresis;
     }
 
     public static final class Autonomous {
@@ -217,6 +220,7 @@ public final class Constants {
             ARM_UP(Color.kBlue), // arm in shooting position
             FIFTEEN_SEC(Color.kGray), // fifteen seconds left until the match ends
             FIVE_SEC(Color.kWhite), // five seconds left until the match ends
+            MAX_CLIMB(Color.kPurple),
             DEFAULT(Color.kOrange); // defualt color
     
             public Color color;

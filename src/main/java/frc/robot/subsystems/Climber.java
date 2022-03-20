@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.motors.DBugSparkMax;
 import frc.robot.motors.PIDFGains;
 import frc.robot.utils.LatchedBoolean;
@@ -20,7 +21,11 @@ public class Climber extends SubsystemBase {
 
     private LatchedBoolean _climbed = new LatchedBoolean();
 
-    public Climber() {
+    private LED _led;
+
+    private LatchedBoolean _upperHeight, _lowerHeight;
+
+    public Climber(LED led) {
         this._leftSparkMax = DBugSparkMax.create(Constants.Climber.leftID,
                 new PIDFGains(0),
                 Constants.Climber.midConversionFactor,
@@ -47,6 +52,11 @@ public class Climber extends SubsystemBase {
 
         this._rightSparkMax.setInverted(true);
         this._leftSparkMax.setInverted(true);
+
+        this._led = led;
+
+        this._lowerHeight = new LatchedBoolean();
+        this._upperHeight = new LatchedBoolean();
 
         initSDB();
     }
@@ -157,5 +167,13 @@ public class Climber extends SubsystemBase {
 
         }
 
+
+        if (_upperHeight.update(getRightPosition() > Constants.Climber.checkHeight)) {
+            this._led.setLED(RobotColorState.DEFAULT);
+            
+        }
+        if (_lowerHeight.update(getRightPosition() < Constants.Climber.maxClimbHeight)) {
+            this._led.setLED(RobotColorState.MAX_CLIMB);
+        }
     }
 }
