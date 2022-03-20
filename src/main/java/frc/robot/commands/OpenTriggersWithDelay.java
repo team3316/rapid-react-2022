@@ -37,7 +37,6 @@ public class OpenTriggersWithDelay extends SequentialCommandGroup {
         addCommands(
                 new FunctionalCommand(
                         () -> {
-                            _isFinished = false;
                             _sequence.schedule();
                         },
                         () -> {

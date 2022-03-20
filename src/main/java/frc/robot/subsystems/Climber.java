@@ -138,7 +138,7 @@ public class Climber extends SubsystemBase {
     private void updateSDB() {
         SmartDashboard.putNumber("Climber Left Position", getLeftPosition());
         SmartDashboard.putNumber("Climber Right Position", getRightPosition());
-        SmartDashboard.putNumber("Climber high position", getHighPosition());
+        SmartDashboard.putNumber("Climber High position", getHighPosition());
     }
 
     public void disableInit() {

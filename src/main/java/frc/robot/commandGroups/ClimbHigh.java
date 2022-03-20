@@ -12,14 +12,9 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.utils.Within;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ClimbHigh extends SequentialCommandGroup {
-    /** Creates a new ClimbHigh. */
+
     public ClimbHigh(Climber climber) {
-        // Add your commands in the addCommands() call, e.g.
-        // addCommands(new FooCommand(), new BarCommand());
 
         addRequirements(climber);
         addCommands(
@@ -42,8 +37,6 @@ public class ClimbHigh extends SequentialCommandGroup {
                 new InstantCommand(() -> climber.setMid(0.5)),
                 new InstantCommand(() -> climber.setHigh(-1)),
                 new WaitCommand(3)
-        // new InstantCommand(() -> climber.set(0)),
-        // new InstantCommand(() -> climber.setHighClimb(-0.7))
         );
     }
 }
