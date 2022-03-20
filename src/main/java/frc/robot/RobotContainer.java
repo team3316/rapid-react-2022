@@ -15,19 +15,20 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
+import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Collect;
+import frc.robot.commands.EndGameLED;
 import frc.robot.commands.OpenLeftTrigger;
 import frc.robot.commands.OpenRightTrigger;
 import frc.robot.humanIO.Joysticks;
 import frc.robot.humanIO.PS5Controller.Button;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LED;
-import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.manipulator.Manipulator;
@@ -181,12 +182,8 @@ public class RobotContainer {
         m_Drivetrain.calibrateSteering();
     }
 
-    public void setBlinkLEDs(RobotColorState state){
-        this.m_led.setBlink(state);
-    }
-
-    public void rainBow(){
-        this.m_led.rainbow();
+    public void startEndGame(){
+        new EndGameLED(m_led).schedule();
     }
 
 }
