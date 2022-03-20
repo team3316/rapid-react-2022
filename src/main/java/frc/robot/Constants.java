@@ -214,15 +214,13 @@ public final class Constants {
         public static final int length = 26;
 
         public static enum RobotColorState {
-            ONE_CARGO(Color.kYellow), // collect one CARGO
+            ONE_CARGO(Color.kBlue), // collect one CARGO
             TWO_CARGO(Color.kGreen), // collect two CARGO
             COLLECT(Color.kRed), // default color for collecting (if there aren't CARGOs)
-            ARM_UP(Color.kBlue), // arm in shooting position
-            FIFTEEN_SEC(Color.kGray), // fifteen seconds left until the match ends
-            FIVE_SEC(Color.kWhite), // five seconds left until the match ends
             MIN_CLIMB(Color.kPurple),
             MAX_CLIMB(Color.kPink),
-            DEFAULT(Color.kOrangeRed); // defualt color
+            DEFAULT(Color.kOrangeRed),
+            OFF(Color.kBlack); // defualt color
     
             public Color color;
     
