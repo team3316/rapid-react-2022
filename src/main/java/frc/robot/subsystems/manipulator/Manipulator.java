@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.DoubleLatchedBoolean;
+import frc.robot.utils.Within;
 
 public class Manipulator extends SubsystemBase {
 
@@ -128,8 +129,8 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void updateSDB() {
-        // if (!Within.range(getTargetRPM(), 0, 10))
-        // SmartDashboard.putNumber("Manipulator Velocity", getRPM());
+        if (!Within.range(_leaderMotor.getStatorCurrent(), 0, 0.0001))
+        SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
         ManipulatorCargoState state = getCargoState();
 
@@ -137,7 +138,7 @@ public class Manipulator extends SubsystemBase {
             SmartDashboard.putBoolean("Manipulator Left Switch", state.leftCargo);
 
         if (_rightSwitchBoolean.update(state.rightCargo))
-            SmartDashboard.putBoolean("Manipulator Left Switch", state.rightCargo);
+            SmartDashboard.putBoolean("Manipulator Right Switch", state.rightCargo);
     }
 
     @SuppressWarnings({ "unused" })
