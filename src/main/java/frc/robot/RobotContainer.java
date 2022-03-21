@@ -21,6 +21,7 @@ import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
+import frc.robot.commands.AutoShootLowBoth;
 import frc.robot.commands.Collect;
 import frc.robot.commands.EndGameLED;
 import frc.robot.commands.OpenLeftTrigger;
@@ -126,6 +127,13 @@ public class RobotContainer {
                 .whenPressed(
                         new ConditionalCommand(
                                 new AutoShoot(m_Manipulator, m_Trigger, m_led),
+                                new InstantCommand(),
+                                () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
+
+        m_Joysticks.getOperatorButton(Button.kR2)
+                .whenPressed(
+                        new ConditionalCommand(
+                                new AutoShootLowBoth(m_Manipulator, m_Trigger, m_led),
                                 new InstantCommand(),
                                 () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 

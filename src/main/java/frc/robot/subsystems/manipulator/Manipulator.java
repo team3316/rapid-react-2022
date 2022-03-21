@@ -23,6 +23,7 @@ public class Manipulator extends SubsystemBase {
     public enum ManipulatorState {
         COLLECT(Constants.Manipulator.collectRPM),
         SHOOT(Constants.Manipulator.shootRPM),
+        SHOOTLOW(Constants.Manipulator.shootLowRPM),
         OFF(0);
 
         public final double rpm;
