@@ -8,16 +8,20 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.trigger.Trigger;
+import frc.robot.Constants.LED.RobotColorState;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.manipulator.Manipulator;
 import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 
 public class AutoShootBoth extends SequentialCommandGroup {
-    public AutoShootBoth(Manipulator manipulator, Trigger trigger) {
+    public AutoShootBoth(Manipulator manipulator, Trigger trigger, LED led) {
         addCommands(new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
                 new WaitCommand(0.3),
 
                 new OpenBothTriggers(trigger).withTimeout(0.8),
 
-                new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator));
+                new InstantCommand(() -> manipulator.setState(ManipulatorState.OFF), manipulator),
+                
+                new InstantCommand(() -> led.setRobotColor(RobotColorState.COLLECT)));
     }
 }
