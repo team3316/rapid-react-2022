@@ -12,12 +12,15 @@ import frc.robot.commands.AutoShoot;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.manipulator.Manipulator;
+import frc.robot.subsystems.manipulator.Manipulator.ManipulatorState;
 import frc.robot.subsystems.trigger.Trigger;
 
 public class AutonomousShoot extends SequentialCommandGroup {
 
     public AutonomousShoot(Arm arm, Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led) {
-        addCommands(new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle, led).schedule()),
+        addCommands(
+                new InstantCommand(() -> manipulator.setState(ManipulatorState.KEEPIN)),
+                new InstantCommand(() -> arm.getActiveGoalCommand(Constants.ArmConstants.shootAngle, led).schedule()),
                 new WaitUntilCommand(arm::atGoal),
                 new AutoShoot(manipulator, trigger, shootLeft, shootRight, led));
     }
