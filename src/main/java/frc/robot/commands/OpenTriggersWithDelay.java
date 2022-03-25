@@ -17,16 +17,16 @@ public class OpenTriggersWithDelay extends SequentialCommandGroup {
 
     public OpenTriggersWithDelay(Trigger trigger, boolean shootLeft, boolean shootRight) {
         SequentialCommandGroup _sequence = new SequentialCommandGroup();
-        if (shootRight)
-            _sequence.addCommands(
-                    new InstantCommand(
-                            () -> trigger.setRightAngle(Constants.Trigger.Right.outAngle)),
-                    new WaitCommand(0.5));
-
         if (shootLeft)
             _sequence.addCommands(
                     new InstantCommand(
                             () -> trigger.setLeftAngle(Constants.Trigger.Left.outAngle)),
+                    new WaitCommand(0.5));
+
+        if (shootRight)
+            _sequence.addCommands(
+                    new InstantCommand(
+                            () -> trigger.setRightAngle(Constants.Trigger.Right.outAngle)),
                     new WaitCommand(0.5));
 
         if (shootRight || shootLeft)
