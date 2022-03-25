@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase {
 
         _forwardState = new LatchedBoolean();
 
-        _feedforward = new ArmFeedforward(0, ArmConstants.gravityFF, ArmConstants.velocityFF);
+        _feedforward = new ArmFeedforward(ArmConstants.kS, ArmConstants.gravityFF, ArmConstants.velocityFF);
 
         _lastGoal = getArmInitPosition();
         _leader.setPosition(getArmInitPosition());
@@ -81,7 +81,7 @@ public class Arm extends SubsystemBase {
     }
 
     private void updateFeedForwardFromSDB() {
-        _feedforward = new ArmFeedforward(0,
+        _feedforward = new ArmFeedforward(ArmConstants.kS,
                 SmartDashboard.getNumber("Gravity Gain", ArmConstants.gravityFF),
                 SmartDashboard.getNumber("Velocity Gain", ArmConstants.velocityFF));
     }

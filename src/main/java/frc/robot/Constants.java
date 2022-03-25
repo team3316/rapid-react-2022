@@ -29,7 +29,7 @@ public final class Constants {
         public static final double startingAngle = -90;
 
         // motion profile.
-        public static final double movementTime = 1.5; // in secs.
+        public static final double movementTime = 3.0; // in secs.
         public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec / (movementTime / 2); // in
                                                                                                                      // Degrees/s^2
@@ -43,8 +43,9 @@ public final class Constants {
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, 0, kMaxOutput);
 
         // Arm feedforward
-        public static final double gravityFF = -0.07; // in Motor%
+        public static final double gravityFF = -0.1; // in Motor%
         public static final double velocityFF = 0.000965; // in Motor% s/degs
+        public static final double kS = 0.02; // in Motor%
     }
 
     public static final class Drivetrain {
