@@ -29,7 +29,7 @@ public final class Constants {
         public static final double startingAngle = -90;
 
         // motion profile.
-        public static final double movementTime = 3.0; // in secs.
+        public static final double movementTime = 1.75; // in secs.
         public static final double maxVelocityDegreesPerSec = 180 * 2 / movementTime; // in Degrees/s
         public static final double maxAccelerationDegreesPerSecSqrd = maxVelocityDegreesPerSec / (movementTime / 2); // in
                                                                                                                      // Degrees/s^2
