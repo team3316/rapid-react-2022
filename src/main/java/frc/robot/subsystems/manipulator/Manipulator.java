@@ -100,7 +100,6 @@ public class Manipulator extends SubsystemBase {
                 Constants.Manipulator.kVelocityConversionFactor;
     }
 
-    @SuppressWarnings({ "unused" })
     private double getRPM() {
         return _leaderMotor.getSelectedSensorVelocity() *
                 Constants.Manipulator.kVelocityConversionFactor;
