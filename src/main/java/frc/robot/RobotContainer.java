@@ -162,12 +162,17 @@ public class RobotContainer {
 
         m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
                 new ConditionalCommand(
-                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle, m_led).schedule()),
-                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle, m_led).schedule()),
-                        m_arm::isLastGoalIntake)
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle, m_led).schedule())
+                                .beforeStarting(new InstantCommand(
+                                        () -> m_Manipulator.setState(ManipulatorState.KEEPIN),
+                                        m_Manipulator)),
+
+                        new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.intakeAngle, m_led).schedule())
                                 .beforeStarting(new InstantCommand(
                                         () -> m_Manipulator.setState(ManipulatorState.OFF),
-                                        m_Manipulator)));
+                                        m_Manipulator)),
+                                        
+                        m_arm::isLastGoalIntake));
     }
 
     /**
