@@ -25,7 +25,6 @@ public class Manipulator extends SubsystemBase {
         SHOOT(Constants.Manipulator.shootRPM),
         SHOOTLOW(Constants.Manipulator.shootLowRPM),
         KEEPIN(Constants.Manipulator.keepInRPM),
-        SHOOTSLOWER(Constants.Manipulator.shootSlowerRPM),
         OFF(0);
 
         public final double rpm;

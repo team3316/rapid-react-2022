@@ -15,10 +15,10 @@ import frc.robot.subsystems.trigger.Trigger;
 
 public class AutoShoot extends SequentialCommandGroup {
 
-    public AutoShoot(Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led, ManipulatorState state) {
+    public AutoShoot(Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led) {
 
         addCommands(
-                new InstantCommand(() -> manipulator.setState(state), manipulator),
+                new InstantCommand(() -> manipulator.setState(ManipulatorState.SHOOT), manipulator),
                 new WaitCommand(0.3),
 
                 new OpenTriggersWithDelay(trigger, shootLeft, shootRight),
@@ -28,16 +28,7 @@ public class AutoShoot extends SequentialCommandGroup {
                 new InstantCommand(() -> led.setRobotColor(RobotColorState.COLLECT)));
     }
 
-    public AutoShoot(Manipulator manipulator, Trigger trigger, boolean shootLeft, boolean shootRight, LED led)
-    {
-        this(manipulator, trigger, shootLeft, shootRight, led, ManipulatorState.SHOOT);
-    }
-
     public AutoShoot(Manipulator manipulator, Trigger trigger, LED led) {
-        this(manipulator, trigger, true, true, led, ManipulatorState.SHOOT);
+        this(manipulator, trigger, true, true, led);
     }
-    public AutoShoot(Manipulator manipulator, Trigger trigger, LED led, ManipulatorState state) {
-        this(manipulator, trigger, true, true, led, state);
-    }
-    
 }

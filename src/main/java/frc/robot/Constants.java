@@ -146,7 +146,6 @@ public final class Constants {
         public static final double shootRPM = -4250;
         public static final double shootLowRPM = -2000;
         public static final double keepInRPM = 250;
-        public static final double shootSlowerRPM = -4000;
 
         public static final double maxAccelerationSeconds = 0.25;
         public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
