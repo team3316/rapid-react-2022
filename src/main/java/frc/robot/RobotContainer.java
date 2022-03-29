@@ -18,6 +18,7 @@ import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.Constants.LED.RobotColorState;
 import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
+import frc.robot.commandGroups.ShootAndTaxi;
 import frc.robot.commandGroups.ShootCollectShoot;
 import frc.robot.commandGroups.ShootCollectTwoShoot;
 import frc.robot.commands.AutoShoot;
@@ -87,12 +88,15 @@ public class RobotContainer {
                 new RunCommand(
                         () -> {
                             m_Climber.setMid(m_Joysticks.getMidClimbY());
-                            //m_Climber.setHigh(m_Joysticks.getHighClimbY());
+                            // m_Climber.setHigh(m_Joysticks.getHighClimbY());
                         }, m_Climber));
     }
 
     public void initChooser() {
-        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
+        this.chooser.setDefaultOption("shoot and taxi",
+                new ShootAndTaxi(m_Drivetrain, m_arm, m_Manipulator, m_Trigger, m_led));
+        this.chooser.addOption("autonomous 1 CARGO",
+                new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("autonomous 2 CARGO",
                 new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm, m_led));
         this.chooser.addOption("autonomous 3 CARGO",
@@ -119,8 +123,10 @@ public class RobotContainer {
                 .whileHeld(
                         new StartEndCommand(
                                 () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                                () -> {m_Manipulator.setState(ManipulatorState.OFF);
-                                        m_led.setRobotColor(RobotColorState.COLLECT);},
+                                () -> {
+                                    m_Manipulator.setState(ManipulatorState.OFF);
+                                    m_led.setRobotColor(RobotColorState.COLLECT);
+                                },
                                 m_Manipulator));
 
         m_Joysticks.getOperatorButton(Button.kR1)
@@ -171,7 +177,7 @@ public class RobotContainer {
                                 .beforeStarting(new InstantCommand(
                                         () -> m_Manipulator.setState(ManipulatorState.OFF),
                                         m_Manipulator)),
-                                        
+
                         m_arm::isLastGoalIntake));
     }
 
@@ -195,7 +201,7 @@ public class RobotContainer {
         m_Drivetrain.calibrateSteering();
     }
 
-    public void startEndGame(){
+    public void startEndGame() {
         new EndGameLED(m_led).schedule();
     }
 
