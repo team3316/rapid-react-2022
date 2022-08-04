@@ -104,25 +104,25 @@ public final class Constants {
         public static final double frontWheelDistMeters = 0.6703;
         public static final double sideWheelDistMeters = 0.5102;
 
-        public final static double cancoderTLOffset = 10.1;
-        public final static double cancoderTROffset = 234.3;
-        public final static double cancoderBLOffset = 109.6;
-        public final static double cancoderBROffset = 159.3;
+        public final static double cancoderTLOffset = 283.18 + 180;
+        public final static double cancoderTROffset = 142.08 + 180;
+        public final static double cancoderBLOffset = 18.7 + 180;
+        public final static double cancoderBROffset = 70.1 + 180;
 
         public static final SwerveModuleConstants TLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, sideWheelDistMeters / 2), 3, 4,
+                new Translation2d(+sideWheelDistMeters / 2, +frontWheelDistMeters / 2), 3, 4,
                 cancoderTLOffset, 11);
 
         public static final SwerveModuleConstants TRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, sideWheelDistMeters / 2), 1, 2,
+                new Translation2d(+sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 1, 2,
                 cancoderTROffset, 10);
 
         public static final SwerveModuleConstants BLModule = new SwerveModuleConstants(
-                new Translation2d(-frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 5, 6,
+                new Translation2d(-sideWheelDistMeters / 2, +frontWheelDistMeters / 2), 5, 6,
                 cancoderBLOffset, 12);
 
         public static final SwerveModuleConstants BRModule = new SwerveModuleConstants(
-                new Translation2d(frontWheelDistMeters / 2, -sideWheelDistMeters / 2), 7, 8,
+                new Translation2d(-sideWheelDistMeters / 2, -frontWheelDistMeters / 2), 7, 8,
                 cancoderBROffset, 13);
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(TRModule.position,
@@ -189,16 +189,18 @@ public final class Constants {
         public static final double highExtentionHeight = 0.95;
 
         public static final double midConversionFactor = 35e-3 * Math.PI / midGearRatio; // in m: Winch diameter is 30mm
-        public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is 30mm
+        public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is
+                                                                                           // 30mm
 
         public static final double minClimbHeight = 0.2; // the min position of the climber when the robot is climbing
-        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean check for leds
+        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean
+                                                           // check for leds
         public static final double checkHeight = minClimbHeight + climbHysteresis;
     }
 
     public static final class Autonomous {
-        public static final double kMaxSpeedMetersPerSecond = 2.0;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+        public static final double kMaxSpeedMetersPerSecond = 1.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = 1.5;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = 5;
 
@@ -224,9 +226,9 @@ public final class Constants {
             MAX_CLIMB(Color.kPink),
             DEFAULT(Color.kOrangeRed),
             OFF(Color.kBlack); // defualt color
-    
+
             public Color color;
-    
+
             private RobotColorState(Color color) {
                 this.color = color;
             }
