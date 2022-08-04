@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.Drivetrain.SwerveModuleConstants;
 import frc.robot.Constants.LED.RobotColorState;
+import frc.robot.commandGroups.AutoStraightPath;
 import frc.robot.commandGroups.AutoTaxiTrajectory;
 import frc.robot.commandGroups.AutonomousShoot;
 import frc.robot.commandGroups.ShootCollectShoot;
@@ -98,6 +99,7 @@ public class RobotContainer {
         this.chooser.addOption("autonomous 3 CARGO",
                 new ShootCollectTwoShoot(m_Drivetrain, m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("taxi", new AutoTaxiTrajectory(m_Drivetrain));
+        this.chooser.addOption("straight", new AutoStraightPath(m_Drivetrain));
 
         SmartDashboard.putData("autonomous", this.chooser);
     }
