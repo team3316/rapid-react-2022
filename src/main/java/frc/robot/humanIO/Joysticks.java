@@ -52,10 +52,11 @@ public class Joysticks {
     }
 
     public double getMidClimbY() {
-        return squareInputs(calculateDeadband(-this._operatorController.getLeftY()));
+        // return squareInputs(calculateDeadband(-this._operatorController.getLeftY()));
+        return squareInputs(calculateDeadband(-this._driveController.getRightY()));
     }
 
-    public double getHighClimbY(){
+    public double getHighClimbY() {
         return squareInputs(calculateDeadband(-this._operatorController.getRightY()));
     }
 
@@ -73,6 +74,17 @@ public class Joysticks {
             @Override
             public boolean getAsBoolean() {
                 return _operatorController.getPOV() == povDegs;
+            }
+
+        });
+    }
+
+    public edu.wpi.first.wpilibj2.command.button.Button getDriverPOVButton(int povDegs) {
+        return new edu.wpi.first.wpilibj2.command.button.Button(new BooleanSupplier() {
+
+            @Override
+            public boolean getAsBoolean() {
+                return _driveController.getPOV() == povDegs;
             }
 
         });

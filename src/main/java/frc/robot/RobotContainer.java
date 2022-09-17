@@ -77,9 +77,9 @@ public class RobotContainer {
         m_Drivetrain.setDefaultCommand(
                 new RunCommand(
                         () -> m_Drivetrain.drive(
-                                m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond,
-                                m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond,
-                                m_Joysticks.getSteerX() * 11.5,
+                                m_Joysticks.getDriveX() * SwerveModuleConstants.freeSpeedMetersPerSecond / 2,
+                                m_Joysticks.getDriveY() * SwerveModuleConstants.freeSpeedMetersPerSecond / 2,
+                                m_Joysticks.getSteerX() * 5.0,
                                 _fieldRelative),
                         m_Drivetrain));
 
@@ -87,12 +87,13 @@ public class RobotContainer {
                 new RunCommand(
                         () -> {
                             m_Climber.setMid(m_Joysticks.getMidClimbY());
-                            //m_Climber.setHigh(m_Joysticks.getHighClimbY());
+                            // m_Climber.setHigh(m_Joysticks.getHighClimbY());
                         }, m_Climber));
     }
 
     public void initChooser() {
-        this.chooser.setDefaultOption("autonomous 1 CARGO", new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
+        this.chooser.setDefaultOption("autonomous 1 CARGO",
+                new AutonomousShoot(m_arm, m_Manipulator, m_Trigger, m_led));
         this.chooser.addOption("autonomous 2 CARGO",
                 new ShootCollectShoot(m_Drivetrain, m_Manipulator, m_Trigger, m_arm, m_led));
         this.chooser.addOption("autonomous 3 CARGO",
@@ -111,44 +112,46 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        m_Joysticks.getOperatorButton(Button.kL1)
+        m_Joysticks.getDriveButton(Button.kL1)
                 .toggleWhenPressed(
                         new Collect(m_Manipulator, m_led));
 
-        m_Joysticks.getOperatorButton(Button.kSquare)
+        m_Joysticks.getDriveButton(Button.kSquare)
                 .whileHeld(
                         new StartEndCommand(
                                 () -> m_Manipulator.setState(ManipulatorState.SHOOT),
-                                () -> {m_Manipulator.setState(ManipulatorState.OFF);
-                                        m_led.setRobotColor(RobotColorState.COLLECT);},
+                                () -> {
+                                    m_Manipulator.setState(ManipulatorState.OFF);
+                                    m_led.setRobotColor(RobotColorState.COLLECT);
+                                },
                                 m_Manipulator));
 
-        m_Joysticks.getOperatorButton(Button.kR1)
+        m_Joysticks.getDriveButton(Button.kR1)
                 .whenPressed(
                         new ConditionalCommand(
                                 new AutoShoot(m_Manipulator, m_Trigger, m_led),
                                 new InstantCommand(),
                                 () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
-        m_Joysticks.getOperatorButton(Button.kR2)
-                .whenPressed(
-                        new ConditionalCommand(
-                                new AutoShootLowBoth(m_Manipulator, m_Trigger, m_led),
-                                new InstantCommand(),
-                                () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
+        // m_Joysticks.getDriveButton(Button.kR2)
+        // .whenPressed(
+        // new ConditionalCommand(
+        // new AutoShootLowBoth(m_Manipulator, m_Trigger, m_led),
+        // new InstantCommand(),
+        // () -> !m_arm.isLastGoalIntake())); // Don't shoot during intake
 
-        m_Joysticks.getOperatorButton(Button.kCross)
+        m_Joysticks.getDriveButton(Button.kCross)
                 .whenHeld(new OpenLeftTrigger(m_Trigger));
-        m_Joysticks.getOperatorButton(Button.kCircle)
+        m_Joysticks.getDriveButton(Button.kCircle)
                 .whenHeld(new OpenRightTrigger(m_Trigger));
 
-        this.m_Joysticks.getOperatorPOVButton(270).whenHeld(
+        this.m_Joysticks.getDriverPOVButton(270).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.setLeft(-0.1),
                         () -> this.m_Climber.setLeft(0.0),
                         m_Climber));
 
-        this.m_Joysticks.getOperatorPOVButton(90).whenHeld(
+        this.m_Joysticks.getDriverPOVButton(90).whenHeld(
                 new StartEndCommand(
                         () -> this.m_Climber.setRight(-0.1),
                         () -> this.m_Climber.setRight(0.0),
@@ -160,7 +163,7 @@ public class RobotContainer {
         m_Joysticks.getDriveButton(Button.kOptions)
                 .whenPressed(() -> _fieldRelative = !_fieldRelative); // toggle field relative mode
 
-        m_Joysticks.getOperatorButton(Button.kTriangle).whenPressed(
+        m_Joysticks.getDriveButton(Button.kTriangle).whenPressed(
                 new ConditionalCommand(
                         new InstantCommand(() -> m_arm.getActiveGoalCommand(ArmConstants.shootAngle, m_led).schedule())
                                 .beforeStarting(new InstantCommand(
@@ -171,7 +174,7 @@ public class RobotContainer {
                                 .beforeStarting(new InstantCommand(
                                         () -> m_Manipulator.setState(ManipulatorState.OFF),
                                         m_Manipulator)),
-                                        
+
                         m_arm::isLastGoalIntake));
     }
 
@@ -195,7 +198,7 @@ public class RobotContainer {
         m_Drivetrain.calibrateSteering();
     }
 
-    public void startEndGame(){
+    public void startEndGame() {
         new EndGameLED(m_led).schedule();
     }
 

@@ -143,9 +143,9 @@ public final class Constants {
         public static final PIDFGains gains = new PIDFGains(kP, 0, 0, kF);
 
         public static final double collectRPM = 2400;
-        public static final double shootRPM = -4250;
+        public static final double shootRPM = -2500;
         public static final double shootLowRPM = -2000;
-        public static final double keepInRPM = 250;
+        public static final double keepInRPM = 0;
 
         public static final double maxAccelerationSeconds = 0.25;
         public static final double kVelocityConversionFactor = 600.0 / 2048; // 100ms per minute / upr
@@ -189,10 +189,12 @@ public final class Constants {
         public static final double highExtentionHeight = 0.95;
 
         public static final double midConversionFactor = 35e-3 * Math.PI / midGearRatio; // in m: Winch diameter is 30mm
-        public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is 30mm
+        public static final double highConversionFactor = 35e-3 * Math.PI / highGearRatio; // in m: Winch diameter is
+                                                                                           // 30mm
 
         public static final double minClimbHeight = 0.2; // the min position of the climber when the robot is climbing
-        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean check for leds
+        public static final double climbHysteresis = 0.05; // hysteresis between max climb height and latched boolean
+                                                           // check for leds
         public static final double checkHeight = minClimbHeight + climbHysteresis;
     }
 
@@ -224,9 +226,9 @@ public final class Constants {
             MAX_CLIMB(Color.kPink),
             DEFAULT(Color.kOrangeRed),
             OFF(Color.kBlack); // defualt color
-    
+
             public Color color;
-    
+
             private RobotColorState(Color color) {
                 this.color = color;
             }
