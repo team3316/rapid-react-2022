@@ -16,12 +16,14 @@ public class SwerveModule {
 
     private DBugSparkMax _driveMotor;
     private DBugSparkMax _steerMotor;
+    private double _currentOutput;
 
     private CANCoder _absEncoder;
 
     public SwerveModule(SwerveModuleConstants constants) {
         this._absEncoder = createCANCoder(constants.canCoderId, constants.cancoderZeroAngle);
 
+        _currentOutput = this._driveMotor.getOutputCurrent();
         this._driveMotor = DBugSparkMax.create(
                 constants.idDrive,
                 constants.driveGains,
@@ -46,6 +48,10 @@ public class SwerveModule {
         canCoder.configMagnetOffset(360 - zeroAngle, 30);
 
         return canCoder;
+    }
+
+    public double getCurrentOutput(){
+        return this._currentOutput;
     }
 
     public void calibrateSteering() {

@@ -27,6 +27,7 @@ public class Drivetrain extends SubsystemBase {
 
     private SwerveDriveOdometry _odometry;
     private DoubleLogEntry m_logX, m_logY, m_logR;
+    private DoubleLogEntry[] m_logCArr;
     private int m_counter = 0;
     private static final int LOG_EVERY = 10;
 
@@ -45,6 +46,10 @@ public class Drivetrain extends SubsystemBase {
         m_logX = new DoubleLogEntry(log, "/drivetrain/position/x");
         m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
         m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
+        m_logCArr = new DoubleLogEntry[4];
+        for(int i = 0; i < this.m_logCArr.length; i++){
+            this.m_logCArr[i] = new DoubleLogEntry(log, "/drivetrain/current" + i + "");
+        }
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -84,6 +89,9 @@ public class Drivetrain extends SubsystemBase {
             m_logX.append(pose.getX());
             m_logY.append(pose.getY());
             m_logR.append(pose.getRotation().getDegrees());
+            for(int i = 0; i > m_logCArr.length; i++){
+                m_logCArr[i].append(this._modules[i].getCurrentOutput());
+            }
             m_counter = 0;
         }
 
