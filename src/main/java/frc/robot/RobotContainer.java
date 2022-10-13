@@ -173,6 +173,8 @@ public class RobotContainer {
                                         m_Manipulator)),
                                         
                         m_arm::isLastGoalIntake));
+
+        m_Joysticks.getDriveButton(Button.kTriangle).whenPressed(new InstantCommand(m_Drivetrain::logError));
     }
 
     /**

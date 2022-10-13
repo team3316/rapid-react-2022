@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +28,8 @@ public class Drivetrain extends SubsystemBase {
 
     private SwerveDriveOdometry _odometry;
     private DoubleLogEntry m_logX, m_logY, m_logR;
+    private StringLogEntry m_logError;
+    private DoubleLogEntry[][] m_logErrors;
     private int m_counter = 0;
     private static final int LOG_EVERY = 10;
 
@@ -45,6 +48,19 @@ public class Drivetrain extends SubsystemBase {
         m_logX = new DoubleLogEntry(log, "/drivetrain/position/x");
         m_logY = new DoubleLogEntry(log, "/drivetrain/position/y");
         m_logR = new DoubleLogEntry(log, "/drivetrain/position/rotation");
+
+        m_logError = new StringLogEntry(log, "/drivetrain/error/detection");
+
+        m_logErrors = new DoubleLogEntry[][] {
+                { new DoubleLogEntry(log, "/drivetrain/error/TR/Steer"),
+                        new DoubleLogEntry(log, "/drivetrain/error/TR/Drive") },
+                { new DoubleLogEntry(log, "/drivetrain/error/TL/Steer"),
+                        new DoubleLogEntry(log, "/drivetrain/error/TL/Drive") },
+                { new DoubleLogEntry(log, "/drivetrain/error/BR/Steer"),
+                        new DoubleLogEntry(log, "/drivetrain/error/BR/Drive") },
+                { new DoubleLogEntry(log, "/drivetrain/error/BL/Steer"),
+                        new DoubleLogEntry(log, "/drivetrain/error/BL/Drive") }
+        };
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -85,6 +101,12 @@ public class Drivetrain extends SubsystemBase {
             m_logY.append(pose.getY());
             m_logR.append(pose.getRotation().getDegrees());
             m_counter = 0;
+            if (this._modules[0].getDriveSetpoint() != 0) {
+                for (int i = 0; i < _modules.length; i++) {
+                    m_logErrors[i][0].append(_modules[i].getSteerError());
+                    m_logErrors[i][1].append(_modules[i].getDriveError());
+                }
+            }
         }
 
     }
@@ -129,5 +151,9 @@ public class Drivetrain extends SubsystemBase {
         for (SwerveModule swerveModule : _modules) {
             swerveModule.calibrateSteering();
         }
+    }
+
+    public void logError() {
+        this.m_logError.append("Bad behavior noticed by driver");
     }
 }

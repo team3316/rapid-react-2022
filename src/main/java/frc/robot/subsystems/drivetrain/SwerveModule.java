@@ -16,6 +16,8 @@ public class SwerveModule {
 
     private DBugSparkMax _driveMotor;
     private DBugSparkMax _steerMotor;
+    private double _driveSetpointMPS;
+    private double _steerSetpointDegrees;
 
     private CANCoder _absEncoder;
 
@@ -66,6 +68,9 @@ public class SwerveModule {
         // Optimize the reference state to avoid spinning further than 90 degrees
         SwerveModuleState state = optimize(desiredState, this._steerMotor.getPosition());
 
+        this._steerSetpointDegrees = state.angle.getDegrees();
+        this._driveSetpointMPS = state.speedMetersPerSecond;
+        
         if (state.speedMetersPerSecond != 0) // Avoid steering in place
             this._steerMotor.setReference(state.angle.getDegrees(), ControlType.kPosition);
 
@@ -114,5 +119,17 @@ public class SwerveModule {
     public void disable() {
         this.stop();
         this._steerMotor.set(0);
+    }
+
+    public double getSteerError() {
+        return this._steerSetpointDegrees - this._steerMotor.getPosition();
+    }
+
+    public double getDriveError() {
+        return this._driveSetpointMPS - this._driveMotor.getVelocity();
+    }
+    
+    public double getDriveSetpoint() {
+        return this._driveSetpointMPS;
     }
 }
