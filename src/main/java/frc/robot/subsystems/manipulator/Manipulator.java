@@ -24,6 +24,7 @@ public class Manipulator extends SubsystemBase {
         COLLECT(Constants.Manipulator.collectRPM),
         SHOOT(Constants.Manipulator.shootRPM),
         SHOOTLOW(Constants.Manipulator.shootLowRPM),
+        SHOOTFROMROBOT(Constants.Manipulator.shootFromRobotRPM),
         KEEPIN(Constants.Manipulator.keepInRPM),
         OFF(0);
 
@@ -131,7 +132,7 @@ public class Manipulator extends SubsystemBase {
 
     private void updateSDB() {
         if (!Within.range(_leaderMotor.getStatorCurrent(), 0, 0.0001))
-        SmartDashboard.putNumber("Manipulator Velocity", getRPM());
+            SmartDashboard.putNumber("Manipulator Velocity", getRPM());
 
         ManipulatorCargoState state = getCargoState();
 

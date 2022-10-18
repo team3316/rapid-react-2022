@@ -145,6 +145,8 @@ public final class Constants {
         public static final double collectRPM = 2400;
         public static final double shootRPM = -4250;
         public static final double shootLowRPM = -2000;
+        // TODO: change velocity
+        public static final double shootFromRobotRPM = 0;
         public static final double keepInRPM = 250;
 
         public static final double maxAccelerationSeconds = 0.25;
